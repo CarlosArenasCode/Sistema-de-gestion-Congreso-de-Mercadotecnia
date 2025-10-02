@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ver Asistencia - Congreso Universitario</title>
+    <link rel="stylesheet" href="../CSS/style.css">
+</head>
+<body>
+    <header>
+        <div class="header-top">
+            <div class="main-title"><h1>Congreso Universitario</h1></div>
+            <section class="sponsor-logos-header"><div class="logo-carousel"><div class="logo-track">
+                <img src="../Logos/UAA_LOGO.png" alt="Logo Universidad Autónoma de Aguascalientes">
+                <img src="../Logos/logo-ccea.png" alt="Logo CCEA">
+                <img src="../Logos/MKT_LOGO.png" alt="Logo MKT">
+            </div></div></section>
+        </div>
+        <nav id="main-navigation">
+            <ul>
+                <li><a href="admin_dashboard.html">Panel Admin</a></li>
+                <li><a href="admin_eventos.html">Gestionar Eventos</a></li>
+                <li><a href="admin_usuarios.html">Gestionar Usuarios</a></li>
+                <li><a href="admin_scan_qr.html">Escanear QR</a></li>
+                <li><a href="admin_asistencia.html" class="active">Ver Asistencia</a></li>
+                <li><a href="admin_inscripciones.html">Ver Inscripciones</a></li>
+                <li><a href="admin_constancias.html">Constancias Emitidas</a></li>
+                <li><a href="admin_justificacion.html">Gestionar Justificaciones</a></li>
+                <li class="user-menu"><span>Bienvenido, [Nombre Admin]</span><a href="login.html" class="logout-button button">Cerrar Sesión</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <h2>Reportes de Asistencia</h2>
+        <section class="page-actions">
+            <input type="search" id="search-input" placeholder="Buscar por Alumno, Evento, Fecha (YYYY-MM-DD)..." style="flex-grow: 1;">
+            <button id="export-csv-button" class="button secondary">Exportar a CSV</button>
+        </section>
+
+        <section id="resultados-asistencia">
+            <h3>Resultados</h3>
+            <div id="loading-indicator" style="display: none; text-align:center; padding: 2rem;">Cargando datos...</div>
+            <table class="attendance-table">
+                <thead>
+                    <tr>
+                        <th>Usuario (ID)</th>
+                        <th>Nombre Usuario</th>
+                        <th>Evento</th>
+                        <th>Fecha</th>
+                        <th>Entrada</th>
+                        <th>Salida</th>
+                        <th>Duración</th>
+                    </tr>
+                </thead>
+                <tbody id="attendance-table-body"></tbody>
+            </table>
+            <div id="no-results-indicator" style="display: none; text-align:center; padding: 2rem; color: #777;">No se encontraron resultados.</div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Congreso Universitario. Todos los derechos reservados.</p>
+    </footer>
+    <script src="../js_admin/admin_asistencias.js"></script>
+</body>
+</html>

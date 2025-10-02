@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestionar Justificaciones - Congreso Universitario</title>
+    <link rel="stylesheet" href="../CSS/style.css">
+</head>
+<body>
+    <header>
+        <div class="header-top"><div class="main-title"><h1>Congreso Universitario</h1></div>
+            <section class="sponsor-logos-header"><div class="logo-carousel"><div class="logo-track">
+                <img src="../Logos/UAA_LOGO.png" alt="UAA">
+                <img src="../Logos/logo-ccea.png" alt="CCEA">
+                <img src="../Logos/MKT_LOGO.png" alt="MKT">
+            </div></div></section>
+        </div>
+        <nav id="main-navigation">
+            <ul>
+                <li><a href="admin_dashboard.html">Panel Admin</a></li>
+                <li><a href="admin_eventos.html">Gestionar Eventos</a></li>
+                <li><a href="admin_usuarios.html">Gestionar Usuarios</a></li>
+                <li><a href="admin_scan_qr.html">Escanear QR</a></li>
+                <li><a href="admin_asistencia.html">Ver Asistencia</a></li>
+                <li><a href="admin_inscripciones.html">Ver Inscripciones</a></li>
+                <li><a href="admin_constancias.html">Constancias Emitidas</a></li>
+                <li><a href="admin_justificacion.html" class="active">Gestionar Justificaciones</a></li>
+                <li class="user-menu"><span>Bienvenido, [Nombre Admin]</span><a href="login.html" class="logout-button button">Cerrar Sesión</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <h2>Gestionar Justificaciones de Faltas</h2>
+        <section class="filter-section">
+            <div class="form-group">
+                <label for="filter-estado">Filtrar por Estado:</label>
+                <select id="filter-estado">
+                    <option value="">-- Todos --</option>
+                    <option value="PENDIENTE">Pendientes</option>
+                    <option value="APROBADA">Aprobadas</option>
+                    <option value="RECHAZADA">Rechazadas</option>
+                </select>
+            </div>
+            <div class="form-group" style="flex-grow: 2;">
+                <label for="search-input">Buscar por Alumno o Evento:</label>
+                <input type="search" id="search-input" placeholder="Nombre de alumno, evento, ID...">
+            </div>
+        </section>
+
+        <section id="lista-justificaciones">
+            <h3>Lista de Justificaciones</h3>
+            <div id="loading-indicator" style="display: none; text-align:center; padding: 2rem;">Cargando datos...</div>
+            <table class="justification-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre Usuario</th>
+                        <th>Evento</th>
+                        <th>Fecha Falta</th>
+                        <th>Fecha Solicitud</th>
+                        <th>Estado</th>
+                        <th class="actions">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+             <div id="no-results-indicator" style="display: none; text-align:center; padding: 2rem; color: #777;">No se encontraron justificaciones.</div>
+        </section>
+
+        <section id="detalle-justificacion" style="display: none;" class="content-box">
+             <h3>Detalle de Justificación</h3>
+            <p><strong>ID:</strong> <span id="detalle-id"></span></p>
+            <p><strong>Usuario:</strong> <span id="detalle-usuario-nombre"></span> (ID: <span id="detalle-usuario-id"></span>)</p>
+            <p><strong>Evento:</strong> <span id="detalle-evento-nombre"></span></p>
+            <p><strong>Motivo:</strong></p>
+            <div id="detalle-motivo" class="motivo-container" style="white-space: pre-wrap; background: #fff; padding: 10px; border-radius: 4px;"></div>
+            <p><strong>Adjunto:</strong> <span id="detalle-adjunto"></span></p>
+            <p><strong>Estado:</strong> <span id="detalle-estado"></span></p>
+            <div class="detalle-actions" style="margin-top: 1rem;">
+                <button type="button" class="button register-button">Aprobar</button>
+                <button type="button" class="button logout-button">Rechazar</button>
+                <button type="button" class="button secondary">Cerrar</button>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Congreso Universitario. Todos los derechos reservados.</p>
+    </footer>
+    <script src="../js_admin/admin_justificaciones.js"></script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recuperar Contraseña Admin - Congreso</title>
+    <link rel="stylesheet" href="../CSS/style.css"> <style>
+        /* Estilos similares a login_admin.html */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #e9ecef; /* Mismo fondo que login admin? */
+        }
+        .recuperar-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .recuperar-container h2 {
+            margin-bottom: 15px;
+            color: #dc3545; /* Color admin */
+        }
+        .recuperar-container p {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .recuperar-container .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        .recuperar-container label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        .recuperar-container input[type="email"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .recuperar-container button {
+            width: 100%;
+            padding: 12px;
+            background-color: #ffc107; /* Color amarillo para destacar acción */
+            color: #333;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        .recuperar-container button:hover {
+            background-color: #e0a800;
+        }
+        .recuperar-container .login-link {
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        .recuperar-container .login-link a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .recuperar-container .login-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="recuperar-container">
+        <h2>Recuperar Contraseña de Administrador</h2>
+        <p>Ingresa tu correo electrónico asociado a tu cuenta de administrador. Te enviaremos instrucciones para restablecer tu contraseña.</p>
+        <form action="ruta_backend_recuperar_admin" method="POST">
+            <div class="form-group">
+                <label for="email">Correo Electrónico:</label>
+                <input type="email" id="email" name="email" required placeholder="admin@ejemplo.com">
+            </div>
+            <button type="submit">Enviar Instrucciones</button>
+        </form>
+        <div class="login-link">
+            ¿Recordaste tu contraseña? <a href="login_admin.html">Volver al Login</a>
+        </div>
+    </div>
+</body>
+</html>

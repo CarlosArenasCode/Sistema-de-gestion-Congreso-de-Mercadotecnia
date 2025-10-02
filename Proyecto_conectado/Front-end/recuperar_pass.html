@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Congreso - Recuperar Contraseña</title>
+    <link rel="stylesheet" href="../CSS/style.css">
+</head>
+<body>
+    <header>
+        <h1>Congreso Universitario</h1>
+    </header>
+
+    <main class="recovery-container">
+        <h2>Recuperar Contraseña</h2>
+        <p>Ingresa tu ID Universitario o correo electrónico registrado para enviarte las instrucciones.</p>
+        <form id="recovery-form" action="/ruta-backend-recuperar" method="POST">
+            <div class="form-group">
+                <label for="recovery-input">ID Universitario o Correo Electrónico:</label>
+                <input type="text" id="recovery-input" name="recovery_input" required>
+            </div>
+            <div class="form-actions">
+                <button type="submit">Enviar Instrucciones</button>
+                <a href="login.html">Volver al Inicio de Sesión</a>
+            </div>
+             <div id="recovery-message" class="message" style="display: none;">
+                </div>
+        </form>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Universidad Autonoma de Aguascalientes.</p>
+    </footer>
+
+     <script src="js/recovery.js"></script> </body>
+</html>

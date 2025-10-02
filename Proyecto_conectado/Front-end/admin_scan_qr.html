@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Escanear QR</title>
+    <link rel="stylesheet" href="../CSS/style.css">
+    <style>
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Admin - Escáner de Asistencia QR</h1>
+        <nav id="main-navigation">
+            <a href="admin_dashboard.html">Volver al Panel</a>
+        </nav>
+    </header>
+
+    <main>
+        <h2>Registrar Asistencia</h2>
+        <p>Selecciona el evento, luego apunta la cámara al código QR del asistente o ingresa el código manualmente.</p>
+
+        <div class="form-group" id="evento-selector-group">
+            <label for="evento-selector">Seleccionar Evento:</label>
+            <select id="evento-selector">
+                <option value="">-- Cargando eventos... --</option>
+            </select>
+        </div>
+
+        <div id="camera-feed">
+            [Simulador de Cámara - Activar con JavaScript]
+        </div>
+        <button id="start-scan-button" class="button">Activar Escáner</button>
+        <button id="stop-scan-button" class="button" style="display:none;">Detener Escáner</button>
+
+
+        <div class="form-group">
+            <label for="manual-code">Ingresar Código Manualmente:</label>
+            <input type="text" id="manual-code" name="manual_code" placeholder="Pegar contenido del QR aquí">
+            <button id="submit-manual-code" class="button">Validar Código Manual</button>
+        </div>
+
+        <div id="scan-result">
+            <h3>Resultado del Escaneo/Validación:</h3>
+            <p id="result-message" style="font-weight: bold;">Esperando acción...</p>
+            <p><strong>Alumno:</strong> <span id="result-student-name">-</span> (ID: <span id="result-student-id">-</span>)</p>
+            <p><strong>Evento Seleccionado:</strong> <span id="result-event-name">-</span> (ID: <span id="result-event-id">-</span>)</p>
+            <p><strong>Estado Inscripción:</strong> <span id="result-inscripcion-status">-</span></p>
+            <p><strong>Última Acción Registrada:</strong> <span id="result-last-action">-</span></p>
+            
+            <div class="action-buttons" style="margin-top:15px;">
+                <button id="btn-registrar-entrada" class="button button-entrada" disabled>Registrar Entrada</button>
+                <button id="btn-registrar-salida" class="button button-salida" disabled>Registrar Salida</button>
+            </div>
+             <p><strong>Respuesta del Servidor:</strong> <span id="result-server-response" style="font-style: italic;">-</span></p>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Congreso Universitario. Todos los derechos reservados</p>
+    </footer>
+
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <script src="../js_admin/admin_scan.js"></script> 
+</body>
+</html>

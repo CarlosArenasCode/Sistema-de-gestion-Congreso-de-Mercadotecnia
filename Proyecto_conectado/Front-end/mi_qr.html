@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Código QR - Congreso</title>
+    <link rel="stylesheet" href="../CSS/style.css">
+    <style>
+        /* Estilo básico para el contenedor del QR */
+        #qr-code-container {
+            width: 250px;
+            height: 250px;
+            margin: 20px auto;
+            border: 1px solid #ccc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background-color: #f9f9f9;
+        }
+        #qr-code-container img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-top">
+            <div class="main-title">
+                 <h1>Congreso Universitario</h1>
+            </div>
+            <section class="sponsor-logos-header">
+                <div class="logo-carousel">
+                    <div class="logo-track">
+                        <img src="../Logos/UAA_LOGO.png" alt="Logo Universidad Autónoma de Aguascalientes">
+                        <img src="../Logos/logo-ccea.png" alt="Logo CCEA">
+                        <img src="../Logos/MKT_LOGO.png" alt="Logo MKT">
+                        <!-- Repite para efecto de bucle continuo -->
+                        <img src="../Logos/UAA_LOGO.png" alt="Logo Universidad Autónoma de Aguascalientes">
+                        <img src="../Logos/logo-ccea.png" alt="Logo CCEA">
+                        <img src="../Logos/MKT_LOGO.png" alt="Logo MKT">
+                    </div>
+                </div>
+            </section>
+        </div>
+        <nav id="main-navigation">
+            <ul>
+                <li><a href="dashboard_alumno.html" class="active">Inicio</a></li>
+                <li><a href="horario.html">Horario e Inscripciones</a></li>
+                <li><a href="mi_qr.html">Mi Código QR</a></li>
+                <li><a href="mis_constancias.html">Mis Constancias</a></li>
+                <li><a href="justificar_falta.html">Justificar Falta</a></li>
+                <li><span id="user-name">Nombre</span> <a href="login.html" class="logout-button button">Cerrar Sesión</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <h2>Mi Código QR para Registro de Asistencia</h2>
+        <p>Muestra este código al personal autorizado para registrar tu entrada y salida de los eventos.</p>
+        <p><strong>Importante:</strong> Este código se actualiza automáticamente cada <span id="refresh-time">60</span> segundos y es personal e intransferible.</p>
+
+        <div id="qr-code-container">
+            Cargando código QR...
+        </div>
+
+        <div id="qr-error" class="error-message" style="display: none;">
+            </div>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Universidad Autonoma de Aguascalientes.</p>
+    </footer>
+
+    <script src="../js/dashboard.js"></script>
+    <script src="../js/qr.js"></script>  </body>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+</html>

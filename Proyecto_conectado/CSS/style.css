@@ -1,0 +1,2152 @@
+.button.register-button { background-color: #28a745; } /* Verde para inscribirse */
+.button.register-button:hover { background-color: #218838; }
+.button.cancel-button { background-color: #ffc107; color: #333; } /* Amarillo para cancelar */
+.button.cancel-button:hover { background-color: #e0a800; }
+.button.download-button { background-color: #17a2b8; } /* Cyan para descargar */
+.button.download-button:hover { background-color: #138496; }
+.logout-button { background-color: #dc3545; } /* Rojo (ya definido arriba) */
+.logout-button:hover { background-color: #c82333; }
+
+
+/* === Contenedores Específicos (Login, Recuperar) === */
+.login-container,
+.recovery-container {
+    max-width: 450px; /* Ancho más reducido para formularios de login */
+    margin: 40px auto; /* Más margen superior */
+    padding: 30px;
+    background-color: #fff;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+/* === Listas y Elementos (Eventos, Constancias) === */
+.event-item,
+.certificate-item {
+    border: 1px solid #e0e0e0;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-radius: 6px;
+    background-color: #fdfdfd;
+    display: flex; /* Mejor control del layout interno */
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.event-item h3, .certificate-item h4 {
+    margin-bottom: 0.5rem;
+    width: 100%; /* Título ocupa todo el ancho inicialmente */
+}
+
+.event-item p, .certificate-item p {
+    margin-bottom: 0.5rem;
+    flex-basis: 48%; /* Ocupa casi la mitad en dos columnas (ajustar) */
+}
+.event-item .register-button,
+.certificate-item .download-button,
+.event-item .status,
+.certificate-item .status {
+    margin-top: 1rem; /* Espacio antes del botón/status */
+    flex-basis: 100%; /* Botón/status ocupa todo el ancho */
+    text-align: right; /* Alinear botón/status a la derecha */
+}
+
+/* === Indicadores de Estado === */
+.status { font-weight: bold; }
+.status-available { color: #28a745; } /* Verde */
+.status-pending { color: #ffc107; } /* Amarillo */
+.status-incomplete { color: #6c757d; } /* Gris */
+.status-rejected { color: #dc3545; } /* Rojo */
+
+.error-message {
+    color: #dc3545; /* Rojo */
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    padding: 0.8rem;
+    border-radius: 4px;
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.message { /* Mensaje genérico o de éxito */
+    color: #0056b3; /* Azul */
+    background-color: #cfe2ff;
+    border: 1px solid #b6d4fe;
+    padding: 0.8rem;
+    border-radius: 4px;
+    margin-top: 1rem;
+    text-align: center;
+}
+
+/* === Página Mi QR === */
+#qr-code-container {
+    width: 250px; /* Tamaño del contenedor QR */
+    height: 250px;
+    margin: 30px auto; /* Centrado */
+    border: 2px dashed #0056b3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+#qr-code-container img {
+    max-width: 100%;
+    max-height: 100%;
+    display: block; /* Evita espacio extra debajo de la imagen */
+}
+
+/* === Página Escaneo QR (Admin) === */
+#camera-feed {
+    width: 100%;
+    max-width: 400px; /* Limitar tamaño del visor de cámara */
+    height: 300px;
+    border: 2px solid #ccc;
+    margin: 20px auto;
+    background: #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #777;
+    border-radius: 6px;
+}
+
+#scan-result {
+    margin-top: 2rem;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+    border-radius: 6px;
+}
+#scan-result #result-message {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+/* === Diseño Responsivo Básico === */
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 1.8em;
+    }
+    nav ul#main-menu {
+        flex-direction: column; /* Apilar items del menú */
+        align-items: stretch; /* Estirar items al ancho completo */
+    }
+    nav ul#main-menu li {
+        margin: 5px 0; /* Espacio vertical entre items */
+        width: 95%; /* Ancho casi completo */
+        margin-left: auto;
+        margin-right: auto;
+    }
+    nav ul#main-menu li a {
+        text-align: center;
+    }
+    nav ul#main-menu li.user-menu {
+        margin-left: auto; /* Resetear margen automático */
+        margin-right: auto;
+        text-align: center;
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px solid #003d80; /* Separador antes del menú de usuario */
+    }
+
+    main {
+        width: 95%; /* Más ancho en pantallas pequeñas */
+        padding: 15px;
+    }
+
+    .form-actions {
+        flex-direction: column; /* Apilar botón y enlace */
+        align-items: stretch; /* Estirar elementos */
+    }
+    .form-actions button {
+        margin-bottom: 10px; /* Espacio entre botón y enlace */
+        width: 100%;
+    }
+    .form-actions a {
+        text-align: center;
+    }
+
+    .event-item p, .certificate-item p {
+        flex-basis: 100%; /* Un elemento por línea */
+    }
+    .event-item .register-button,
+    .certificate-item .download-button,
+    .event-item .status,
+    .certificate-item .status {
+        text-align: center; /* Centrar botón/status */
+        margin-top: 1rem;
+    }
+
+    #qr-code-container {
+        width: 200px;
+        height: 200px;
+    }
+}
+
+
+
+/* --- style.css --- */
+
+/* === Reseteo Básico y Estilos Globales === */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth; /* Desplazamiento suave */
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #4A4A4A; /* CAMBIO: Texto principal más suave */
+    background-color: #F0F2F5; /* CAMBIO: Fondo general ligeramente diferente */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Asegura que el footer quede abajo */
+}
+
+/* === Tipografía === */
+h1, h2, h3, h4, h5, h6 {
+    margin-bottom: 0.8em;
+    font-weight: 600;
+}
+
+h1 { font-size: 2.2em; color: #E4007C; /* CAMBIO: H1 en Rosa Mexicano */ }
+h2 { font-size: 1.8em; border-bottom: 2px solid #E0E0E0; padding-bottom: 0.3em; margin-top: 1.5em; color: #3D3D3D; /* CAMBIO: Otros encabezados en gris oscuro */ }
+h3 { font-size: 1.4em; margin-top: 1.2em; color: #3D3D3D; /* CAMBIO */ }
+h4 { font-size: 1.15em; color: #3D3D3D; /* CAMBIO */ }
+
+/* Primer h2 sin margen superior tan grande */
+main > h2:first-of-type {
+    margin-top: 0;
+}
+
+p {
+    margin-bottom: 1em;
+}
+
+strong {
+    font-weight: 600;
+    color: #222; /* Mantener negro o gris muy oscuro para strong */
+}
+
+/* === Enlaces === */
+a {
+    color: #007A7C; /* CAMBIO: Enlaces en Teal */
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: #005F60; /* CAMBIO: Hover de enlaces en Teal más oscuro */
+    text-decoration: underline;
+}
+
+/* === Estructura Principal (Header, Main, Footer) === */
+header {
+    background-color: #4A4A4A; /* CAMBIO: Header en gris oscuro */
+    color: #fff;
+    padding: 1rem 5%;
+    border-bottom: 5px solid #E4007C; /* CAMBIO: Acento en Rosa Mexicano */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+    color: #fff; /* Texto blanco sobre fondo oscuro del header */
+    margin-bottom: 0;
+    text-align: center;
+    padding-bottom: 0.5em;
+}
+
+/* --- Navegación Principal --- */
+nav#main-navigation ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    background-color: #E4007C; /* CAMBIO: Fondo de navegación en Rosa Mexicano */
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    margin-top: 0.5rem;
+}
+
+nav#main-navigation ul li {
+    margin: 0.3rem 10px;
+}
+
+nav#main-navigation ul li a {
+    color: #fff; /* Texto blanco para enlaces de navegación */
+    padding: 0.6rem 1rem;
+    display: block;
+    border-radius: 4px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+nav#main-navigation ul li a:hover,
+nav#main-navigation ul li a.active {
+    background-color: #C7006E; /* CAMBIO: Hover/activo en Rosa Mexicano más oscuro */
+    color: #fff;
+    text-decoration: none;
+}
+
+/* Menú de usuario alineado a la derecha */
+nav#main-navigation ul li.user-menu {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    color: #F0F0F0; /* CAMBIO: Texto de usuario ligeramente off-white */
+}
+nav#main-navigation ul li.user-menu span {
+    margin-right: 0.7em;
+    font-size: 0.9em;
+}
+nav#main-navigation ul li.user-menu a.logout-button {
+    background-color: #dc3545; /* Rojo para logout (Mantener) */
+    padding: 0.5rem 0.9rem;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+nav#main-navigation ul li.user-menu a.logout-button:hover {
+    background-color: #c82333; /* Rojo más oscuro (Mantener) */
+    color: white;
+}
+
+/* --- Contenido Principal --- */
+main {
+    flex: 1;
+    max-width: 1100px;
+    margin: 30px auto;
+    padding: 30px 40px;
+    width: 90%;
+    background-color: #fff; /* Fondo de contenido blanco */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+/* --- Footer --- */
+footer {
+    background-color: #3D3D3D; /* CAMBIO: Footer en gris oscuro */
+    color: #D0D0D0; /* CAMBIO: Texto del footer gris claro */
+    text-align: center;
+    padding: 2rem 1rem;
+    margin-top: auto;
+    font-size: 0.9em;
+}
+footer p {
+    margin-bottom: 0.5em;
+}
+footer a {
+    color: #E4007C; /* CAMBIO: Enlaces del footer en Rosa Mexicano */
+}
+footer a:hover {
+    color: #fff; /* CAMBIO: Hover de enlaces del footer en blanco */
+}
+
+/* === Formularios === */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.6rem;
+    font-weight: bold;
+    color: #555; /* Gris oscuro para etiquetas */
+}
+
+.form-group input[type="text"],
+.form-group input[type="password"],
+.form-group input[type="email"],
+.form-group input[type="number"],
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.9rem 1rem;
+    border: 1px solid #ccc; /* Borde gris claro */
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #E4007C; /* CAMBIO: Borde de foco en Rosa Mexicano */
+    box-shadow: 0 0 5px rgba(228, 0, 124, 0.3); /* CAMBIO: Sombra de foco rosada */
+    outline: none;
+}
+
+.form-group textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.form-actions {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.form-actions button {
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+.form-actions a {
+     margin-bottom: 10px;
+}
+
+/* === Botones === */
+button,
+.button {
+    display: inline-block;
+    padding: 0.8rem 1.8rem;
+    border: none;
+    border-radius: 5px;
+    background-color: #E4007C; /* CAMBIO: Botón primario Rosa Mexicano */
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+}
+
+button:hover,
+.button:hover {
+    background-color: #C7006E; /* CAMBIO: Hover de botón primario Rosa Mexicano más oscuro */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    color: #fff;
+    text-decoration: none;
+}
+
+button:active,
+.button:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+button:disabled,
+.button:disabled {
+    background-color: #B0B0B0; /* CAMBIO: Botón deshabilitado gris */
+    color: #666;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Variaciones de Botones */
+.button.register-button { background-color: #28a745; color: #fff; } /* Verde para inscribirse (Mantener) */
+.button.register-button:hover { background-color: #218838; color: #fff; }
+.button.cancel-button { background-color: #A0A0A0; color: #fff; } /* CAMBIO: Gris para cancelar */
+.button.cancel-button:hover { background-color: #888888; color: #fff; }
+.button.download-button { background-color: #108A90; color: #fff; } /* CAMBIO: Teal para descargar */
+.button.download-button:hover { background-color: #0C6F73; color: #fff; }
+.logout-button { background-color: #dc3545 !important; color: #fff; } /* Rojo (Mantener) */
+.logout-button:hover { background-color: #c82333 !important; color: #fff; }
+.button.secondary { background-color: #6c757d; color: #fff; } /* Gris oscuro para secundario (Mantener) */
+.button.secondary:hover { background-color: #5a6268; color: #fff; }
+
+/* === Contenedores Específicos (Login, Recuperar) === */
+.login-container,
+.recovery-container {
+    max-width: 480px;
+    margin: 50px auto;
+    padding: 40px;
+    background-color: #fff;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    border-top: 5px solid #E4007C; /* CAMBIO: Acento Rosa Mexicano */
+}
+.login-container h2,
+.recovery-container h2 {
+    text-align: center;
+    margin-top: 0;
+    border-bottom: none;
+    color: #3D3D3D; /* CAMBIO: Encabezado de contenedor gris oscuro */
+}
+
+/* === Listas y Elementos (Eventos, Constancias) === */
+.event-item,
+.certificate-item {
+    border: 1px solid #E0E0E0; /* Borde gris claro */
+    padding: 1.5rem 2rem;
+    margin-bottom: 1.5rem;
+    border-radius: 6px;
+    background-color: #fdfdfd; /* Fondo ligeramente off-white */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem 2rem;
+    align-items: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    transition: box-shadow 0.3s ease;
+}
+.event-item:hover,
+.certificate-item:hover {
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+}
+
+.event-item h3, .certificate-item h4 {
+    margin-bottom: 0.5rem;
+    grid-column: 1 / -1;
+    color: #B70065; /* CAMBIO: Títulos de items en rosa oscuro relacionado */
+}
+
+.event-item p, .certificate-item p {
+    margin-bottom: 0.3rem;
+    font-size: 0.95em;
+}
+
+.event-item .item-actions,
+.certificate-item .item-actions {
+    grid-column: 1 / -1;
+    text-align: right;
+    margin-top: 1rem;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.event-item .status,
+.certificate-item .status {
+    margin-right: 1rem;
+    font-weight: bold;
+     margin-bottom: 5px;
+}
+.item-actions .button {
+    margin-bottom: 5px;
+}
+
+/* === Indicadores de Estado === */
+.status { font-weight: bold; font-size: 0.9em; padding: 0.2em 0.6em; border-radius: 10px; background-color: #E0E0E0; color: #4A4A4A;} /* CAMBIO: Base status */
+.status-available { color: #fff; background-color: #28a745; } /* Verde (Mantener) */
+.status-pending { color: #333; background-color: #E0A800; } /* CAMBIO: Amarillo/Ambar más suave */
+.status-incomplete { color: #fff; background-color: #6c757d; } /* Gris (Mantener) */
+.status-rejected { color: #fff; background-color: #dc3545; } /* Rojo (Mantener) */
+.status-registered { color: #fff; background-color: #108A90; } /* CAMBIO: Teal para "Inscrito" */
+.status-full { color: #fff; background-color: #5a6268; } /* Gris oscuro (Mantener) */
+
+
+/* === Mensajes (Error, Éxito, Información) === */
+.message, .error-message {
+    padding: 1rem 1.5rem;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    margin: 1.5rem 0;
+    text-align: center;
+    font-size: 0.95em;
+}
+
+.error-message {
+    color: #721c24; background-color: #f8d7da; border-color: #f5c6cb; /* Rojo error (Mantener) */
+}
+
+.message.success {
+    color: #155724; background-color: #d4edda; border-color: #c3e6cb; /* Verde éxito (Mantener) */
+}
+.message.info,
+.message:not(.success):not(.info) { /* Mensaje informativo y por defecto */
+    color: #0C6F73; background-color: #D1EAF0; border-color: #A8D8E0; /* CAMBIO: Teal para info */
+}
+
+
+/* === Secciones Específicas (Dashboard) === */
+.quick-links, .next-events, .schedule-filters {
+    background-color: #f9f9f9; /* Fondo gris muy claro */
+    padding: 1.5rem 2rem;
+    border: 1px solid #e9e9e9; /* Borde gris claro */
+    border-radius: 6px;
+    margin-bottom: 2rem;
+}
+.quick-links h3, .next-events h3, .schedule-filters h3 {
+    margin-top: 0;
+    border-bottom: 1px solid #ddd; /* Borde gris */
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+    color: #3D3D3D; /* CAMBIO: Títulos de sección gris oscuro */
+}
+.quick-links .button {
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+/* --- Horario / Filtros --- */
+.schedule-filters {
+     display: flex;
+     align-items: center;
+     gap: 1rem;
+}
+.schedule-filters label {
+    margin-bottom: 0;
+    font-weight: normal;
+}
+.schedule-filters select {
+    min-width: 150px;
+    flex-grow: 1;
+    max-width: 250px;
+}
+
+/* === Página Mi QR === */
+#qr-code-container {
+    width: 280px;
+    height: 280px;
+    margin: 30px auto;
+    border: 3px dashed #E4007C; /* CAMBIO: Borde QR en Rosa Mexicano */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(228, 0, 124, 0.1); /* CAMBIO: Sombra QR rosada */
+    color: #777;
+}
+
+#qr-code-container img {
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+}
+
+#qr-info {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 0.9em;
+    color: #555; /* Texto gris oscuro */
+}
+
+/* === Página Escaneo QR (Admin) === */
+#camera-feed-container {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+#camera-feed {
+    width: 100%;
+    max-width: 400px;
+    height: 300px;
+    border: 2px solid #ccc; /* Borde gris */
+    margin: 0 auto 1rem auto;
+    background: #eee url('placeholder-camera-icon.svg') center center no-repeat;
+    background-size: 50px 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999; /* Texto gris claro */
+    font-style: italic;
+    border-radius: 6px;
+    position: relative;
+}
+#camera-feed video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+#admin-scan-actions {
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    background-color: #f8f9fa; /* Fondo gris muy claro */
+    border: 1px solid #dee2e6; /* Borde gris */
+    border-radius: 6px;
+}
+
+#admin-scan-actions .form-group {
+    margin-bottom: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+#admin-scan-actions .form-group label {
+    flex-basis: 100%;
+    margin-bottom: 0.3rem;
+}
+#admin-scan-actions .form-group input[type="text"] {
+    flex-grow: 1;
+}
+#admin-scan-actions .form-group button {
+    padding: 0.8rem 1.2rem;
+}
+
+#scan-result {
+    margin-top: 2rem;
+    padding: 1.5rem 2rem;
+    border: 1px solid #ddd; /* Borde gris */
+    background-color: #f9f9f9; /* Fondo gris muy claro */
+    border-radius: 6px;
+    min-height: 100px;
+}
+#scan-result h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #eee; /* Borde gris claro */
+    padding-bottom: 0.5rem;
+    color: #3D3D3D; /* CAMBIO */
+}
+#scan-result p {
+    margin-bottom: 0.5rem;
+    font-size: 1em;
+}
+#scan-result #result-message {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    border-radius: 4px;
+}
+#scan-result #result-message.success { background-color: #d4edda; color: #155724; } /* Mantener */
+#scan-result #result-message.error { background-color: #f8d7da; color: #721c24; } /* Mantener */
+#scan-result #result-message.info { background-color: #D1EAF0; color: #0C6F73; } /* CAMBIO: Teal */
+
+
+/* === Diseño Responsivo === */
+@media (max-width: 992px) {
+    main {
+        width: 95%;
+        padding: 25px 30px;
+    }
+    nav#main-navigation ul li.user-menu {
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    h1 { font-size: 1.9em; }
+    h2 { font-size: 1.6em; }
+    h3 { font-size: 1.3em; }
+
+    header { padding: 1rem 3%; }
+    header h1 { text-align: center; }
+
+    nav#main-navigation ul {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 0.5rem;
+    }
+    nav#main-navigation ul li {
+        margin: 5px 0;
+        width: 100%;
+    }
+    nav#main-navigation ul li a {
+        text-align: center;
+        padding: 0.8rem 1rem;
+    }
+    nav#main-navigation ul li.user-menu {
+        margin-left: 0;
+        text-align: center;
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px solid #C7006E; /* CAMBIO: Separador Rosa Mexicano Oscuro */
+        flex-direction: column;
+    }
+     nav#main-navigation ul li.user-menu span {
+        margin-right: 0;
+        margin-bottom: 0.5em;
+    }
+     nav#main-navigation ul li.user-menu a.logout-button {
+        width: 80%;
+        margin: 0 auto;
+    }
+
+    main {
+        width: 96%;
+        padding: 20px 15px;
+        margin: 20px auto;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .form-actions button,
+    .form-actions a.button {
+        margin-bottom: 10px;
+        width: 100%;
+        margin-right: 0;
+    }
+    .form-actions a:not(.button) {
+        text-align: center;
+        display: block;
+        margin-top: 0.5rem;
+    }
+
+    .event-item,
+    .certificate-item {
+        padding: 1rem 1.2rem;
+        gap: 0.5rem 1rem;
+        grid-template-columns: 1fr;
+    }
+     .event-item h3, .certificate-item h4,
+     .event-item .item-actions, .certificate-item .item-actions {
+        grid-column: 1 / -1;
+     }
+    .event-item .item-actions,
+    .certificate-item .item-actions {
+        text-align: center;
+        justify-content: center;
+        margin-top: 1rem;
+    }
+    .event-item .status,
+    .certificate-item .status {
+         margin-right: 0;
+         margin-bottom: 0.5rem;
+         display: block;
+    }
+
+    #qr-code-container {
+        width: 220px;
+        height: 220px;
+    }
+
+    #camera-feed {
+        max-width: 95%;
+        height: 250px;
+    }
+
+    .schedule-filters {
+        flex-direction: column;
+        align-items: stretch;
+    }
+     .schedule-filters label {
+        margin-bottom: 0.5rem;
+    }
+     .schedule-filters select {
+        max-width: 100%;
+    }
+
+    #admin-scan-actions .form-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+     #admin-scan-actions .form-group input[type="text"] {
+         margin-bottom: 10px;
+     }
+}
+
+
+
+/* === Añadir/Modificar en style.css === */
+/* Esta sección ya está integrada arriba,  */
+
+/* --- Botones --- */
+.button.small {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85em;
+    margin: 0 3px;
+}
+
+/* --- Contenedores Específicos --- */
+.content-box {
+    background-color: #f9f9f9; /* Fondo gris muy claro */
+    padding: 1.5rem 2rem;
+    border: 1px solid #e9e9e9; /* Borde gris claro */
+    border-radius: 6px;
+    margin-bottom: 2rem;
+}
+.content-box h3 {
+    margin-top: 0;
+    border-bottom: 1px solid #ddd; /* Borde gris */
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+    color: #3D3D3D; /* CAMBIO: Títulos de caja de contenido gris oscuro */
+}
+
+/* --- Dashboard Admin --- */
+.quick-stats .stats-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+.quick-stats .stats-container p {
+    background-color: #fff; /* Fondo blanco */
+    padding: 0.8rem 1rem;
+    border-radius: 4px;
+    border: 1px solid #eee; /* Borde gris muy claro */
+    margin-bottom: 0;
+}
+
+/* --- Acciones de Página --- */
+.page-actions {
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.page-actions input[type="search"] {
+    padding: 0.8rem 1rem;
+    border: 1px solid #ccc; /* Borde gris */
+    border-radius: 4px;
+    min-width: 250px;
+    margin-right: auto;
+}
+.page-actions input[type="search"]:focus {
+    border-color: #E4007C; /* CAMBIO: Foco en Rosa Mexicano */
+    box-shadow: 0 0 5px rgba(228, 0, 124, 0.2); /* CAMBIO */
+}
+
+
+/* --- Tablas Específicas --- */
+.user-table,
+.attendance-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    border-radius: 6px;
+    overflow: hidden;
+}
+.user-table th, .user-table td,
+.attendance-table th, .attendance-table td {
+    border: 1px solid #ddd; /* Borde gris */
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 0.95em;
+    vertical-align: middle;
+}
+.user-table th,
+.attendance-table th {
+    background-color: #E8E8E8; /* CAMBIO: Fondo de cabecera de tabla gris claro */
+    color: #3D3D3D; /* CAMBIO: Texto de cabecera gris oscuro */
+    font-weight: 600;
+}
+.user-table tr:nth-child(even),
+.attendance-table tr:nth-child(even) {
+    background-color: #F5F5F5; /* CAMBIO: Fondo de fila par gris muy claro */
+}
+.user-table tr:hover,
+.attendance-table tr:hover {
+    background-color: #EFEFEF; /* CAMBIO: Hover de fila gris claro */
+}
+
+.user-table .actions,
+.attendance-table .actions {
+    text-align: center;
+    white-space: nowrap;
+}
+
+/*Tabla de horarios del alumno*/
+        .event-card {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .event-card h3 {
+            margin-top: 0;
+        }
+        .event-card p {
+            margin: 5px 0;
+        }
+        .button { 
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+        .inscribe-button {
+            background-color: #28a745; /* Green */
+            color: white;
+        }
+        .cancel-button {
+            background-color: #dc3545; /* Red */
+            color: white;
+        }
+        .disabled-button {
+            background-color: #6c757d; /* Gray */
+            color: white;
+            cursor: not-allowed;
+        }
+        .error-message {
+            color: red;
+            font-weight: bold;
+        }
+        .filters {
+            margin-bottom: 20px;
+        }
+
+/* --- Tabla de Asistencia (Estilos de Estado específicos) --- */
+.attendance-table .status-completa { color: #28a745; font-weight: bold; } /* Verde */
+.attendance-table .status-incompleta { color: #D48806; font-weight: bold; } /* CAMBIO: Naranja/Ambar */
+.attendance-table .status-ausente { color: #dc3545; font-weight: bold; } /* Rojo */
+
+/* --- Sección de Filtros --- */
+.filter-section {
+    background-color: #f8f9fa; /* Fondo gris muy claro */
+    padding: 1.5rem 2rem;
+    border: 1px solid #dee2e6; /* Borde gris */
+    border-radius: 6px;
+    margin-bottom: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    align-items: flex-end;
+}
+.filter-section .form-group {
+    margin-bottom: 0;
+    flex-grow: 1;
+    min-width: 180px;
+}
+.filter-section label {
+    margin-bottom: 0.4rem;
+    font-size: 0.9em;
+    font-weight: 500;
+    color: #4A4A4A; /* CAMBIO */
+}
+.filter-section select,
+.filter-section input[type="text"],
+.filter-section input[type="date"],
+.filter-section input[type="search"] {
+    padding: 0.6rem 0.8rem;
+    font-size: 0.95em;
+    width: 100%;
+    border-color: #ccc; /* CAMBIO */
+}
+.filter-section select:focus,
+.filter-section input:focus {
+    border-color: #E4007C !important; /* CAMBIO: Foco Rosa Mexicano */
+    box-shadow: 0 0 4px rgba(228, 0, 124, 0.2) !important; /* CAMBIO */
+}
+
+.filter-section .button {
+    padding: 0.6rem 1.2rem;
+    flex-grow: 0;
+    white-space: nowrap;
+}
+.filter-section .export-button-group {
+    margin-left: auto;
+}
+
+
+/* --- Ajustes Menores --- */
+.admin-event-item:hover {
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+#loading-indicator {
+    text-align: center;
+    padding: 2rem;
+    font-style: italic;
+    color: #666; /* Gris */
+}
+
+/* --- Responsividad Adicional (Añadir o modificar dentro de @media) --- */
+@media (max-width: 768px) {
+    .user-table,
+    .attendance-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+        border: none;
+        box-shadow: none;
+    }
+     .user-table thead, .attendance-table thead {
+        display: none;
+    }
+     .user-table tr, .attendance-table tr {
+        display: block;
+        margin-bottom: 1rem;
+        border: 1px solid #ddd; /* Borde gris */
+        border-radius: 4px;
+        padding: 10px;
+         background-color: #fff !important;
+    }
+     .user-table td, .attendance-table td {
+        display: block;
+        text-align: right !important;
+        padding-left: 50%;
+        position: relative;
+        border: none;
+        border-bottom: 1px dotted #eee; /* Separador gris muy claro */
+        padding-top: 8px;
+        padding-bottom: 8px;
+    }
+     .user-table td:last-child, .attendance-table td:last-child {
+        border-bottom: none;
+    }
+     .user-table td::before, .attendance-table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        text-align: left !important;
+        font-weight: bold;
+        color: #3D3D3D; /* CAMBIO: Texto de etiqueta gris oscuro */
+    }
+    .user-table .actions, .attendance-table .actions {
+        text-align: center !important;
+        padding-left: 10px !important;
+    }
+     .user-table .actions::before, .attendance-table .actions::before {
+         display: none;
+     }
+
+    .filter-section {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+    }
+    .filter-section .form-group {
+        min-width: 100%;
+    }
+    .filter-section .button {
+        width: 100%;
+    }
+     .filter-section .export-button-group {
+        margin-left: 0;
+        width: 100%;
+    }
+
+     .page-actions {
+         flex-direction: column;
+         align-items: stretch;
+     }
+      .page-actions input[type="search"] {
+         margin-right: 0;
+         margin-bottom: 10px;
+     }
+}
+
+/*dashboard alumnos*/
+        .event-item {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .event-item h4 {
+            margin-top: 0;
+            color: #333;
+        }
+        .event-item hr {
+            border: 0;
+            border-top: 1px solid #eee;
+            margin-top: 15px;
+        }
+
+/* --- LOGOS EN HEADER (arriba del menú) --- */
+.sponsor-logos-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 10px 15px;
+    background-color: #4A4A4A ;
+    border-bottom: 1px solid #4A4A4A;
+    gap: 20px;
+}
+
+.sponsor-logos-header img {
+    max-width: 100px;
+    height: auto;
+    transition: transform 0.2s ease-in-out;
+    opacity: 0.9;
+}
+
+.sponsor-logos-header img:hover {
+    transform: scale(1.05);
+    opacity: 1;
+}
+
+/* Para pantallas pequeñas */
+@media (max-width: 600px) {
+    .sponsor-logos-header img {
+        max-width: 80px;
+        margin: 5px;
+    }
+
+    .main-title h1 {
+        font-size: 20px; /* Ajustar tamaño de título si es necesario */
+    }
+}
+
+/* --- Tabla de Usuarios admin--- */
+
+        .user-table { width: 100%; border-collapse: collapse; margin-top: 1.5rem; }
+        .user-table th, .user-table td { border: 1px solid #ddd; padding: 10px 12px; text-align: left; }
+        .user-table th { background-color: #f2f2f2; color: #333; font-weight: bold; }
+        .user-table tr:nth-child(even) { background-color: #f9f9f9; }
+        .user-table .actions { text-align: center; white-space: nowrap; }
+        .user-table .actions .button { padding: 0.4rem 0.8rem; font-size: 0.85em; margin: 0 3px; }
+        .content-box { /* Para el formulario */
+            background-color: #f9f9f9;
+            padding: 2rem;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+            margin-top: 1rem; /* Espacio arriba del formulario */
+        }
+         /* Alertas */
+        .alert {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid transparent;
+            border-radius: .25rem;
+        }
+        .alert-success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+        .alert-error {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+
+
+/*Tabla de asistencia Admin*/
+        /* Estilos adicionales para la tabla de asistencia */
+        .attendance-table { width: 100%; border-collapse: collapse; margin-top: 1.5rem; }
+        .attendance-table th, .attendance-table td { border: 1px solid #ddd; padding: 10px 12px; text-align: left; }
+        .attendance-table th { background-color: #f2f2f2; color: #333; font-weight: bold; }
+        .attendance-table tr:nth-child(even) { background-color: #f9f9f9; }
+        .attendance-table .status-completa { color: green; font-weight: bold; }
+        .attendance-table .status-incompleta { color: orange; font-weight: bold; }
+        .attendance-table .status-ausente { color: red; font-weight: bold; }
+
+        .filter-section {
+            background-color: #f8f9fa;
+            padding: 1.5rem 2rem;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            margin-bottom: 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            align-items: flex-end;
+        }
+        .filter-section .form-group { margin-bottom: 0; flex-grow: 1; }
+        .filter-section label { margin-bottom: 0.4rem; font-size: 0.9em;}
+        .filter-section select, .filter-section input, .filter-section button { padding: 0.6rem 0.8rem; font-size: 0.95em;} /* Aplicado a button también */
+
+/*Tabla de constancias Admin*/
+    .constancias-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1.5rem;
+    }
+    .constancias-table th, .constancias-table td {
+      border: 1px solid #ddd;
+      padding: 10px 12px;
+      text-align: left;
+    }
+    .constancias-table th {
+      background-color: #f2f2f2;
+      color: #333;
+      font-weight: bold;
+    }
+    .constancias-table tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    .filter-section {
+      background-color: #f8f9fa;
+      padding: 1.5rem 2rem;
+      border: 1px solid #dee2e6;
+      border-radius: 6px;
+      margin-bottom: 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      align-items: flex-end;
+    }
+
+    .filter-section .form-group {
+      margin-bottom: 0;
+      flex-grow: 1;
+    }
+
+    .filter-section label {
+      margin-bottom: 0.4rem;
+      font-size: 0.9em;
+    }
+
+    .filter-section select,
+    .filter-section input {
+      padding: 0.6rem 0.8rem;
+      font-size: 0.95em;
+    }
+
+    .small-button {
+      padding: 6px 12px;
+      font-size: 0.85em;
+      cursor: pointer;
+    }
+
+    .estado-cumplimiento.si {
+      color: green;
+      font-weight: bold;
+    }
+
+    .estado-cumplimiento.no {
+      color: red;
+      font-weight: bold;
+    }
+    
+/*Tabla de eventos Admin*/
+       #eventos-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+        .evento-card {
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 1rem;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .evento-card h4 {
+            margin-top: 0;
+            color: #0056b3; /* Azul primario del congreso */
+        }
+        .evento-card p {
+            font-size: 0.9em;
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+        .evento-card strong {
+            color: #333;
+        }
+        .evento-actions {
+            margin-top: 1rem;
+            text-align: right;
+        }
+        .evento-actions .button {
+            margin-left: 0.5rem;
+            padding: 0.5em 1em; /* Botones un poco más pequeños */
+        }
+        .content-box { /* Para el formulario */
+            background-color: #f9f9f9;
+            padding: 2rem;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+        }
+        /* Alertas */
+        .alert {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid transparent;
+            border-radius: .25rem;
+        }
+        .alert-success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+        .alert-error {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+        
+
+/*Tabla de inscripciones admin */ 
+        .inscripciones-table { width: 100%; border-collapse: collapse; margin-top: 1.5rem; }
+        .inscripciones-table th, .inscripciones-table td { border: 1px solid #ddd; padding: 10px 12px; text-align: left; }
+        .inscripciones-table th { background-color: #f2f2f2; color: #333; font-weight: bold; }
+        .inscripciones-table tr:nth-child(even) { background-color: #f9f9f9; }
+        .filter-section {
+            background-color: #f8f9fa;
+            padding: 1.5rem 2rem;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            margin-bottom: 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            align-items: flex-end;
+        }
+        .filter-section .form-group { margin-bottom: 0; flex-grow: 1; }
+        .filter-section label { margin-bottom: 0.4rem; font-size: 0.9em; }
+        .filter-section select, .filter-section input { padding: 0.6rem 0.8rem; font-size: 0.95em; }
+
+/* Tabla de justificaciones Admin*/
+        .status-pendiente { background-color: #ffc107; color: #333; padding: 0.2em 0.6em; border-radius: 10px; font-size: 0.9em; font-weight: bold; display: inline-block;}
+        .status-aprobada { background-color: #28a745; color: white; padding: 0.2em 0.6em; border-radius: 10px; font-size: 0.9em; font-weight: bold; display: inline-block;}
+        .status-rechazada { background-color: #dc3545; color: white; padding: 0.2em 0.6em; border-radius: 10px; font-size: 0.9em; font-weight: bold; display: inline-block;}
+        .justification-table { width: 100%; border-collapse: collapse; margin-top: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border-radius: 6px; overflow: hidden; }
+        .justification-table th, .justification-table td { border: 1px solid #ddd; padding: 10px 14px; text-align: left; font-size: 0.95em; vertical-align: middle; }
+        .justification-table th { background-color: #f2f2f2; color: #333; font-weight: 600; }
+        .justification-table tr:nth-child(even) { background-color: #f9f9f9; }
+        .justification-table tr:hover { background-color: #f1f1f1; }
+        .justification-table .actions { text-align: center; white-space: nowrap; }
+        #detalle-justificacion { margin-top: 2rem; padding: 2rem; background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; }
+        #detalle-justificacion h3 { margin-top: 0; margin-bottom: 1.5rem; border-bottom: 1px solid #ddd; padding-bottom: 0.5rem; }
+        #detalle-justificacion p { margin-bottom: 1rem; }
+        #detalle-justificacion strong { display: inline-block; min-width: 150px; color: #555; }
+        #detalle-justificacion .motivo-container { background-color: #fff; border: 1px solid #eee; padding: 1rem; border-radius: 4px; margin-top: 0.5rem; white-space: pre-wrap; }
+        #detalle-justificacion .detalle-actions { margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #eee; display: flex; gap: 10px; flex-wrap: wrap; }
+        .filter-section { background-color: #f8f9fa; padding: 1.5rem 2rem; border: 1px solid #dee2e6; border-radius: 6px; margin-bottom: 2rem; display: flex; flex-wrap: wrap; gap: 1.5rem; align-items: flex-end; }
+        .filter-section .form-group { margin-bottom: 0; flex-grow: 1; }
+        .filter-section label { display: block; margin-bottom: 0.4rem; font-size: 0.9em; } /* display:block para que input/select vaya abajo */
+        .filter-section select, .filter-section input[type="text"], .filter-section input[type="date"] { padding: 0.6rem 0.8rem; font-size: 0.95em; width: 100%; box-sizing: border-box;} /* Ancho completo para mejor responsividad */
+        .button.small { padding: 0.4em 0.8em; font-size: 0.85em; }     
+      
+/* --- Escaneo QR Admin --- */        
+        #camera-feed { width: 300px; height: 250px; border: 1px solid black; margin: 20px auto; background: #eee; display: flex; align-items: center; justify-content: center; position: relative; }
+        #camera-feed video { max-width: 100%; max-height: 100%; }
+        .form-group { margin-bottom: 15px; }
+        .action-buttons button { margin: 5px; padding: 10px 15px; }
+        #scan-result { margin-top: 20px; padding: 15px; border: 1px solid #ccc; border-radius: 5px; background-color: #f9f9f9;}
+        #scan-result p { margin: 5px 0; }
+        #evento-selector-group label, .form-group label { display: block; margin-bottom: 5px; font-weight: bold;}
+        #evento-selector, #manual-code { width: 100%; max-width: 350px; padding: 8px; margin-bottom:10px; box-sizing: border-box;}
+        #start-scan-button, #submit-manual-code, .action-buttons button {
+            cursor: pointer;
+        }
+         .button-entrada { background-color: #28a745; color: white; border:none; }
+         .button-salida { background-color: #dc3545; color: white; border:none; }
+         .button-disabled { background-color: #6c757d; color: white; border:none; cursor: not-allowed;}        
+/* Fin de Añadir/Modificar en style.css */
+
+/* Pantalla de carga */
+#pantalla-carga {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #ffffff;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeOut 1s ease 3s forwards;
+  }
+  
+  /* Pantalla de carga en toda la pantalla */
+#pantalla-carga {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: white;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeOut 0.5s ease 3.5s forwards;
+  }
+  
+  /* Collage con imágenes centradas y espaciadas */
+  .collage {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 15px;
+    max-width: 80vw;
+    max-height: 80vh;
+  }
+  
+  /* Estilo de imágenes + animación */
+  .collage img {
+    width: 120%;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 15px;
+    animation: zoomPulse 3s infinite ease-in-out;
+  }
+  
+  /* Animación de zoom cíclico */
+  @keyframes zoomPulse {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.2);
+    }
+  }
+  
+  /* Desvanecimiento final */
+  @keyframes fadeOut {
+    to {
+      opacity: 0;
+      visibility: hidden;
+    }
+  }
+/* --- Botones de acción en la página de eventos --- */
+.event-item .item-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+.event-item .item-actions button {
+    padding: 0.5em 1em;
+    font-size: 0.9em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.event-item .item-actions button.edit {
+    background-color: #007bff; /* Azul primario */
+    color: white;
+}
+.event-item .item-actions button.delete {
+    background-color: #dc3545; /* Rojo */
+    color: white;
+}
+.event-item .item-actions button.view {
+    background-color: #6c757d; /* Gris */
+    color: white;
+}
+.event-item .item-actions button:hover {
+    opacity: 0.9;
+}
+/* --- Estilos para el botón de inscribir en eventos --- */
+.event-item .inscribe-button {
+    background-color: #28a745; /* Verde */
+    color: white;
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+.event-item .inscribe-button:hover {
+    background-color: #218838; /* Verde más oscuro al pasar el mouse */
+}
+/* --- Estilos para el botón de cancelar inscripción --- */
+.event-item .cancel-button {
+    background-color: #dc3545; /* Rojo */
+    color: white;
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+.event-item .cancel-button:hover {
+    background-color: #c82333; /* Rojo más oscuro al pasar el mouse */
+}
+/* --- Estilos para el botón de descargar constancia --- */
+.event-item .download-certificate-button {
+    background-color: #007bff; /* Azul primario */
+    color: white;
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+.event-item .download-certificate-button:hover {
+    background-color: #0056b3; /* Azul más oscuro al pasar el mouse */
+}
+/* --- Estilos para el botón de ver constancia --- */
+.event-item .view-certificate-button {
+    background-color: #6c757d; /* Gris */
+    color: white;
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+.event-item .view-certificate-button:hover {
+    background-color: #5a6268; /* Gris más oscuro al pasar el mouse */
+}
+/* --- Estilos para el botón de ver detalles de la justificación --- */
+.justification-item .view-details-button {
+    background-color: #007bff; /* Azul primario */
+    color: white;
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+.justification-item .view-details-button:hover {
+    background-color: #0056b3; /* Azul más oscuro al pasar el mouse */
+}
+/* --- Estilos para el botón de aprobar justificación --- */
+.justification-item .approve-button {
+    background-color: #28a745; /* Verde */
+    color: white;
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+.justification-item .approve-button:hover {
+    background-color: #218838; /* Verde más oscuro al pasar el mouse */
+}
+/* --- Estilos para el botón de rechazar justificación --- */
+.justification-item .reject-button {
+    background-color: #dc3545; /* Rojo */
+    color: white;
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+.justification-item .reject-button:hover {
+    background-color: #c82333; /* Rojo más oscuro al pasar el mouse */
+}
+/* --- Estilos para el botón de ver detalles de la asistencia --- */
+.attendance-item .view-details-button {
+    background-color: #007bff; /* Azul primario */
+    color: white;
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+.attendance-item .view-details-button:hover {
+    background-color: #0056b3; /* Azul más oscuro al pasar el mouse */
+}
+/* --- Estilos para el botón de marcar asistencia --- */
+.attendance-item .mark-attendance-button {
+    background-color: #28a745; /* Verde */
+    color: white;
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+.attendance-item .mark-attendance-button:hover {
+    background-color: #218838; /* Verde más oscuro al pasar el mouse */
+}
+/* --- Estilos para el botón de ver detalles del evento --- */
+.event-item .view-event-details-button {
+    background-color: #007bff; /* Azul primario */
+    color: white;
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+.event-item .view-event-details-button:hover {
+    background-color: #0056b3; /* Azul más oscuro al pasar el mouse */
+}
+/* --- Estilos para el botón de editar evento --- */
+.event-item .edit-event-button {
+    background-color: #ffc107; /* Amarillo */
+    color: white;
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+.event-item .edit-event-button:hover {
+    background-color: #e0a800; /* Amarillo más oscuro al pasar el mouse */
+}
+/* --- Estilos para el botón de eliminar evento --- */
+.event-item .delete-event-button {
+    background-color: #dc3545; /* Rojo */
+    color: white;
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+.attendance-item .delete-event-button:hover {
+    background-color: #c82333; /* Rojo más oscuro al pasar el mouse */
+}
+/* --- Estilos para el botón de descargar asistencia --- */
+.attendance-item .download-attendance-button {
+    background-color: #007bff; /* Azul primario */
+    color: white;
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+.attendance-item .download-attendance-button:hover {
+    background-color: #0056b3; /* Azul más oscuro al pasar el mouse */
+}
+/* --- Estilos para el botón de ver asistencia --- */
+.attendance-item .view-attendance-button {
+    background-color: #6c757d; /* Gris */
+    color: white;
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+.attendance-item .view-attendance-button:hover {
+    background-color: #5a6268; /* Gris más oscuro al pasar el mouse */
+}
+/* --- Estilos para el botón de ver constancia de asistencia --- */
+.attendance-item .view-certificate-button {
+    background-color: #007bff; /* Azul primario */
+    color: white;
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+.attendance-item .view-certificate-button:hover {
+    background-color: #0056b3; /* Azul más oscuro al pasar el mouse */
+}
+/* --- Estilos para el botón de descargar constancia de asistencia --- */
+.attendance-item .download-certificate-button {
+    background-color: #28a745; /* Verde */
+    color: white;
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+.attendance-item .download-certificate-button:hover {
+    background-color: #218838; /* Verde más oscuro al pasar el mouse */
+}
+/* --- Estilos para el botón de ver detalles del usuario --- */
+.user-item .view-details-button {
+    background-color: #007bff; /* Azul primario */
+    color: white;
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+.user-item .view-details-button:hover {
+    background-color: #0056b3; /* Azul más oscuro al pasar el mouse */
+}
+/* --- Estilos para el botón de editar usuario --- */
+.user-item .edit-user-button {
+    background-color: #ffc107; /* Amarillo */
+    color: white;
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+.user-item .edit-user-button:hover {
+    background-color: #e0a800; /* Amarillo más oscuro al pasar el mouse */
+}
+/* --- Estilos para el botón de eliminar usuario --- */
+.user-item .delete-user-button {
+    background-color: #dc3545; /* Rojo */
+    color: white;
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+.user-item .delete-user-button:hover {
+    background-color: #c82333; /* Rojo más oscuro al pasar el mouse */
+}
+/* --- Estilos para el botón de ver constancia de usuario --- */
+.user-item .view-certificate-button {
+    background-color: #007bff; /* Azul primario */
+    color: white;
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+.user-item .view-certificate-button:hover {
+    background-color: #0056b3; /* Azul más oscuro al pasar el mouse */
+}
+/* --- Estilos para el botón de descargar constancia de usuario --- */
+.user-item .download-certificate-button {
+    background-color: #28a745; /* Verde */
+    color: white;
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+.user-item .download-certificate-button:hover {
+    background-color: #218838; /* Verde más oscuro al pasar el mouse */
+}
+/* --- Estilos para el botón de ver asistencia del usuario --- */
+.user-item .view-attendance-button {
+    background-color: #6c757d; /* Gris */
+    color: white;
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+.user-item .view-attendance-button:hover {
+    background-color: #5a6268; /* Gris más oscuro al pasar el mouse */
+}
+/* --- Estilos para el botón de descargar asistencia del usuario --- */
+.user-item .download-attendance-button {
+    background-color: #007bff; /* Azul primario */
+    color: white;
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+.user-item .download-attendance-button:hover {
+    background-color: #0056b3; /* Azul más oscuro al pasar el mouse */
+}
+/* --- Estilos para el botón de ver constancia de inscripción --- */
+.user-item .view-enrollment-certificate-button {
+    background-color: #007bff; /* Azul primario */
+    color: white;
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+.user-item .view-enrollment-certificate-button:hover {
+    background-color: #0056b3; /* Azul más oscuro al pasar el mouse */
+}
+/* --- Estilos para el botón de descargar constancia de inscripción --- */
+.user-item .download-enrollment-certificate-button {
+    background-color: #28a745; /* Verde */
+    color: white;
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+.user-item .download-enrollment-certificate-button:hover {
+    background-color: #218838; /* Verde más oscuro al pasar el mouse */
+}
+/* --- Estilos para el botón de ver justificaciones del usuario --- */
+.user-item .view-justifications-button {
+    background-color: #6c757d; /* Gris */
+    color: white;
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+.user-item .view-justifications-button:hover {
+    background-color: #5a6268; /* Gris más oscuro al pasar el mouse */
+}
+/* --- Estilos para el botón de ver eventos del usuario --- */
+.user-item .view-events-button {
+    background-color: #007bff; /* Azul primario */
+    color: white;
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+.user-item .view-events-button:hover {
+    background-color: #0056b3; /* Azul más oscuro al pasar el mouse */
+}
+/* --- Estilos para el botón de ver inscripciones del usuario --- */
+.user-item .view-enrollments-button {
+    background-color: #28a745; /* Verde */
+    color: white;
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+.user-item .view-enrollments-button:hover {
+    background-color: #218838; /* Verde más oscuro al pasar el mouse */
+}
+/* --- Estilos para el botón de ver constancias del usuario --- */
+.user-item .view-certificates-button {
+    background-color: #007bff; /* Azul primario */
+    color: white;
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+.user-item .view-certificates-button:hover {
+    background-color: #0056b3; /* Azul más oscuro al pasar el mouse */
+}
+/* --- Estilos para el botón de ver justificaciones del usuario --- */
+.user-item .view-justifications-button {
+    background-color: #6c757d; /* Gris */
+    color: white;
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+.user-item .view-justifications-button:hover {
+    background-color: #5a6268; /* Gris más oscuro al pasar el mouse */
+}
+/* --- Estilos para el botón de ver eventos del usuario --- */
+.user-item .view-events-button {
+    background-color: #007bff; /* Azul primario */
+    color: white;
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+.user-item .view-events-button:hover {
+    background-color: #0056b3; /* Azul más oscuro al pasar el mouse */
+}
+/* --- Estilos para el botón de ver inscripciones del usuario --- */
+.user-item .view-enrollments-button {
+    background-color: #28a745; /* Verde */
+    color: white;
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+.user-item .view-enrollments-button:hover {
+    background-color: #218838; /* Verde más oscuro al pasar el mouse */
+}
+/* --- Estilos para el botón de ver constancias del usuario --- */
+.user-item .view-certificates-button {
+    background-color: #007bff; /* Azul primario */
+    color: white;
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+.user-item .view-certificates-button:hover {
+    background-color: #0056b3; /* Azul más oscuro al pasar el mouse */
+}
+/* --- Estilos para el botón de ver justificaciones del usuario --- */
+.user-item .view-justifications-button {
+    background-color: #6c757d; /* Gris */
+    color: white;
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+.user-item .view-justifications-button:hover {
+    background-color: #5a6268; /* Gris más oscuro al pasar el mouse */
+}
+/* --- Estilos para el botón de ver eventos del usuario --- */
+.user-item .view-events-button {
+    background-color: #007bff; /* Azul primario */
+    color: white;
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+.user-item .view-events-button:hover {
+    background-color: #0056b3; /* Azul más oscuro al pasar el mouse */
+}
+/* --- Estilos para el botón de ver inscripciones del usuario --- */
+.user-item .view-enrollments-button {
+    background-color: #28a745; /* Verde */
+    color: white;
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+.user-item .view-enrollments-button:hover {
+    background-color: #218838; /* Verde más oscuro al pasar el mouse */
+}
+/* --- Estilos para los logos de patrocinadores en el encabezado --- */
+.sponsor-logos-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
+}
+.sponsor-logos-header img {
+    max-width: 150px; /* Ajusta el tamaño máximo de los logos */
+    height: auto;
+    transition: transform 0.3s ease;
+}
+.sponsor-logos-header img:hover {
+    transform: scale(1.05); /* Efecto de zoom al pasar el mouse */
+}
+.sponsor-logos-header img {
+    max-width: 150px; /* Ajusta el tamaño máximo de los logos */
+    height: auto;
+    transition: transform 0.3s ease;
+}
+.sponsor-logos-header img:hover {
+    transform: scale(1.05); /* Efecto de zoom al pasar el mouse */
+}
+/* --- Estilos para el botón de ver constancia de inscripción --- */
+.user-item .view-enrollment-certificate-button {
+    background-color: #007bff; /* Azul primario */
+    color: white;
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+.user-item .view-enrollment-certificate-button:hover {
+    background-color: #0056b3; /* Azul más oscuro al pasar el mouse */
+}
+/* --- Estilos para el botón de descargar constancia de inscripción --- */
+.user-item .download-enrollment-certificate-button {
+    background-color: #28a745; /* Verde */
+    color: white;
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+.user-item .download-enrollment-certificate-button:hover {
+    background-color: #218838; /* Verde más oscuro al pasar el mouse */
+}
+/* --- Estilos para el botón de ver constancia de inscripción --- */
+.user-item .view-enrollment-certificate-button {
+    background-color: #007bff; /* Azul primario */
+    color: white;
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+.user-item .view-enrollment-certificate-button:hover {
+    background-color: #0056b3; /* Azul más oscuro al pasar el mouse */
+}
+/* --- Estilos para el botón de descargar constancia de inscripción --- */
+.user-item .download-enrollment-certificate-button {
+    background-color: #28a745; /* Verde */
+    color: white;
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+.user-item .download-enrollment-certificate-button:hover {
+    background-color: #218838; /* Verde más oscuro al pasar el mouse */
+}
+/* --- Estilos para el botón de ver constancia de inscripción --- */
+.user-item .view-enrollment-certificate-button {
+    background-color: #007bff; /* Azul primario */
+    color: white;
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+.user-item .view-enrollment-certificate-button:hover {
+    background-color: #0056b3; /* Azul más oscuro al pasar el mouse */
+}
+/* --- Estilos para el botón de descargar constancia de inscripción --- */
+.user-item .download-enrollment-certificate-button {
+    background-color: #28a745; /* Verde */
+    color: white;
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+.user-item .download-enrollment-certificate-button:hover {
+    background-color: #218838; /* Verde más oscuro al pasar el mouse */
+}
+/* --- Estilos para el botón de ver constancia de inscripción --- */
+.user-item .view-enrollment-certificate-button {
+    background-color: #007bff; /* Azul primario */
+    color: white;
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+.user-item .view-enrollment-certificate-button:hover {
+    background-color: #0056b3; /* Azul más oscuro al pasar el mouse */
+}
+/* --- Estilos para el botón de descargar constancia de inscripción --- */
+.user-item .download-enrollment-certificate-button {
+    background-color: #28a745; /* Verde */
+    color: white;
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+.user-item .download-enrollment-certificate-button:hover {
+    background-color: #218838; /* Verde más oscuro al pasar el mouse */
+}
+/* carrusel de imágenes */
+.sponsor-logos-header {
+    overflow: hidden;
+    width: 100%;
+    padding: 10px 0;
+    background-color: #6c757d;
+  }
+  
+  .logo-carousel {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .logo-track {
+    display: flex;
+    width: calc(200%); /* El doble de las imágenes para bucle continuo */
+    animation: scrollLogos 20s linear infinite;
+  }
+  
+  .logo-track img {
+    height: 60px;
+    margin: 0 30px;
+    object-fit: contain;
+  }
+  
+  /* Animación de desplazamiento horizontal */
+  @keyframes scrollLogos {
+    0% {
+      transform: translateX(0%);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+  

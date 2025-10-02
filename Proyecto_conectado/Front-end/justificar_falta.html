@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Justificar Falta - Congreso</title>
+    <link rel="stylesheet" href="../CSS/style.css">
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+        .main-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-justificacion {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="date"],
+        select,
+        textarea,
+        input[type="file"] {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        button {
+            padding: 12px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            align-self: flex-start;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #007bff;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        /* Estilo para la tabla de justificaciones */
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <h1>Justificar Falta</h1>
+
+        <form class="form-justificacion" id="form-justificar" action="../php/justificar.php" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="evento">Evento/Actividad Ausente:</label>
+                <select id="evento" name="evento" required>
+                    <option value="">Cargando eventos...</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="fecha_falta">Fecha de la Falta:</label>
+                <input type="date" id="fecha_falta" name="fecha_falta" required>
+            </div>
+
+            <div class="form-group">
+                <label for="motivo">Motivo de la Ausencia:</label>
+                <textarea id="motivo" name="motivo" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="adjunto">Adjuntar Justificante (Opcional):</label>
+                <input type="file" id="adjunto" name="adjunto" accept=".pdf,.jpg,.jpeg,.png">
+                <small>Formatos permitidos: PDF, JPG, PNG. Tamaño máximo: 5MB.</small>
+            </div>
+
+            <button type="submit">Enviar Justificación</button>
+        </form>
+
+        <h2>Mis Justificaciones</h2>
+        <table id="tabla-justificaciones">
+            <thead>
+                <tr>
+                    <th>Evento</th>
+                    <th>Fecha de la Falta</th>
+                    <th>Motivo</th>
+                    <th>Estado</th>
+                    <th>Fecha de Revisión</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Aquí se agregarán las justificaciones dinámicamente -->
+            </tbody>
+        </table>
+
+        <a href="dashboard_alumno.html" class="back-link">← Volver al Dashboard</a>
+    </div>
+
+    <script src="../js/justificar_eventos.js" defer></script>
+</body>
+</html>

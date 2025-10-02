@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horario e Inscripciones - Congreso</title>
+    <link rel="stylesheet" href="../CSS/style.css"> <style>
+        /* Basic styling for event cards and messages */
+
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-top">
+            <div class="main-title">
+                 <h1>Congreso Universitario</h1>
+                 <section class="sponsor-logos-header">
+                    <div class="logo-carousel">
+                        <div class="logo-track">
+                            <img src="../Logos/UAA_LOGO.png" alt="Logo Universidad Autónoma de Aguascalientes">
+                            <img src="../Logos/logo-ccea.png" alt="Logo CCEA">
+                            <img src="../Logos/MKT_LOGO.png" alt="Logo MKT">
+                            <!-- Repite para efecto de bucle continuo -->
+                            <img src="../Logos/UAA_LOGO.png" alt="Logo Universidad Autónoma de Aguascalientes">
+                            <img src="../Logos/logo-ccea.png" alt="Logo CCEA">
+                            <img src="../Logos/MKT_LOGO.png" alt="Logo MKT">
+                        </div>
+                    </div>
+                </section>
+        <nav id="main-navigation">
+            <ul>
+                <li><a href="dashboard_alumno.html" class="active">Inicio</a></li>
+                <li><a href="horario.html">Horario e Inscripciones</a></li>
+                <li><a href="mi_qr.html">Mi Código QR</a></li>
+                <li><a href="mis_constancias.html">Mis Constancias</a></li>
+                <li><a href="justificar_falta.html">Justificar Falta</a></li>
+                <li><span id="user-name">Nombre</span> <a href="login.html" class="logout-button button">Cerrar Sesión</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <h2>Horario del Congreso e Inscripción a Talleres/Conferencias</h2>
+
+        <div class="filters">
+            <label for="filter-day">Filtrar por día:</label>
+            <select id="filter-day">
+                <option value="all">Todos</option>
+                </select>
+        </div>
+
+        <div id="lista-eventos">
+            <p>Cargando eventos...</p>
+        </div>
+        
+        <div id="schedule-container"></div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Universidad Autónoma de Aguascalientes.</p>
+    </footer>
+
+    <script src="../js/dashboard.js"></script> 
+    <script src="../js/inscribirse_eventos.js"></script> 
+</body>
+</html>

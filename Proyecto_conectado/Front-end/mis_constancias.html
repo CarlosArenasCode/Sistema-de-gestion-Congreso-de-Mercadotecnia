@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Constancias - Congreso</title>
+    <link rel="stylesheet" href="../CSS/style.css">
+</head>
+<body>
+    <header>
+        <div class="header-top">
+            <div class="main-title">
+                 <h1>Congreso Universitario</h1>
+            </div>
+            <section class="sponsor-logos-header">
+                <div class="logo-carousel">
+                    <div class="logo-track">
+                        <img src="../Logos/UAA_LOGO.png" alt="Logo Universidad Autónoma de Aguascalientes">
+                        <img src="../Logos/logo-ccea.png" alt="Logo CCEA">
+                        <img src="../Logos/MKT_LOGO.png" alt="Logo MKT">
+                        <!-- Repite para efecto de bucle continuo -->
+                        <img src="../Logos/UAA_LOGO.png" alt="Logo Universidad Autónoma de Aguascalientes">
+                        <img src="../Logos/logo-ccea.png" alt="Logo CCEA">
+                        <img src="../Logos/MKT_LOGO.png" alt="Logo MKT">
+                    </div>
+                </div>
+            </section>
+        </div>
+        <nav id="main-navigation">
+            <ul>
+                <li><a href="dashboard_alumno.html" class="active">Inicio</a></li>
+                <li><a href="horario.html">Horario e Inscripciones</a></li>
+                <li><a href="mi_qr.html">Mi Código QR</a></li>
+                <li><a href="mis_constancias.html">Mis Constancias</a></li>
+                <li><a href="justificar_falta.html">Justificar Falta</a></li>
+                <li><span id="user-name">Nombre</span> <a href="login.html" class="logout-button button">Cerrar Sesión</a></li>
+            </ul>
+        </nav>
+    </header>
+<main>
+        <h2>Mis Constancias de Asistencia</h2>
+        <p>Aquí puedes descargar las constancias de los eventos a los que asististe completamente.</p>
+        <p>Las constancias estarán disponibles una vez finalizado el congreso y validada tu asistencia.</p>
+
+        <div id="certificates-list">
+            <p>Cargando tus constancias...</p>
+        </div>
+
+        <p style="margin-top: 20px;">Nota: Si crees que hay un error con tu asistencia, por favor contacta a la organización o <a href="justificar_falta.html">justifica tu falta</a> (si aplica).</p>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Universidad Autonoma de Aguascalientes.</p>
+        <p>El servicio de descarga de constancias permanecerá activo después del congreso.</p>
+    </footer>
+     
+    <script src="../js/dashboard.js"></script>
+    <script src="../js/certificates.js"></script>
+</body>
+</html>

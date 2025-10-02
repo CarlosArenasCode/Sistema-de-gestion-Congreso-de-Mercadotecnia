@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ver Inscripciones - Congreso Universitario</title>
+    <link rel="stylesheet" href="../CSS/style.css">
+</head>
+<body>
+    <header>
+        <div class="header-top"><div class="main-title"><h1>Congreso Universitario</h1></div>
+            <section class="sponsor-logos-header"><div class="logo-carousel"><div class="logo-track">
+                <img src="../Logos/UAA_LOGO.png" alt="Logo Universidad Autónoma de Aguascalientes">
+                <img src="../Logos/logo-ccea.png" alt="Logo CCEA">
+                <img src="../Logos/MKT_LOGO.png" alt="Logo MKT">
+            </div></div></section>
+        </div>
+        <nav id="main-navigation">
+            <ul>
+                <li><a href="admin_dashboard.html">Panel Admin</a></li>
+                <li><a href="admin_eventos.html">Gestionar Eventos</a></li>
+                <li><a href="admin_usuarios.html">Gestionar Usuarios</a></li>
+                <li><a href="admin_scan_qr.html">Escanear QR</a></li>
+                <li><a href="admin_asistencia.html">Ver Asistencia</a></li>
+                <li><a href="admin_inscripciones.html" class="active">Ver Inscripciones</a></li>
+                <li><a href="admin_constancias.html">Constancias Emitidas</a></li>
+                <li><a href="admin_justificacion.html">Gestionar Justificaciones</a></li>
+                <li class="user-menu"><span>Bienvenido, [Nombre Admin]</span><a href="login.html" class="logout-button button">Cerrar Sesión</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <h2>Inscripciones a Eventos</h2>
+        <section class="page-actions">
+            <input type="search" id="search-input" placeholder="Buscar por Alumno o Evento..." style="flex-grow: 1;">
+        </section>
+
+        <section id="resultados-inscripciones">
+            <h3>Resultados</h3>
+            <div id="loading-indicator" style="display: none; text-align:center; padding: 2rem;">Cargando datos...</div>
+            <table class="inscripciones-table">
+                <thead>
+                    <tr>
+                        <th>ID Usuario</th>
+                        <th>Nombre Usuario</th>
+                        <th>Nombre Evento</th>
+                        <th>Fecha de Inscripción</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla-inscripciones-body"></tbody>
+            </table>
+            <div id="no-results-indicator" style="display: none; text-align:center; padding: 2rem; color: #777;">No se encontraron inscripciones.</div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Congreso Universitario. Todos los derechos reservados.</p>
+    </footer>
+    <script src="../js_admin/admin_inscripciones.js"></script>
+</body>
+</html>

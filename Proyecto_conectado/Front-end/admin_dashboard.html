@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Admin - Congreso Universitario</title>
+    <link rel="stylesheet" href="../CSS/style.css"> </head>
+<body>
+    <header>
+         <div class="header-top">
+            <div class="main-title">
+                 <h1>Congreso Universitario</h1>
+            </div>
+            <section class="sponsor-logos-header">
+                <img src="../Logos/UAA_LOGO.png" alt="Logo Universidad Autónoma de Aguascalientes">
+                <img src="../Logos/logo-ccea.png" alt="Logo CCEA">
+                <img src="../Logos/MKT_LOGO.png" alt="Logo MKT">
+            </section>
+        </div>
+        <nav id="main-navigation">
+             <ul>
+                <li><a href="admin_dashboard.html" class="nav-link active" id="nav-admin-dashboard">Panel Admin</a></li>
+                <li><a href="admin_eventos.html" class="nav-link" id="nav-admin-eventos">Gestionar Eventos</a></li>
+                <li><a href="admin_usuarios.html" class="nav-link" id="nav-admin-usuarios">Gestionar Usuarios</a></li>
+                <li><a href="admin_scan_qr.html" class="nav-link" id="nav-admin-scan">Escanear QR</a></li>
+                <li><a href="admin_asistencia.html" class="nav-link" id="nav-admin-asistencia">Ver Asistencia</a></li>
+                <li><a href="admin_inscripciones.html" class="nav-link" id="nav-admin-inscripciones">Ver Inscripciones</a></li>
+                <li><a href="admin_constancias.html" class="nav-link" id="nav-admin-constancias">Constancias Emitidas</a></li>
+                <li><a href="admin_justificacion.html" class="nav-link active" id="nav-admin-justificaciones">Gestionar Justificaciones</a></li> <li class="user-menu"></li>
+
+                <li class="user-menu">
+                    <span>Bienvenido, [Nombre Admin]</span>
+                    <a href="login.html" class="logout-button button">Cerrar Sesión</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <h2>Panel de Administración</h2>
+        <p>Bienvenido al panel de control del Congreso Universitario.</p>
+
+        <section class="quick-stats content-box"> <h3>Estadísticas Rápidas</h3>
+            <div class="stats-container"> <p><strong>Usuarios Registrados:</strong> 150</p>
+                <p><strong>Eventos Programados:</strong> 25</p>
+                <p><strong>Asistencia Promedio (Hoy):</strong> 75%</p>
+                </div>
+        </section>
+
+        <section class="admin-actions content-box">
+             <h3>Acciones Comunes</h3>
+             <div class="quick-links">
+                <a href="admin_eventos.html" class="button">Gestionar Eventos</a>
+                <a href="admin_usuarios.html" class="button">Gestionar Usuarios</a>
+                <a href="admin_inscripciones.html" class="button">Ver Inscripciones</a>
+                <a href="admin_constancias.html" class="button">Emitir Constancias</a>
+                <a href="admin_justificacion.html" class="button">Gestionar Justificaciones</a>
+                <a href="admin_scan_qr.html" class="button secondary">Escanear QR</a>
+                <a href="admin_asistencia.html" class="button secondary">Ver Reportes de Asistencia</a>
+             </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Congreso Universitario. Todos los derechos reservados.</p>
+    </footer>
+    <script src="../js_admin/admin_dashboard.js"></script>
+
+    </body>
+</html>

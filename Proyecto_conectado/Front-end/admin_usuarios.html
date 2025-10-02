@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestionar Usuarios - Congreso Universitario</title>
+    <link rel="stylesheet" href="../CSS/style.css">
+    <style>
+    </style>
+</head>
+<body>
+    <header>
+         <div class="header-top">
+            <div class="main-title">
+                 <h1>Congreso Universitario</h1>
+            </div>
+            <section class="sponsor-logos-header">
+                <img src="../Logos/UAA_LOGO.png" alt="Logo Universidad Autónoma de Aguascalientes">
+                <img src="../Logos/logo-ccea.png" alt="Logo CCEA">
+                <img src="../Logos/MKT_LOGO.png" alt="Logo MKT">
+            </section>
+        </div>
+        <nav id="main-navigation">
+            <ul>
+                <li><a href="admin_dashboard.html" class="nav-link" id="nav-admin-dashboard">Panel Admin</a></li>
+                <li><a href="admin_eventos.html" class="nav-link" id="nav-admin-eventos">Gestionar Eventos</a></li>
+                <li><a href="admin_usuarios.html" class="nav-link active" id="nav-admin-usuarios">Gestionar Usuarios</a></li>
+                <li><a href="admin_scan_qr.html" class="nav-link" id="nav-admin-scan">Escanear QR</a></li>
+                <li><a href="admin_asistencia.html" class="nav-link" id="nav-admin-asistencia">Ver Asistencia</a></li>
+                <li><a href="admin_inscripciones.html" class="nav-link" id="nav-admin-inscripciones">Ver Inscripciones</a></li>
+                <li><a href="admin_constancias.html" class="nav-link" id="nav-admin-constancias">Constancias Emitidas</a></li>
+                <li><a href="admin_justificacion.html" class="nav-link" id="nav-admin-justificaciones">Gestionar Justificaciones</a></li>
+                <li class="user-menu">
+                    <span id="admin-name-placeholder">Bienvenido, [Nombre Admin]</span>
+                    <a href="#" id="logout-button" class="logout-button button">Cerrar Sesión</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <h2>Gestionar Usuarios</h2>
+        <div id="alert-placeholder-user" style="margin-top: 1rem;"></div>
+
+        <div class="page-actions" style="margin-bottom: 2rem; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+            <input type="search" id="search-usuario" placeholder="Buscar por ID, Nombre, Matrícula o Email..." style="padding: 0.8rem; border: 1px solid #ccc; border-radius: 4px; min-width: 250px; flex-grow:1;">
+            <div>
+                <button id="btn-mostrar-form-usuario" class="button register-button">Añadir Usuario</button>
+            </div>
+        </div>
+
+        <section id="crear-usuario-form-section" class="content-box" style="display: none;">
+            <h3 id="form-usuario-titulo-display">Añadir Nuevo Usuario</h3>
+            <form id="form-usuario">
+                <input type="hidden" id="id_usuario_hidden" name="id_usuario_hidden">
+                <div class="form-group">
+                    <label for="matricula">Matrícula (ID Universitario):</label>
+                    <input type="text" id="matricula" name="matricula">
+                </div>
+                <div class="form-group">
+                    <label for="nombre_completo">Nombre Completo:</label>
+                    <input type="text" id="nombre_completo" name="nombre_completo" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Contraseña (dejar en blanco para no cambiar en edición):</label>
+                    <input type="password" id="password" name="password">
+                </div>
+                 <div class="form-group">
+                    <label for="semestre">Semestre:</label>
+                    <input type="number" id="semestre" name="semestre" min="1" max="16">
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="button register-button">Guardar Usuario</button>
+                    <button type="button" id="btn-cancelar-edicion-usuario" class="button secondary" style="display:none;">Cancelar</button>
+                    <button type="reset" id="btn-limpiar-form-usuario" class="button secondary">Limpiar</button>
+                </div>
+            </form>
+        </section>
+
+        <section id="lista-usuarios" style="margin-top:2rem;">
+            <h3>Lista de Usuarios Registrados</h3>
+            <div id="loading-indicator-usuarios" style="display: none; text-align:center; padding: 2rem;">Cargando usuarios...</div>
+            <table class="user-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Matrícula</th>
+                        <th>Nombre Completo</th>
+                        <th>Email</th>
+                        <th>Semestre</th>
+                        <th>Registrado el</th>
+                        <th class="actions">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="usuarios-table-body">
+                    </tbody>
+            </table>
+             <div id="no-results-indicator-usuarios" style="display: none; text-align:center; padding: 2rem; color: #777;">No se encontraron usuarios.</div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Congreso Universitario. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="../js_admin/admin_usuarios.js"></script>
+</body>
+</html>

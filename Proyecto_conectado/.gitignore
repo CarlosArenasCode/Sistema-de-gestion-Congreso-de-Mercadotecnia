@@ -1,0 +1,110 @@
+# Archivos de configuración y credenciales
+*.env
+.env.*
+php/conexion.php
+config/
+credentials/
+
+# Archivos de sistema Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+*.lnk
+
+# Archivos de sistema macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Archivos temporales
+*.tmp
+*.temp
+*.log
+*.bak
+*.swp
+*.swo
+*~
+
+# Archivos de respaldo
+*.backup
+*.old
+*.orig
+
+# Carpetas de cache y temporales
+cache/
+temp/
+tmp/
+logs/
+
+# Archivos de subida/uploads
+uploads/
+files/
+images/uploads/
+documentos/
+
+# IDEs y editores
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.atom/
+.brackets.json
+
+# Visual Studio
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Dependencias (si usas gestores de paquetes)
+vendor/
+node_modules/
+composer.lock
+
+# Archivos PHP específicos
+*.php~
+php_errors.log
+error_log
+
+# Bases de datos locales
+*.sqlite
+*.sqlite3
+*.db
+*.mdb
+*.accdb
+*.sql.bak
+
+# Archivos de sesión PHP
+sessions/
+tmp/sess_*
+
+# Archivos de compilación y distribución
+dist/
+build/
+out/
+
+# Archivos comprimidos (generados automáticamente)
+*.zip
+*.rar
+*.tar.gz
+*.7z
+
+# Certificados y llaves
+*.key
+*.pem
+*.crt
+*.p12
+*.pfx
+
+# Configuraciones específicas del servidor
+.htaccess.local
+robots.txt.local
+sitemap.xml.local
+
+# Documentación generada automáticamente
+docs/generated/
+phpdoc/
+
+# Reportes de testing
+coverage/
+phpunit.xml.local

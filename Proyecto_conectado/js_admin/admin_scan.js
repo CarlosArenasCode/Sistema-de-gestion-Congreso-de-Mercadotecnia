@@ -19,6 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const btnRegistrarEntrada = document.getElementById('btn-registrar-entrada');
     const btnRegistrarSalida = document.getElementById('btn-registrar-salida');
+    const fastModeCheckbox = document.getElementById('fast-mode-checkbox');
+    const scanIndicator = document.getElementById('scan-indicator');
 
     let html5QrCode = null;
     let currentScannedData = null; 
@@ -28,6 +30,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Para ayudar a depurar y evitar procesamiento múltiple del mismo QR escaneado rápidamente
     let lastProcessedQrTextFromScan = null;
     let lastProcessedQrTimestamp = 0;
+    // Cola simple para evitar llamadas concurrentes al registrar
+    let processingQueue = [];
+    let isProcessingQueue = false;
+
+    // Sonidos de feedback
+    const audioSuccess = new Audio(); audioSuccess.src = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAIlYAAESsAAACABAAZGF0YQAAAAA='; // placeholder corto
+    const audioError = new Audio(); audioError.src = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAIlYAAESsAAACABAAZGF0YQAAAAA=';
 
 
     function resetResultDisplay(message = "Esperando acción...") {
@@ -202,6 +211,8 @@ document.addEventListener('DOMContentLoaded', () => {
             startScanButton.style.display = 'none';
             stopScanButton.style.display = 'block';
             resultMessage.textContent = "Escáner Activado. Apunte al QR.";
+                // indicador en verde suave
+                if (scanIndicator) scanIndicator.style.background = '#8bc34a';
             console.log("Escáner QR iniciado exitosamente.");
         }).catch(err => {
             console.error("Error GRAVE al iniciar el escáner QR:", err);
@@ -228,6 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 startScanButton.style.display = 'block';
                 stopScanButton.style.display = 'none';
                 resetResultDisplay("Escáner detenido. Seleccione acción.");
+                if (scanIndicator) scanIndicator.style.background = '#bbb';
             });
         } else {
              // Si por alguna razón se presiona stop y no estaba escaneando, asegurar estado de botones
@@ -273,6 +285,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Considerar si es necesario reasignar currentScannedData aquí siempre.
                 // Si la validación es exitosa, qrData ES el dato bueno.
                 currentScannedData = qrData;
+                // Si estamos en modo rápido, encolar auto-registro de entrada/salida según permisos
+                if (fastModeCheckbox && fastModeCheckbox.checked) {
+                    // decidir tipo: preferir entrada si puede_registrar_entrada
+                    const tipo = data.puede_registrar_entrada ? 'entrada' : (data.puede_registrar_salida ? 'salida' : null);
+                    if (tipo) enqueueRegistration({ tipo, id_usuario: data.id_usuario, id_evento: data.id_evento });
+                }
             } else {
                 currentScannedData = null; 
             }
@@ -281,6 +299,47 @@ document.addEventListener('DOMContentLoaded', () => {
             resetResultDisplay('Error de conexión al validar: ' + error.message);
             currentScannedData = null; 
         }
+    }
+
+    function enqueueRegistration(item) {
+        processingQueue.push(item);
+        processQueue();
+    }
+
+    async function processQueue() {
+        if (isProcessingQueue) return;
+        isProcessingQueue = true;
+        while (processingQueue.length > 0) {
+            const item = processingQueue.shift();
+            try {
+                // Llamar al endpoint de registrar_asistencia con los datos (sin confirmación extra)
+                const form = new FormData();
+                form.append('id_usuario', item.id_usuario);
+                form.append('id_evento', item.id_evento);
+                form.append('tipo_registro', item.tipo);
+
+                // pequeña espera para agrupar lecturas muy cercanas
+                await new Promise(r => setTimeout(r, 120));
+
+                const resp = await fetch('../php_admin/asistencia_controller.php?action=registrar_asistencia', { method: 'POST', body: form });
+                const data = await resp.json().catch(() => ({ success: false, error: 'Respuesta inválida' }));
+                if (data.success) {
+                    // retroalimentación
+                    resultMessage.textContent = `Auto-registrado (${item.tipo}) para ID ${item.id_usuario}`;
+                    if (scanIndicator) { scanIndicator.style.background = '#4caf50'; setTimeout(()=> scanIndicator.style.background = '#8bc34a',200); }
+                    try { audioSuccess.play().catch(()=>{}); } catch(e){}
+                } else {
+                    resultMessage.textContent = `Fallo auto-registro: ${data.error || data.message || 'desconocido'}`;
+                    if (scanIndicator) { scanIndicator.style.background = '#f44336'; setTimeout(()=> scanIndicator.style.background = '#8bc34a',200); }
+                    try { audioError.play().catch(()=>{}); } catch(e){}
+                }
+                // Volver a validar para actualizar estado (rápido)
+                await validarCodigo(currentScannedData || item.id_usuario, item.id_evento);
+            } catch (e) {
+                console.error('Error en auto-registro de cola:', e);
+            }
+        }
+        isProcessingQueue = false;
     }
 
     submitManualCodeButton.addEventListener('click', async () => {
@@ -299,6 +358,18 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         await validarCodigo(qrData, selectedEventId);
+    });
+
+    // Atajo de teclado: tecla F para alternar modo rápido
+    document.addEventListener('keydown', (e) => {
+        if (e.key && e.key.toLowerCase() === 'f') {
+            if (fastModeCheckbox) {
+                fastModeCheckbox.checked = !fastModeCheckbox.checked;
+                const status = fastModeCheckbox.checked ? 'activado' : 'desactivado';
+                resultMessage.textContent = `Modo rápido ${status}`;
+                if (scanIndicator) scanIndicator.style.boxShadow = fastModeCheckbox.checked ? '0 0 8px rgba(139,195,74,0.8)' : '0 0 4px rgba(0,0,0,0.2)';
+            }
+        }
     });
 
     eventoSelector.addEventListener('change', () => {

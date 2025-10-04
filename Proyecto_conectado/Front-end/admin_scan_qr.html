@@ -30,6 +30,11 @@
         <div id="camera-feed">
             [Simulador de Cámara - Activar con JavaScript]
         </div>
+        <div style="margin-top:10px; display:flex; gap:12px; align-items:center;">
+            <label style="display:flex; gap:8px; align-items:center;"><input type="checkbox" id="fast-mode-checkbox"> Modo rápido (auto-registro)</label>
+            <div id="scan-indicator" style="width:18px;height:18px;border-radius:50%;background:#bbb;box-shadow:0 0 4px rgba(0,0,0,0.2);"></div>
+            <small style="color:#666;">(Presiona <strong>F</strong> para alternar)</small>
+        </div>
         <button id="start-scan-button" class="button">Activar Escáner</button>
         <button id="stop-scan-button" class="button" style="display:none;">Detener Escáner</button>
 
@@ -55,6 +60,14 @@
              <p><strong>Respuesta del Servidor:</strong> <span id="result-server-response" style="font-style: italic;">-</span></p>
         </div>
     </main>
+
+    <style>
+    /* feedback visual temporal */
+    .flash-success { animation: flashSuccess 600ms ease-in-out; }
+    .flash-error { animation: flashError 600ms ease-in-out; }
+    @keyframes flashSuccess { 0% { background: transparent } 10% { background: #dff0d8 } 100% { background: transparent } }
+    @keyframes flashError { 0% { background: transparent } 10% { background: #f2dede } 100% { background: transparent } }
+    </style>
 
     <footer>
         <p>&copy; 2025 Congreso Universitario. Todos los derechos reservados</p>

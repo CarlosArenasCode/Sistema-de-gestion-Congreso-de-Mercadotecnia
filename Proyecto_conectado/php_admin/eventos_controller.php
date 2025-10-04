@@ -128,6 +128,17 @@ function saveEvento($pdo, $data) {
     $stmt->execute($params);
     
     $new_id = $id_evento_form ? $id_evento_form : $pdo->lastInsertId();
+    // Si se creó un nuevo evento (no fue actualización), enviar notificación a usuarios
+    if (!$id_evento_form) {
+        require_once __DIR__ . '/../php/send_notifications.php';
+        // enviar en segundo plano simple: intentar y continuar
+        try {
+            sendEventCreatedToAll($pdo, $new_id);
+        } catch (Exception $e) {
+            error_log("Error enviando notificaciones de evento creado: " . $e->getMessage());
+        }
+    }
+
     echo json_encode(['success' => true, 'message' => $message, 'id_evento' => $new_id]);
 }
 

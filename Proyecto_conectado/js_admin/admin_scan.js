@@ -338,14 +338,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
 
-        const nombreUsuarioMostrado = resultStudentName.textContent === '-' || resultStudentName.textContent === 'N/A' ? 'el usuario validado' : resultStudentName.textContent;
-        const nombreEventoMostrado = resultEventName.textContent === '-' || resultEventName.textContent === 'N/A' ? 'el evento seleccionado' : resultEventName.textContent;
-
-        const confirmMsg = `¿Confirmar registro de ${tipoRegistro} para ${nombreUsuarioMostrado} en ${nombreEventoMostrado}?`;
-        if (!confirm(confirmMsg)) {
-            return;
-        }
-
         resultMessage.textContent = `Registrando ${tipoRegistro}...`;
         const formData = new FormData();
         formData.append('id_usuario', lastValidatedUserId);

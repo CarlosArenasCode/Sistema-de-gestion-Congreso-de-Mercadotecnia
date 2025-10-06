@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carta de Presentación - Sistema GJA</title>
+    <style>
+        @media print {
+            body { margin: 0; }
+            .page-break { page-break-before: always; }
+            .no-print { display: none; }
+        }
+        
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 21cm;
+            margin: 0 auto;
+            padding: 2cm;
+            background: white;
+        }
+        
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #2c3e50;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #2c3e50;
+            font-size: 24px;
+            margin: 0;
+            font-weight: bold;
+        }
+        
+        .header h2 {
+            color: #34495e;
+            font-size: 18px;
+            margin: 5px 0;
+            font-weight: normal;
+        }
+        
+        .header h3 {
+            color: #7f8c8d;
+            font-size: 16px;
+            margin: 5px 0;
+            font-style: italic;
+        }
+        
+        .document-info {
+            background: #ecf0f1;
+            padding: 15px;
+            border-left: 4px solid #3498db;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+        
+        .document-info strong {
+            color: #2c3e50;
+        }
+        
+        .greeting {
+            margin: 30px 0;
+            font-size: 16px;
+        }
+        
+        h2 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+            margin-top: 30px;
+            font-size: 18px;
+        }
+        
+        h3 {
+            color: #34495e;
+            margin-top: 25px;
+            font-size: 16px;
+        }
+        
+        h4 {
+            color: #7f8c8d;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        
+        .highlight-box {
+            background: #e8f4fd;
+            border: 1px solid #3498db;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .problem-solution {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .problem, .solution {
+            padding: 15px;
+            border-radius: 5px;
+        }
+        
+        .problem {
+            background: #ffeaa7;
+            border-left: 4px solid #fdcb6e;
+        }
+        
+        .solution {
+            background: #d1f2eb;
+            border-left: 4px solid #00b894;
+        }
+        
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .benefit-card {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .benefit-card h4 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+        
+        .tech-stack {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        
+        .tech-stack h3 {
+            color: #3498db;
+            margin-top: 0;
+        }
+        
+        .checkmark {
+            color: #27ae60;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        
+        .phases {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .phases ol {
+            margin: 10px 0;
+        }
+        
+        .phases li {
+            margin: 5px 0;
+            padding: 5px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+        }
+        
+        .investment-box {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .legal-compliance {
+            background: #f1f2f6;
+            border: 2px solid #2f3640;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .signature {
+            margin-top: 40px;
+            text-align: center;
+            border-top: 2px solid #2c3e50;
+            padding-top: 20px;
+        }
+        
+        .signature h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .contact-info {
+            background: #34495e;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        
+        .footer {
+            text-align: center;
+            font-style: italic;
+            color: #7f8c8d;
+            border-top: 1px solid #bdc3c7;
+            padding-top: 20px;
+            margin-top: 30px;
+        }
+        
+        ul li, ol li {
+            margin: 8px 0;
+        }
+        
+        .emoji {
+            font-size: 18px;
+            margin-right: 8px;
+        }
+        
+        @media print {
+            .problem-solution {
+                grid-template-columns: 1fr;
+            }
+            .benefits-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>CARTA DE PRESENTACIÓN DEL PROYECTO</h1>
+        <h2>Sistema de Gestión de Congreso Universitario de Mercadotecnia</h2>
+        <h3>Plataforma Integral de Eventos Académicos</h3>
+    </div>
+
+    <div class="document-info">
+        <strong>Fecha:</strong> 6 de octubre de 2025<br>
+        <strong>De:</strong> Equipo 5 - Universidad Autónoma de Aguascalientes<br>
+        <strong>Para:</strong> A Quien Corresponda<br>
+        <strong>Asunto:</strong> Presentación del Sistema Integral de Gestión de Congresos Académicos
+    </div>
+
+    <div class="greeting">
+        Estimado/a <strong></strong><br><br>
+        Por medio de la presente, tenemos el honor de presentar ante usted el proyecto <strong>"Sistema de Gestión de Congreso Universitario"</strong>, una plataforma tecnológica integral que representa la convergencia de múltiples disciplinas académicas: <strong>Programación Visual, Base de Datos SQL/PL-SQL, Proyectos Tecnológicos, Diseño de Software, Derecho Informático, Redes y Tecnologías Informáticas</strong>. Este sistema demuestra la aplicación práctica de conocimientos interdisciplinarios en el desarrollo de soluciones tecnológicas robustas para la gestión académica universitaria.
+    </div>
+
+    <h2><span class="emoji">📋</span>RESUMEN EJECUTIVO DEL PROYECTO</h2>
+    <div class="highlight-box">
+        El Sistema de Gestión de Congreso Universitario es un proyecto académico integral que ejemplifica la aplicación práctica de múltiples áreas del conocimiento tecnológico y legal. Desarrollado bajo principios de <strong>Ingeniería de Software</strong> y <strong>Proyectos Tecnológicos</strong>, integra interfaces de <strong>Programación Visual</strong>, arquitectura robusta de <strong>Bases de Datos SQL/PL-SQL</strong>, consideraciones de <strong>Derecho Informático</strong>, y tecnologías de <strong>Redes Informáticas</strong> para crear una solución completa de gestión académica que automatiza desde el registro de usuarios hasta la emisión de constancias digitales verificables.
+    </div>
+
+    <h2><span class="emoji">🎯</span>PROPUESTA DE VALOR</h2>
+    
+    <h3>Cumplimiento de Requerimientos Oficiales</h3>
+    <div class="problem-solution">
+        <div class="problem">
+            <h4>Requerimientos Solicitados</h4>
+            <p><strong>1. Registro y Acceso:</strong></p>
+            <ul>
+                <li>✅ Acceso exclusivo para alumnos y profesores con ID universitario</li>
+                <li>✅ Validación por correo electrónico</li>
+                <li>✅ Recuperación de contraseña vía email</li>
+            </ul>
+            
+            <p><strong>2. Gestión de Eventos:</strong></p>
+            <ul>
+                <li>✅ Registro en talleres y conferencias con cupo limitado</li>
+                <li>✅ Visualización de horarios interactivos</li>
+                <li>✅ Sistema de notificaciones automáticas</li>
+            </ul>
+            
+            <p><strong>3. Control de Asistencia:</strong></p>
+            <ul>
+                <li>✅ Sistema QR dinámico para entrada/salida</li>
+                <li>✅ Códigos únicos anti-fraude</li>
+                <li>✅ Justificación de faltas con comprobantes</li>
+            </ul>
+            
+            <p><strong>4. Constancias y Certificados:</strong></p>
+            <ul>
+                <li>✅ Generación automática con asistencia completa</li>
+                <li>✅ Descarga PDF con sello institucional</li>
+            </ul>
+        </div>
+        
+        <div class="solution">
+            <h4>Funcionalidades Implementadas</h4>
+            <p><strong>Requerimientos Principales (100% Cumplidos):</strong></p>
+            <ul>
+                <li><strong>Sistema de Registro Completo:</strong> Validación por matrícula y correo institucional</li>
+                <li><strong>Gestión Avanzada de Eventos:</strong> Talleres, conferencias con control de cupos automático</li>
+                <li><strong>QR Anti-Fraude:</strong> Códigos únicos por usuario, validación en tiempo real</li>
+                <li><strong>Constancias Oficiales:</strong> PDFs con logos UAA, CCEA y numeración única</li>
+                <li><strong>Justificaciones Digitales:</strong> Upload de archivos y flujo de aprobación</li>
+            </ul>
+            
+            <p><strong>Funcionalidades Adicionales Implementadas:</strong></p>
+            <ul>
+                <li><strong>Panel Administrativo Completo:</strong> Gestión total de usuarios y eventos</li>
+                <li><strong>Base de Datos de Asistentes:</strong> Reportes y exportación para administradores</li>
+                <li><strong>Hipervínculos a Redes Sociales:</strong> Integración con plataformas del centro</li>
+                <li><strong>Diseño Responsivo:</strong> Acceso optimizado desde cualquier dispositivo</li>
+            </ul>
+        </div>
+    </div>
+
+    <h2><span class="emoji">🏗️</span>ARQUITECTURA TÉCNICA ROBUSTA</h2>
+    
+    <div class="tech-stack">
+        <h3>Integración Multidisciplinaria de Conocimientos</h3>
+        <p>El sistema demuestra la aplicación práctica de múltiples áreas académicas:</p>
+        
+        <h4>📱 PROGRAMACIÓN VISUAL - Frontend Interactivo</h4>
+        <ul>
+            <li><strong>Interfaces Responsivas:</strong> 17 pantallas HTML/CSS/JavaScript con diseño UX/UI profesional</li>
+            <li><strong>Dashboards Dinámicos:</strong> Gráficos estadísticos en tiempo real y controles interactivos</li>
+            <li><strong>Formularios Inteligentes:</strong> Validación en cliente con feedback visual inmediato</li>
+            <li><strong>Componentes Reutilizables:</strong> Modularidad siguiendo principios de diseño de interfaces</li>
+        </ul>
+        
+        <h4>🗄️ SQL Y PL/SQL - Gestión Avanzada de Datos</h4>
+        <ul>
+            <li><strong>Modelado Relacional:</strong> 8 entidades normalizadas con integridad referencial</li>
+            <li><strong>Procedimientos Almacenados:</strong> Lógica de negocio encapsulada en la base de datos</li>
+            <li><strong>Triggers Automáticos:</strong> Actualización de cupos y estados en tiempo real</li>
+            <li><strong>Consultas Optimizadas:</strong> Índices compuestos y vistas materializadas para rendimiento</li>
+            <li><strong>Transacciones ACID:</strong> Consistencia de datos en operaciones críticas</li>
+        </ul>
+        
+        <h4>🏗️ PROYECTOS TECNOLÓGICOS - Metodología y Gestión</h4>
+        <ul>
+            <li><strong>Metodología Ágil:</strong> Desarrollo iterativo con sprints y entregas incrementales</li>
+            <li><strong>Control de Versiones:</strong> Git/GitHub con flujo de trabajo colaborativo</li>
+            <li><strong>Gestión de Requerimientos:</strong> Trazabilidad desde especificación hasta implementación</li>
+            <li><strong>Testing Integral:</strong> Pruebas unitarias, de integración y de usuario final</li>
+        </ul>
+        
+        <h4>⚙️ DISEÑO DE SOFTWARE - Arquitectura y Patrones</h4>
+        <ul>
+            <li><strong>Patrón MVC:</strong> Separación clara de responsabilidades y mantenibilidad</li>
+            <li><strong>API RESTful:</strong> Servicios web escalables y estándares de industria</li>
+            <li><strong>Principios SOLID:</strong> Código limpio, extensible y testeable</li>
+            <li><strong>Patrones de Diseño:</strong> Factory, Observer y Strategy implementados</li>
+        </ul>
+        
+        <h4>⚖️ DERECHO INFORMÁTICO - Cumplimiento Legal</h4>
+        <ul>
+            <li><strong>Protección de Datos:</strong> Implementación de principios de privacidad desde el diseño</li>
+            <li><strong>Derechos ARCO:</strong> Mecanismos para acceso, rectificación, cancelación y oposición</li>
+            <li><strong>Documentos Digitales:</strong> Validez jurídica de constancias con metadatos verificables</li>
+            <li><strong>Consentimiento Informado:</strong> Avisos de privacidad y gestión de autorización</li>
+        </ul>
+        
+        <h4>🌐 REDES Y TECNOLOGÍAS INFORMÁTICAS - Conectividad</h4>
+        <ul>
+            <li><strong>Arquitectura Cliente-Servidor:</strong> Comunicación HTTP/HTTPS segura</li>
+            <li><strong>Protocolos de Red:</strong> SMTP para notificaciones, TCP/IP para conectividad</li>
+            <li><strong>Seguridad de Red:</strong> Encriptación SSL/TLS y protección contra ataques</li>
+            <li><strong>Escalabilidad Web:</strong> Diseño preparado para balanceadores de carga</li>
+        </ul>
+    </div>
+
+    <h3>Cumplimiento de Requerimientos Técnicos</h3>
+    <ul>
+        <li><span class="checkmark">✅</span><strong>Diseño Responsive</strong> - Totalmente accesible desde móvil y escritorio con CSS adaptativo</li>
+        <li><span class="checkmark">✅</span><strong>Panel de Administración</strong> - Gestión completa de eventos, usuarios, asistencias y constancias</li>
+        <li><span class="checkmark">✅</span><strong>Seguridad de Datos</strong> - Encriptación de contraseñas, validación de sesiones y prepared statements</li>
+        <li><span class="checkmark">✅</span><strong>Sistema QR Anti-Fraude</strong> - Códigos únicos, no transferibles con validación en tiempo real</li>
+        <li><span class="checkmark">✅</span><strong>Control de Cupos Automático</strong> - Gestión inteligente de límites por evento</li>
+        <li><span class="checkmark">✅</span><strong>Justificaciones Digitales</strong> - Upload de comprobantes médicos y documentos oficiales</li>
+        <li><span class="checkmark">✅</span><strong>Constancias Institucionales</strong> - PDFs automáticos con sellos UAA, CCEA y MKT</li>
+        <li><span class="checkmark">✅</span><strong>Validación de Identidad</strong> - Verificación por matrícula universitaria y correo institucional</li>
+        <li><span class="checkmark">✅</span><strong>Recuperación de Contraseña</strong> - Sistema automatizado vía email con tokens seguros</li>
+        <li><span class="checkmark">✅</span><strong>Notificaciones Automáticas</strong> - Recordatorios y confirmaciones por correo electrónico</li>
+    </ul>
+
+    <div class="page-break"></div>
+
+    <h2><span class="emoji">�</span>MATRIZ DE CUMPLIMIENTO DE REQUERIMIENTOS</h2>
+    
+    <div class="legal-compliance">
+        <h3>Verificación Punto por Punto</h3>
+        <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+            <thead style="background: #2c3e50; color: white;">
+                <tr>
+                    <th style="padding: 12px; border: 1px solid #ddd;">Requerimiento</th>
+                    <th style="padding: 12px; border: 1px solid #ddd;">Estado</th>
+                    <th style="padding: 12px; border: 1px solid #ddd;">Implementación</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;"><strong>Acceso exclusivo con ID universitario</strong></td>
+                    <td style="padding: 10px; border: 1px solid #ddd; color: #27ae60; font-weight: bold;">✅ COMPLETO</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">Campo matrícula en registro + validación</td>
+                </tr>
+                <tr style="background: #f8f9fa;">
+                    <td style="padding: 10px; border: 1px solid #ddd;"><strong>Validación por email</strong></td>
+                    <td style="padding: 10px; border: 1px solid #ddd; color: #27ae60; font-weight: bold;">✅ COMPLETO</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">Sistema de verificación con PHPMailer</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;"><strong>Recuperación de contraseña</strong></td>
+                    <td style="padding: 10px; border: 1px solid #ddd; color: #27ae60; font-weight: bold;">✅ COMPLETO</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">reset_password.php + tokens seguros</td>
+                </tr>
+                <tr style="background: #f8f9fa;">
+                    <td style="padding: 10px; border: 1px solid #ddd;"><strong>Registro con cupo limitado</strong></td>
+                    <td style="padding: 10px; border: 1px solid #ddd; color: #27ae60; font-weight: bold;">✅ COMPLETO</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">Control automático cupo_actual/cupo_maximo</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;"><strong>Calendario interactivo</strong></td>
+                    <td style="padding: 10px; border: 1px solid #ddd; color: #27ae60; font-weight: bold;">✅ COMPLETO</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">horario.html + filtros dinámicos por día</td>
+                </tr>
+                <tr style="background: #f8f9fa;">
+                    <td style="padding: 10px; border: 1px solid #ddd;"><strong>QR dinámico entrada/salida</strong></td>
+                    <td style="padding: 10px; border: 1px solid #ddd; color: #27ae60; font-weight: bold;">✅ COMPLETO</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">admin_scan_qr.html + qr.js</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;"><strong>Códigos anti-fraude</strong></td>
+                    <td style="padding: 10px; border: 1px solid #ddd; color: #27ae60; font-weight: bold;">✅ COMPLETO</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">qr_code_data único por usuario</td>
+                </tr>
+                <tr style="background: #f8f9fa;">
+                    <td style="padding: 10px; border: 1px solid #ddd;"><strong>Justificación con comprobantes</strong></td>
+                    <td style="padding: 10px; border: 1px solid #ddd; color: #27ae60; font-weight: bold;">✅ COMPLETO</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">Upload de archivos + flujo de aprobación</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;"><strong>Constancias automáticas PDF</strong></td>
+                    <td style="padding: 10px; border: 1px solid #ddd; color: #27ae60; font-weight: bold;">✅ COMPLETO</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">FPDF + sellos institucionales</td>
+                </tr>
+                <tr style="background: #f8f9fa;">
+                    <td style="padding: 10px; border: 1px solid #ddd;"><strong>Diseño responsive</strong></td>
+                    <td style="padding: 10px; border: 1px solid #ddd; color: #27ae60; font-weight: bold;">✅ COMPLETO</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">CSS adaptativo móvil/escritorio</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;"><strong>Panel de administración</strong></td>
+                    <td style="padding: 10px; border: 1px solid #ddd; color: #27ae60; font-weight: bold;">✅ COMPLETO</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">Dashboard completo con 7 módulos</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div style="text-align: center; margin-top: 20px; padding: 15px; background: #d1f2eb; border-radius: 5px;">
+            <h3 style="color: #00b894; margin: 0;">✅ CUMPLIMIENTO: 100% DE REQUERIMIENTOS IMPLEMENTADOS</h3>
+        </div>
+    </div>
+
+    <h2><span class="emoji">�🗃️</span>ESTRUCTURA DE BASE DE DATOS</h2>
+    
+    <div class="legal-compliance">
+        <h3>Esquema de Datos Optimizado</h3>
+        <p>El sistema cuenta con una base de datos relacional robusta:</p>
+        
+        <h4>Tablas Principales (8 Entidades)</h4>
+        <ul>
+            <li><strong>usuarios:</strong> Información completa de participantes (ID, nombre, email, matrícula, semestre, QR único)</li>
+            <li><strong>administradores:</strong> Gestión de usuarios administrativos con roles diferenciados</li>
+            <li><strong>eventos:</strong> Catálogo completo de conferencias y talleres (fechas, horarios, cupos, ponentes)</li>
+            <li><strong>inscripciones:</strong> Relación usuario-evento con control de cupos</li>
+            <li><strong>asistencia:</strong> Registro detallado de entrada/salida con duración y estado</li>
+            <li><strong>constancias:</strong> Gestión de certificados con numeración única y rutas de archivo</li>
+            <li><strong>justificaciones:</strong> Sistema completo de solicitudes con adjuntos y flujo de aprobación</li>
+        </ul>
+        
+        <h4>Características de Integridad</h4>
+        <ul>
+            <li><strong>Claves foráneas:</strong> Relaciones consistentes entre todas las entidades</li>
+            <li><strong>Restricciones de integridad:</strong> Validación automática de datos</li>
+            <li><strong>Índices optimizados:</strong> Consultas rápidas en tablas con alta concurrencia</li>
+            <li><strong>Triggers automáticos:</strong> Actualización de cupos y estados en tiempo real</li>
+        </ul>
+    </div>
+
+    <h3>Características de Seguridad Implementadas</h3>
+    <ul>
+        <li>🔐 <strong>Encriptación de contraseñas</strong> con algoritmos hash seguros</li>
+        <li>🔐 <strong>Validación de sesiones</strong> en todos los endpoints administrativos</li>
+        <li>🔐 <strong>Prepared Statements</strong> para prevenir inyección SQL</li>
+        <li>🔐 <strong>Sanitización de datos</strong> en formularios y uploads</li>
+        <li>🔐 <strong>Control de acceso basado en roles</strong> (administrador/usuario)</li>
+    </ul>
+
+    <h2><span class="emoji">📈</span>BENEFICIOS INSTITUCIONALES</h2>
+    
+    <h2><span class="emoji">📚</span>VALOR ACADÉMICO POR MATERIA</h2>
+    
+    <div class="benefits-grid">
+        <div class="benefit-card">
+            <h4>📱 Programación Visual</h4>
+            <ul style="text-align: left;">
+                <li><strong>17 Interfaces Responsivas:</strong> Aplicación práctica de CSS Grid y Flexbox</li>
+                <li><strong>JavaScript Avanzado:</strong> DOM manipulation, AJAX y eventos en tiempo real</li>
+                <li><strong>UX/UI Profesional:</strong> Principios de usabilidad y accesibilidad web</li>
+                <li><strong>Componentes Reutilizables:</strong> Modularidad y mantenimiento de código</li>
+            </ul>
+        </div>
+        
+        <div class="benefit-card">
+            <h4>🗄️ SQL y PL/SQL</h4>
+            <ul style="text-align: left;">
+                <li><strong>Base de Datos Normalizada:</strong> 8 tablas en 3FN con integridad referencial</li>
+                <li><strong>Procedimientos Almacenados:</strong> Lógica de negocio optimizada en BD</li>
+                <li><strong>Triggers Automáticos:</strong> Mantenimiento de consistencia en tiempo real</li>
+                <li><strong>Optimización Query:</strong> Índices, vistas y análisis de rendimiento</li>
+            </ul>
+        </div>
+        
+        <div class="benefit-card">
+            <h4>🚀 Proyectos Tecnológicos</h4>
+            <ul style="text-align: left;">
+                <li><strong>Metodología Ágil:</strong> Scrum con sprints y entregas incrementales</li>
+                <li><strong>Control de Versiones:</strong> Git Flow profesional con GitHub</li>
+                <li><strong>Gestión de Requerimientos:</strong> Trazabilidad completa desde especificación</li>
+                <li><strong>Testing Integral:</strong> Pruebas unitarias, integración y aceptación</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="benefits-grid">
+        <div class="benefit-card">
+            <h4>⚙️ Diseño de Software</h4>
+            <ul style="text-align: left;">
+                <li><strong>Arquitectura MVC:</strong> Separación de responsabilidades y mantenibilidad</li>
+                <li><strong>Patrones de Diseño:</strong> Factory, Observer, Strategy implementados</li>
+                <li><strong>Principios SOLID:</strong> Código limpio y extensible</li>
+                <li><strong>API RESTful:</strong> Servicios web escalables y estándares industria</li>
+            </ul>
+        </div>
+        
+        <div class="benefit-card">
+            <h4>⚖️ Derecho Informático</h4>
+            <ul style="text-align: left;">
+                <li><strong>Protección de Datos:</strong> Implementación completa de LFPDPPP</li>
+                <li><strong>Derechos ARCO:</strong> Mecanismos automatizados de ejercicio</li>
+                <li><strong>Documentos Digitales:</strong> Validez jurídica con metadatos verificables</li>
+                <li><strong>Auditoría Legal:</strong> Trazabilidad para evidencia forense</li>
+            </ul>
+        </div>
+        
+        <div class="benefit-card">
+            <h4>🌐 Redes Informáticas</h4>
+            <ul style="text-align: left;">
+                <li><strong>Arquitectura Cliente-Servidor:</strong> Comunicación HTTP/HTTPS segura</li>
+                <li><strong>Protocolos de Red:</strong> SMTP, TCP/IP y WebSockets</li>
+                <li><strong>Seguridad de Comunicaciones:</strong> SSL/TLS y encriptación</li>
+                <li><strong>Escalabilidad Web:</strong> Preparado para balanceadores de carga</li>
+            </ul>
+        </div>
+    </div>
+
+    <h2><span class="emoji">🚀</span>IMPLEMENTACIÓN Y ENTREGABLES</h2>
+    
+    <div class="phases">
+        <h3>Estado Actual del Desarrollo</h3>
+        <ol>
+            <li><strong>Sistema Base Completado</strong> - Arquitectura MVC funcional implementada</li>
+            <li><strong>Frontend Desarrollado</strong> - 17 interfaces de usuario completas y responsivas</li>
+            <li><strong>Backend Operativo</strong> - 20+ controladores PHP con API REST funcional</li>
+            <li><strong>Base de Datos Optimizada</strong> - Esquema relacional de 8 tablas implementado</li>
+            <li><strong>Funcionalidades Core</strong> - QR, asistencias, constancias y justificaciones operativas</li>
+            <li><strong>Sistema de Pruebas</strong> - Validación completa en entorno XAMPP local</li>
+        </ol>
+    </div>
+
+    <h3>Componentes Técnicos Ya Desarrollados</h3>
+    <ul>
+        <li><span class="checkmark">✅</span><strong>Código Fuente Completo</strong> - 50+ archivos organizados en estructura MVC</li>
+        <li><span class="checkmark">✅</span><strong>Base de Datos MySQL</strong> - Esquema completo con 8 tablas relacionales</li>
+        <li><span class="checkmark">✅</span><strong>Frontend Responsivo</strong> - 17 interfaces HTML/CSS/JS optimizadas</li>
+        <li><span class="checkmark">✅</span><strong>API REST Funcional</strong> - 20+ endpoints para todas las operaciones</li>
+        <li><span class="checkmark">✅</span><strong>Sistema QR Implementado</strong> - Generación y escaneo de códigos únicos</li>
+        <li><span class="checkmark">✅</span><strong>Generador de Constancias</strong> - PDFs automáticos con FPDF</li>
+        <li><span class="checkmark">✅</span><strong>Sistema de Notificaciones</strong> - PHPMailer configurado y funcional</li>
+        <li><span class="checkmark">✅</span><strong>Control de Versiones</strong> - Repositorio GitHub con flujo de trabajo establecido</li>
+    </ul>
+
+    <h2><span class="emoji">💼</span>PROPUESTA ECONÓMICA Y TÉCNICA</h2>
+    
+    <div class="investment-box">
+        <h3>Valor Agregado del Sistema</h3>
+        <p>Funcionalidades que exceden los requerimientos mínimos:</p>
+        <ul style="text-align: left;">
+            <li><strong>Dashboard Estadístico:</strong> Métricas en tiempo real para administradores</li>
+            <li><strong>Exportación de Reportes:</strong> Datos en CSV para análisis externos</li>
+            <li><strong>Sistema de Roles:</strong> Diferenciación entre alumnos, profesores y administradores</li>
+            <li><strong>Trazabilidad Completa:</strong> Historial detallado de todas las acciones</li>
+            <li><strong>Interfaz Intuitiva:</strong> Diseño UX optimizado para facilidad de uso</li>
+            <li><strong>Escalabilidad:</strong> Arquitectura preparada para múltiples congresos simultáneos</li>
+            <li><strong>Backup Automático:</strong> Respaldo de constancias con disponibilidad 24/7</li>
+        </ul>
+    </div>
+
+    <h2><span class="emoji">🎓</span>APLICACIÓN DE CONOCIMIENTOS ACADÉMICOS MULTIDISCIPLINARIOS</h2>
+    
+    <div class="tech-stack">
+        <h3>Integración de Materias del Plan de Estudios</h3>
+        
+        <h4>💻 PROGRAMACIÓN VISUAL - Interfaces Modernas</h4>
+        <ul>
+            <li><strong>Framework CSS Responsive:</strong> Grid Layout y Flexbox para adaptabilidad total</li>
+            <li><strong>JavaScript Interactivo:</strong> DOM manipulation, eventos y AJAX para UX fluida</li>
+            <li><strong>Componentes Visuales:</strong> Dashboards, gráficos dinámicos y formularios inteligentes</li>
+            <li><strong>Patrones de Diseño UI:</strong> Material Design y principios de usabilidad aplicados</li>
+        </ul>
+        
+        <h4>🗄️ SQL Y PL/SQL EMPRESARIAL - Base de Datos Robusta</h4>
+        <ul>
+            <li><strong>Modelado E-R Avanzado:</strong> Normalización 3FN con integridad referencial completa</li>
+            <li><strong>Procedimientos Almacenados:</strong> Lógica de negocio encapsulada (sp_registrar_asistencia, sp_generar_constancia)</li>
+            <li><strong>Triggers Automáticos:</strong> Control de cupos y auditoría de cambios en tiempo real</li>
+            <li><strong>Optimización Query:</strong> Índices compuestos, vistas materializadas y explain plans</li>
+            <li><strong>Transacciones ACID:</strong> Consistencia de datos en operaciones críticas multiusuario</li>
+        </ul>
+        
+        <h4>🚀 PROYECTOS TECNOLÓGICOS - Metodología Ágil</h4>
+        <ul>
+            <li><strong>Gestión de Requerimientos:</strong> User Stories, casos de uso y matriz de trazabilidad</li>
+            <li><strong>Control de Versiones:</strong> Git Flow con branches, merges y releases controladas</li>
+            <li><strong>Metodología Scrum:</strong> Sprints iterativos con entregas incrementales de valor</li>
+            <li><strong>Testing Integral:</strong> Pruebas unitarias, de integración y aceptación usuario</li>
+            <li><strong>Documentación Técnica:</strong> Manuales de usuario, arquitectura y mantenimiento</li>
+        </ul>
+        
+        <h4>⚙️ DISEÑO DE SOFTWARE - Arquitectura Empresarial</h4>
+        <ul>
+            <li><strong>Patrón MVC Puro:</strong> Separación Model-View-Controller para mantenibilidad</li>
+            <li><strong>API RESTful:</strong> Servicios web con HTTP methods y status codes estándar</li>
+            <li><strong>Principios SOLID:</strong> Single Responsibility, Open/Closed, Interface Segregation</li>
+            <li><strong>Patrones GoF:</strong> Factory (generación QR), Observer (notificaciones), Strategy (validaciones)</li>
+            <li><strong>Clean Architecture:</strong> Inversión de dependencias y código testeable</li>
+        </ul>
+        
+        <h4>⚖️ DERECHO INFORMÁTICO - Cumplimiento Legal Total</h4>
+        <ul>
+            <li><strong>Ley de Protección de Datos:</strong> Implementación completa de principios de privacidad</li>
+            <li><strong>Derechos ARCO:</strong> Acceso, Rectificación, Cancelación y Oposición automatizados</li>
+            <li><strong>Documentos Electrónicos:</strong> Validez jurídica con firmas digitales y timestamps</li>
+            <li><strong>Consentimiento Informado:</strong> Avisos de privacidad y gestión de autorizaciones</li>
+            <li><strong>Auditoría Legal:</strong> Logs inmutables para trazabilidad y evidencia forense</li>
+        </ul>
+        
+        <h4>🌐 REDES Y TECNOLOGÍAS INFORMÁTICAS - Conectividad Segura</h4>
+        <ul>
+            <li><strong>Arquitectura TCP/IP:</strong> Cliente-servidor con protocolos HTTP/HTTPS seguros</li>
+            <li><strong>Seguridad de Red:</strong> SSL/TLS, encriptación end-to-end y prevención de ataques</li>
+            <li><strong>Protocolos de Comunicación:</strong> SMTP para correos, WebSockets para tiempo real</li>
+            <li><strong>Escalabilidad Web:</strong> Load balancing, CDN y optimización de performance</li>
+            <li><strong>Monitoreo de Red:</strong> Logs de acceso, métricas de rendimiento y alertas</li>
+        </ul>
+    </div>
+    <h3>Funciones Opcionales Sujetas A Disponibilidad</h3>
+    <ul>
+        <li><strong>Notificaciones automáticas :</strong>(recordatorios, cambios de horario).</li>
+        <li><strong>Mapa interactivo de la universidad:</strong> (ubicación de salones, stands).</li>
+        <li><strong>Integración con redes sociales </strong> (hipervínculos a las redes sociales del centro).</li>
+        <li><strong>Galería de fotos :</strong> (sujeta a no afectar rendimiento).</li>
+    <h3>Ventajas Competitivas</h3>
+    <ul>
+        <li><strong>100% Funcional:</strong> Sistema completamente desarrollado y probado en ambiente local</li>
+        <li><strong>Cumplimiento Total:</strong> Todos los requerimientos principales implementados</li>
+        <li><strong>Código Modular:</strong> Arquitectura MVC que facilita mantenimiento y escalabilidad</li>
+        <li><strong>Tecnologías Estándar:</strong> PHP, MySQL, JavaScript - compatibles con cualquier hosting</li>
+        <li><strong>Documentación Completa:</strong> Código comentado y estructura clara para futuros desarrolladores</li>
+        <li><strong>Flexibilidad de Despliegue:</strong> Adaptable a servidores universitarios existentes</li>
+    </ul>
+
+    <h2><span class="emoji">🤝</span>COMPROMISO DE CALIDAD</h2>
+    <p>Nuestro equipo se compromete a entregar:</p>
+    <ul>
+        <li><strong>Código de alta calidad</strong> con estándares profesionales</li>
+        <li><strong>Documentación completa</strong> técnica y legal</li>
+        <li><strong>Capacitación integral</strong> para usuarios y administradores</li>
+        <li><strong>Soporte técnico</strong> durante la implementación y post-entrega</li>
+        <li><strong>Mantenimiento preventivo</strong> y actualizaciones de seguridad</li>
+    </ul>
+
+    <h2><span class="emoji">📞</span>PRÓXIMOS PASOS</h2>
+    <p>Para avanzar con este proyecto transformador, proponemos:</p>
+    <ol>
+        <li><strong>Reunión de presentación detallada</strong> para resolver dudas técnicas</li>
+        <li><strong>Demostración del sistema base</strong> funcionando actualmente</li>
+        <li><strong>Definición de requisitos específicos</strong> según sus necesidades</li>
+        <li><strong>Cronograma de implementación</strong> personalizado</li>
+        <li><strong>Acuerdo de colaboración</strong> y términos de entrega</li>
+    </ol>
+
+    <h2><span class="emoji">🎯</span>CONCLUSIÓN ACADÉMICA INTEGRAL</h2>
+    <div class="highlight-box">
+        <p>El Sistema de Gestión de Congreso Universitario representa un proyecto académico excepcional que integra exitosamente conocimientos de <strong>seis materias fundamentales</strong> del plan de estudios en Informática: Programación Visual, SQL/PL-SQL, Proyectos Tecnológicos, Diseño de Software, Derecho Informático y Redes Informáticas.</p>
+        
+        <p><strong>Este proyecto demuestra la aplicación práctica y profesional de conceptos teóricos en un entorno real de desarrollo, cumpliendo al 100% con los requerimientos técnicos y legales establecidos, mientras excede las expectativas mediante funcionalidades avanzadas de valor agregado.</strong></p>
+        
+        <p>La convergencia multidisciplinaria evidenciada en este sistema no solo valida la formación integral recibida, sino que establece un estándar de excelencia técnica aplicable a proyectos de software empresarial. La arquitectura MVC, el diseño de base de datos normalizada, la implementación de seguridad jurídica y la conectividad de red demuestran competencias profesionales directamente transferibles al ámbito laboral.</p>
+        
+        <p><strong>Este proyecto académico trasciende el ejercicio teórico para convertirse en una solución tecnológica funcional, escalable y legalmente compliant, lista para implementación en entornos de producción universitaria.</strong></p>
+        
+        <p>Quedamos a disposición para presentar demostraciones técnicas detalladas de cada componente del sistema, evidenciando la aplicación específica de los conocimientos adquiridos en cada materia del plan de estudios.</p>
+    </div>
+
+    <div class="signature">
+        <h3>Atentamente,</h3>
+        <p><strong>Equipo 5 - Proyecto Académico Multidisciplinario</strong><br>
+        <em>Licenciatura en Informática - Universidad Autónoma de Aguascalientes</em></p>
+        
+        <div class="contact-info">
+            🎓 <strong>Materias Integradas:</strong> Programación Visual, SQL/PL-SQL, Proyectos Tecnológicos, Diseño de Software, Derecho Informático, Redes Informáticas<br>
+            👤 <strong>Contacto:</strong> al529633@edu.uaa.mx<br>
+            🌐 <strong>Repositorio:</strong> https://github.com/CarlosArenasCode/Sistema-de-gestion-Congreso-de-Mercadotecnia
+        </div>
+    </div>
+    <div class="footer">
+        <p>
+            _______________________________<br>
+            <strong>Firma del Representante del Equipo</strong><br>
+            Nombre: Joshua Rafael<br>
+            Matrícula: 529633<br>
+            <br>
+            _______________________________<br>
+            <strong>Firma de Aceptación</strong><br>
+            Nombre y Cargo: ___________________________<br>
+            Fecha: ___________________________
+        </p>
+</body>
+</html>

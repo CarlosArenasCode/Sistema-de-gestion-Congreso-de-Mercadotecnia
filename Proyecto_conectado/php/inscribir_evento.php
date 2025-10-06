@@ -81,6 +81,15 @@ try {
     $stmt->execute();
 
     $pdo->commit();
+    // Enviar notificación por correo al usuario sobre la inscripción
+    try {
+        require_once __DIR__ . '/send_notifications.php';
+        // enviar (no detener el flujo si falla)
+        sendRegistrationToUser($pdo, $id_usuario, $id_evento);
+    } catch (Exception $e) {
+        error_log('Error enviando notificación de inscripción: ' . $e->getMessage());
+    }
+
     echo json_encode(['success' => true, 'message' => 'Inscripción exitosa.']);
 
 } catch (PDOException $e) {

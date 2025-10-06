@@ -14,7 +14,7 @@
     <main class="recovery-container">
         <h2>Recuperar Contraseña</h2>
         <p>Ingresa tu ID Universitario o correo electrónico registrado para enviarte las instrucciones.</p>
-        <form id="recovery-form" action="/ruta-backend-recuperar" method="POST">
+    <form id="recovery-form" action="../php/recuperar_pass.php" method="POST">
             <div class="form-group">
                 <label for="recovery-input">ID Universitario o Correo Electrónico:</label>
                 <input type="text" id="recovery-input" name="recovery_input" required>
@@ -32,5 +32,32 @@
         <p>&copy; 2025 Universidad Autonoma de Aguascalientes.</p>
     </footer>
 
-     <script src="js/recovery.js"></script> </body>
+    <script>
+    // Enviar formulario por fetch y mostrar mensaje en la misma página
+    document.getElementById('recovery-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const input = document.getElementById('recovery-input').value;
+        const form = new FormData();
+        form.append('recovery_input', input);
+        fetch('../php/recuperar_pass.php', { method: 'POST', body: form })
+            .then(async r => {
+                const text = await r.text();
+                try {
+                    const j = JSON.parse(text);
+                    const msg = document.getElementById('recovery-message');
+                    msg.style.display = 'block';
+                    msg.textContent = j.message || 'Operación completada.';
+                } catch (e) {
+                    const msg = document.getElementById('recovery-message');
+                    msg.style.display = 'block';
+                    msg.textContent = 'Respuesta inesperada del servidor: ' + (text || r.statusText || r.status);
+                }
+            }).catch(err => {
+                const msg = document.getElementById('recovery-message');
+                msg.style.display = 'block';
+                msg.textContent = 'Error de red o conexión: ' + (err.message || err);
+            });
+    });
+    </script>
+    </body>
 </html>

@@ -273,12 +273,29 @@ docker stats
 
 ---
 
+## 🧪 Validación Completa
+
+Para validar que todo funcione correctamente, ejecuta el script de validación:
+
+```powershell
+.\validate-docker.ps1
+```
+
+Este script verifica:
+- ✅ Docker está instalado y funcionando
+- ✅ Todos los servicios están corriendo
+- ✅ Conectividad web a aplicación, phpMyAdmin y backend PHP
+- ✅ URLs de acceso disponibles
+
+---
+
 ## 📞 Soporte
 
 Si encuentras problemas, verifica:
 1. Los logs de Docker: `docker-compose logs -f`
 2. Que Docker Desktop esté corriendo
 3. Que los puertos no estén en uso por otros servicios
+4. Ejecuta `.\validate-docker.ps1` para diagnóstico automático
 
 ---
 

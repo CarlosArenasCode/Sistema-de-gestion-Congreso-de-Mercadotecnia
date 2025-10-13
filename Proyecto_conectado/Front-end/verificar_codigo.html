@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificar Código - Congreso</title>
+    <link rel="stylesheet" href="../CSS/style.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .verificacion-container {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+        }
+        .verificacion-container h2 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .verificacion-container .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        .verificacion-container .email-display {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: #E4007C;
+        }
+        .codigo-inputs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 30px 0;
+        }
+        .codigo-inputs input {
+            width: 50px;
+            height: 60px;
+            font-size: 24px;
+            text-align: center;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            transition: border-color 0.3s ease;
+        }
+        .codigo-inputs input:focus {
+            outline: none;
+            border-color: #E4007C;
+        }
+        .verificacion-container button {
+            width: 100%;
+            padding: 12px;
+            background-color: #E4007C;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+        .verificacion-container button:hover {
+            background-color: #c00069;
+        }
+        .verificacion-container button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .resend-link {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+        .resend-link a {
+            color: #E4007C;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .resend-link a:hover {
+            text-decoration: underline;
+        }
+        .info-box {
+            background-color: #e8f4fd;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: left;
+            font-size: 14px;
+            border-radius: 4px;
+        }
+        .error-message {
+            background-color: #ffebee;
+            color: #c62828;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            display: none;
+        }
+        .success-message {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="verificacion-container">
+        <h2>🔐 Verifica tu Cuenta</h2>
+        <p class="subtitle">Ingresa el código de 6 dígitos que enviamos a:</p>
+        <div class="email-display" id="email-display"></div>
+
+        <div class="error-message" id="error-message"></div>
+        <div class="success-message" id="success-message"></div>
+
+        <div class="info-box">
+            <strong>📧 Email y 📱 SMS enviados</strong><br>
+            Revisa tu correo electrónico y mensajes de texto. El código expira en 15 minutos.
+        </div>
+
+        <form id="form-verificacion" action="../php/verificar_codigo.php" method="POST">
+            <input type="hidden" name="email" id="email-input">
+            <div class="codigo-inputs">
+                <input type="text" maxlength="1" class="codigo-digit" id="digit1" name="digit1" required autofocus>
+                <input type="text" maxlength="1" class="codigo-digit" id="digit2" name="digit2" required>
+                <input type="text" maxlength="1" class="codigo-digit" id="digit3" name="digit3" required>
+                <input type="text" maxlength="1" class="codigo-digit" id="digit4" name="digit4" required>
+                <input type="text" maxlength="1" class="codigo-digit" id="digit5" name="digit5" required>
+                <input type="text" maxlength="1" class="codigo-digit" id="digit6" name="digit6" required>
+            </div>
+            <button type="submit" id="btn-verificar">Verificar Cuenta</button>
+        </form>
+
+        <div class="resend-link">
+            ¿No recibiste el código? <a href="#" id="reenviar-codigo">Reenviar código</a>
+        </div>
+    </div>
+
+    <script>
+        // Obtener email del URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const email = urlParams.get('email');
+        
+        if (email) {
+            document.getElementById('email-display').textContent = email;
+            document.getElementById('email-input').value = email;
+        } else {
+            window.location.href = 'registro_usuario.html';
+        }
+
+        // Auto-focus en siguiente campo
+        const inputs = document.querySelectorAll('.codigo-digit');
+        inputs.forEach((input, index) => {
+            input.addEventListener('input', (e) => {
+                if (e.target.value.length === 1 && index < inputs.length - 1) {
+                    inputs[index + 1].focus();
+                }
+            });
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && e.target.value === '' && index > 0) {
+                    inputs[index - 1].focus();
+                }
+            });
+
+            // Solo permitir números
+            input.addEventListener('input', (e) => {
+                e.target.value = e.target.value.replace(/[^0-9]/g, '');
+            });
+        });
+
+        // Manejar envío del formulario
+        document.getElementById('form-verificacion').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const btn = document.getElementById('btn-verificar');
+            btn.disabled = true;
+            btn.textContent = 'Verificando...';
+
+            const formData = new FormData(e.target);
+            
+            try {
+                const response = await fetch('../php/verificar_codigo.php', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    document.getElementById('success-message').textContent = result.message;
+                    document.getElementById('success-message').style.display = 'block';
+                    document.getElementById('error-message').style.display = 'none';
+                    
+                    setTimeout(() => {
+                        window.location.href = 'login.html?verificado=true';
+                    }, 2000);
+                } else {
+                    document.getElementById('error-message').textContent = result.message;
+                    document.getElementById('error-message').style.display = 'block';
+                    document.getElementById('success-message').style.display = 'none';
+                    btn.disabled = false;
+                    btn.textContent = 'Verificar Cuenta';
+                }
+            } catch (error) {
+                document.getElementById('error-message').textContent = 'Error de conexión. Inténtalo de nuevo.';
+                document.getElementById('error-message').style.display = 'block';
+                btn.disabled = false;
+                btn.textContent = 'Verificar Cuenta';
+            }
+        });
+
+        // Reenviar código
+        document.getElementById('reenviar-codigo').addEventListener('click', async (e) => {
+            e.preventDefault();
+            
+            const link = e.target;
+            link.textContent = 'Reenviando...';
+            
+            try {
+                const response = await fetch('../php/reenviar_codigo.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'email=' + encodeURIComponent(email)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    document.getElementById('success-message').textContent = 'Código reenviado exitosamente';
+                    document.getElementById('success-message').style.display = 'block';
+                    link.textContent = 'Reenviar código';
+                } else {
+                    document.getElementById('error-message').textContent = result.message;
+                    document.getElementById('error-message').style.display = 'block';
+                    link.textContent = 'Reenviar código';
+                }
+            } catch (error) {
+                document.getElementById('error-message').textContent = 'Error al reenviar código';
+                document.getElementById('error-message').style.display = 'block';
+                link.textContent = 'Reenviar código';
+            }
+        });
+    </script>
+</body>
+</html>

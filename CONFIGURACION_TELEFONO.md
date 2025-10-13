@@ -1,36 +1,42 @@
-# 📱 Configuración de Número de Teléfono Fijo para Verificación
+# 📱 Configuración de Número Emisor para SMS
 
 ## 🎯 Objetivo
 
-Todos los códigos de verificación de 6 dígitos se enviarán a **UN SOLO número de teléfono** (el tuyo). Los usuarios NO necesitan ingresar su teléfono durante el registro.
+Tu número **+52 449 210 6893** será el número EMISOR (FROM) desde el cual se enviarán TODOS los códigos de verificación. Cada usuario recibirá el código en SU PROPIO número de teléfono que registre.
 
 ---
 
-## ⚙️ Configuración (1 PASO SIMPLE)
+## ⚙️ Configuración
 
-### **Edita el archivo de configuración:**
+### **Tu número ya está configurado:**
 
 **Archivo:** `Proyecto_conectado/php/verificacion_config.php`
 
 ```php
 <?php
-// ⚠️ CAMBIAR ESTE NÚMERO POR TU NÚMERO REAL
-define('TELEFONO_VERIFICACION_ADMIN', '+52123456789'); // TU NÚMERO AQUÍ
+// TU NÚMERO EMISOR (FROM) - Desde donde se envían los SMS
+define('TELEFONO_EMISOR', '+5244921068393'); // +52 449 210 6893
 
-// Modo desarrollo: true = SMS se guardan en log, false = se envían realmente
-define('SMS_MODE_DESARROLLO', true); // Cambiar a false cuando uses Twilio
+// Modo desarrollo: SMS se guardan en log (no se envían realmente)
+define('SMS_MODE_DESARROLLO', true);
 
-// Incluir nombre del usuario en el SMS
-define('SMS_ADMIN_PREFIX', true);
+// Credenciales de Twilio (necesario para envío real)
+define('TWILIO_ACCOUNT_SID', 'your_account_sid_here');
+define('TWILIO_AUTH_TOKEN', 'your_auth_token_here');
 ?>
 ```
 
-### **Formato del Número:**
-```
-+52 123 456 7890  ← Correcto (México)
-+1 234 567 8900   ← Correcto (USA)
-+34 612 345 678   ← Correcto (España)
-```
+### **Para envío REAL de SMS:**
+
+1. **Crea cuenta en Twilio:** https://www.twilio.com/
+2. **Verifica tu número:** +52 449 210 6893 en Twilio Console
+3. **Obtén credenciales:** Account SID y Auth Token
+4. **Actualiza verificacion_config.php:**
+   ```php
+   define('SMS_MODE_DESARROLLO', false); // ← Cambiar a false
+   define('TWILIO_ACCOUNT_SID', 'AC1234...'); // Tu SID
+   define('TWILIO_AUTH_TOKEN', 'abc123...'); // Tu Token
+   ```
 
 ---
 
@@ -38,28 +44,33 @@ define('SMS_ADMIN_PREFIX', true);
 
 ```
 1. USUARIO SE REGISTRA
-   ├─ Completa formulario (SIN teléfono)
-   ├─ Click en "Registrarse"
-   └─ Sistema genera código de 6 dígitos
+   ├─ Nombre: Juan Pérez
+   ├─ Email: juan@ejemplo.com
+   ├─ Teléfono: +52 449 123 4567  ← SU número
+   └─ Click en "Registrarse"
 
-2. SISTEMA ENVÍA CÓDIGO
-   ├─ 📧 Email → Al usuario
-   └─ 📱 SMS → A TU número fijo
+2. SISTEMA GENERA CÓDIGO
+   └─ Código: 123456
 
-3. TÚ RECIBES EL SMS
+3. SISTEMA ENVÍA SMS
+   ├─ FROM (Emisor): +52 449 210 6893 (TU número)
+   └─ TO (Destino): +52 449 123 4567 (número del usuario)
+
+4. USUARIO RECIBE SMS
    ┌──────────────────────────────┐
-   │ 🔐 CÓDIGO DE VERIFICACIÓN    │
+   │ De: +52 449 210 6893         │
    │                               │
-   │ Usuario: Juan Pérez           │
-   │ Email: juan@ejemplo.com       │
+   │ Hola Juan Pérez,              │
    │                               │
-   │ Código: 123456                │
+   │ Tu código de verificación:    │
+   │ 🔐 123456                     │
    │                               │
    │ Expira en 15 minutos.         │
    └──────────────────────────────┘
 
-4. LE DAS EL CÓDIGO AL USUARIO
-   └─ Usuario lo ingresa en la página
+5. USUARIO INGRESA CÓDIGO
+   └─ Va a verificar_codigo.html e ingresa 123456
+   └─ ¡Cuenta activada! ✅
 ```
 
 ---

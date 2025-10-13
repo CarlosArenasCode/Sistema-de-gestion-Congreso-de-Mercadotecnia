@@ -11,7 +11,6 @@ error_reporting(E_ALL);
 require 'conexion.php';
 require 'send_notifications.php';
 require 'sms_service.php';
-require 'verificacion_config.php';
 
 try {
     $email = $_POST['email'] ?? '';
@@ -108,8 +107,10 @@ try {
 
     send_email($email, $asunto, $mensaje_email);
 
-    // Enviar por SMS al número fijo del administrador
-    enviar_codigo_verificacion_sms($nuevo_codigo, $usuario['nombre_completo'], $email);
+    // Enviar por SMS al número del USUARIO
+    // FROM: +52 449 210 6893 (tu número emisor)
+    // TO: $usuario['telefono'] (número del usuario)
+    enviar_codigo_verificacion_sms($usuario['telefono'], $nuevo_codigo, $usuario['nombre_completo']);
 
     error_log("Código reenviado a: " . $email);
 

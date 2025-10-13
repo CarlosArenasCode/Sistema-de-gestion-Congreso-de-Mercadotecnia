@@ -9,16 +9,13 @@
  * 3. Configura las constantes abajo
  */
 
-// Configuración de Twilio (¡NO SUBIR A REPOSITORIO PÚBLICO!)
-// Mejor práctica: usar variables de entorno o archivo de configuración separado
-define('TWILIO_ACCOUNT_SID', 'your_account_sid_here');
-define('TWILIO_AUTH_TOKEN', 'your_auth_token_here');
-define('TWILIO_PHONE_NUMBER', '+1234567890'); // Tu número de Twilio
+// La configuración de Twilio ahora está en verificacion_config.php
+// Este archivo solo contiene las funciones de envío
 
 /**
  * Envía SMS usando Twilio API o modo simulado
  * 
- * @param string $to Número de teléfono destino (formato: +521234567890)
+ * @param string $to Número de teléfono DESTINO del usuario (formato: +521234567890)
  * @param string $message Mensaje a enviar
  * @return bool True si se envió correctamente, False en caso contrario
  */
@@ -32,7 +29,8 @@ function enviar_sms($to, $message) {
     }
     
     // Validar que Twilio esté configurado
-    if (TWILIO_ACCOUNT_SID === 'your_account_sid_here' || 
+    if (!defined('TWILIO_ACCOUNT_SID') || !defined('TWILIO_AUTH_TOKEN') ||
+        TWILIO_ACCOUNT_SID === 'your_account_sid_here' || 
         TWILIO_AUTH_TOKEN === 'your_auth_token_here') {
         error_log("SMS Service: Twilio no está configurado. Usando modo simulado.");
         return enviar_sms_simulado($to, $message);
@@ -42,9 +40,11 @@ function enviar_sms($to, $message) {
     $url = "https://api.twilio.com/2010-04-01/Accounts/" . TWILIO_ACCOUNT_SID . "/Messages.json";
 
     // Datos del mensaje
+    // FROM = Tu número (+52 449 210 6893) - el EMISOR
+    // TO = Número del usuario - el RECEPTOR
     $data = array(
-        'To' => $to,
-        'From' => TWILIO_PHONE_NUMBER,
+        'To' => $to,                    // Número del USUARIO (destino)
+        'From' => TELEFONO_EMISOR,      // TU número (emisor)
         'Body' => $message
     );
 
@@ -72,33 +72,27 @@ function enviar_sms($to, $message) {
 }
 
 /**
- * Envía código de verificación por SMS al número configurado del administrador
+ * Envía código de verificación por SMS al número del USUARIO
  * 
+ * @param string $telefono_usuario Número de teléfono del USUARIO (destino)
  * @param string $codigo Código de verificación de 6 dígitos
- * @param string $nombre_usuario Nombre del usuario que se está registrando
- * @param string $email Email del usuario que se está registrando
+ * @param string $nombre_usuario Nombre del usuario (opcional)
  * @return bool
  */
-function enviar_codigo_verificacion_sms($codigo, $nombre_usuario = '', $email = '') {
-    require_once __DIR__ . '/verificacion_config.php';
+function enviar_codigo_verificacion_sms($telefono_usuario, $codigo, $nombre_usuario = '') {
+    $saludo = $nombre_usuario ? "Hola {$nombre_usuario}," : "Hola,";
     
-    // Usar el teléfono del administrador configurado
-    $telefono_destino = TELEFONO_VERIFICACION_ADMIN;
+    $mensaje = "{$saludo}\n\n"
+             . "Tu código de verificación para el Congreso de Mercadotecnia es:\n\n"
+             . "🔐 {$codigo}\n\n"
+             . "Este código expira en 15 minutos.\n"
+             . "No compartas este código con nadie.\n\n"
+             . "Si no solicitaste este código, ignora este mensaje.";
     
-    // Si está configurado, incluir información del usuario
-    if (defined('SMS_ADMIN_PREFIX') && SMS_ADMIN_PREFIX === true && $nombre_usuario) {
-        $mensaje = "🔐 CÓDIGO DE VERIFICACIÓN\n\n"
-                 . "Usuario: {$nombre_usuario}\n"
-                 . "Email: {$email}\n\n"
-                 . "Código: {$codigo}\n\n"
-                 . "Expira en 15 minutos.";
-    } else {
-        $mensaje = "🔐 Código de verificación:\n\n"
-                 . "{$codigo}\n\n"
-                 . "Expira en 15 minutos.";
-    }
-    
-    return enviar_sms($telefono_destino, $mensaje);
+    // Enviar SMS al número del usuario
+    // FROM: +52 449 210 6893 (tu número emisor)
+    // TO: $telefono_usuario (número del usuario)
+    return enviar_sms($telefono_usuario, $mensaje);
 }
 
 /**

@@ -7,22 +7,19 @@ error_reporting(E_ALL);
 require 'conexion.php';
 require 'send_notifications.php'; // Para envío de emails
 require 'sms_service.php'; // Para envío de SMS
-require 'verificacion_config.php'; // Para número de teléfono fijo
 
 // Datos recibidos del formulario
 $nombre_completo = $_POST['nombre_completo'] ?? '';
 $email = $_POST['email'] ?? '';
 $matricula = $_POST['matricula'] ?? '';
 $semestre = $_POST['Semestre'] ?? '';
+$telefono = $_POST['telefono'] ?? ''; // Teléfono del USUARIO
 $password = $_POST['password'] ?? '';
 $password_confirm = $_POST['password_confirm'] ?? '';
 $rol = $_POST['rol'] ?? 'alumno'; 
 
-// Usar teléfono fijo del administrador para todas las verificaciones
-$telefono = TELEFONO_VERIFICACION_ADMIN;
-
 // Validación básica
-if (empty($nombre_completo) || empty($email) || empty($matricula) || empty($password)) {
+if (empty($nombre_completo) || empty($email) || empty($matricula) || empty($telefono) || empty($password)) {
     echo "Error: Todos los campos son obligatorios (excepto semestre para profesores).";
     exit;
 }
@@ -36,6 +33,9 @@ if ($password !== $password_confirm) {
     echo "Error: Las contraseñas no coinciden.";
     exit;
 }
+
+// Formatear teléfono del usuario
+$telefono = formatear_telefono($telefono);
 
 $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
@@ -111,8 +111,10 @@ try {
 
     send_email($email, $asunto, $mensaje_email);
 
-    // Enviar código por SMS al número fijo del administrador
-    enviar_codigo_verificacion_sms($codigo_verificacion, $nombre_completo, $email);
+    // Enviar código por SMS al número del USUARIO
+    // FROM: +52 449 210 6893 (tu número emisor)
+    // TO: $telefono (número del usuario)
+    enviar_codigo_verificacion_sms($telefono, $codigo_verificacion, $nombre_completo);
 
     // Redirigir a página de verificación
     header("Location: ../Front-end/verificar_codigo.html?email=" . urlencode($email));

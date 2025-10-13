@@ -1,8 +1,40 @@
-# Bienvenido al Proyecto Sistema de gestión Congreso de Mercadotecnia
+# 🎓 Sistema de Gestión - Congreso de Mercadotecnia
+
+¡Bienvenido al sistema de gestión integral para eventos de Mercadotecnia! Este proyecto permite gestionar inscripciones, asistencias, y emisión de constancias de manera automatizada.
+
+## 🚀 Inicio Rápido con Docker
+
+### Requisitos Previos
+- [Docker Desktop](https://www.docker.com/products/docker-desktop) instalado
+- Git (opcional)
+
+### Levantar el Proyecto en 1 Comando
+```powershell
+# Windows (PowerShell)
+.\start-docker.ps1
+
+# Alternativamente (multiplataforma)
+docker compose up -d
+```
+
+### URLs de Acceso
+- **📱 Aplicación Web:** http://localhost:8080/Front-end/login.html  
+- **🗄️ phpMyAdmin:** http://localhost:8081 (usuario: `congreso_user`, contraseña: `congreso_pass`)
+
+### Detener el Proyecto
+```bash
+docker compose down
+```
+
+Para más detalles sobre Docker, consulta el [**📖 README_DOCKER.md**](./README_DOCKER.md)
+
+---
+
+## 🤝 Colaboración y Flujo de Trabajo
 
 ¡Hola equipo!
 
-Este documento es nuestra guía fundamental para colaborar en este proyecto. Su propósito es establecer un flujo de trabajo claro y consistente utilizando Git y GitHub. Seguir estas reglas nos ayudará a mantener un código de alta calidad, evitar errores y trabajar de manera más eficiente.
+Esta sección es nuestra guía fundamental para colaborar en este proyecto. Su propósito es establecer un flujo de trabajo claro y consistente utilizando Git y GitHub. Seguir estas reglas nos ayudará a mantener un código de alta calidad, evitar errores y trabajar de manera más eficiente.
 
 ## Principios Fundamentales
 
@@ -125,8 +157,38 @@ Para garantizar la calidad y estabilidad de nuestro código, hemos configurado l
 - [Visual Studio Code](https://code.visualstudio.com/) (con extensión de Git)
 
 ## Errores Comunes y Soluciones
+
+### 🐳 Problemas con Docker
+- **Error "Docker no encontrado":** Instala [Docker Desktop](https://www.docker.com/products/docker-desktop)
+- **Puerto ocupado (8080/8081/3306):** Detén otros servicios con `docker compose down` o cambia los puertos en `docker-compose.yml`
+- **Base de datos no inicializa:** Elimina el volumen con `docker compose down -v` y vuelve a levantar
+- **Permisos en Windows:** Ejecuta PowerShell como administrador
+
+### 🔧 Problemas de Desarrollo
 - **Conflictos de merge:** Sigue las instrucciones de Git, resuelve los archivos en conflicto y haz un commit.
 - **Olvidé referenciar el Issue:** Puedes editar el mensaje del commit con `git commit --amend` o agregar la referencia en el PR.
+
+### 📧 Configuración SMTP (Opcional)
+Para habilitar recuperación de contraseñas:
+1. Edita `Proyecto_conectado/php/smtp_config.php` con tus credenciales
+2. Configura las variables en `.env`:
+```bash
+SMTP_HOST=smtp.office365.com
+SMTP_USER=tu_email@ejemplo.com
+SMTP_PASS=tu_contraseña_app
+```
+
+### 🧪 Verificar Funcionamiento
+```bash
+# Probar backend PHP
+curl http://localhost:8080/php/test_ping.php
+
+# Ver logs en tiempo real
+docker compose logs -f
+
+# Verificar estado de servicios
+docker compose ps
+```
 
 ---
 

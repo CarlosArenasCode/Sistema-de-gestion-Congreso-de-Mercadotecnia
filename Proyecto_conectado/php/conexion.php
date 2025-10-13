@@ -1,10 +1,12 @@
 <?php
 // php/conexion.php
+// Archivo de configuración para conexión a base de datos en Docker
 
-$host = '127.0.0.1'; // o 'localhost'
-$db   = 'congreso_db';
-$user = 'root'; // Tu usuario de BD
-$pass = '';     // Tu contraseña de BD
+// Configuración para Docker (usa el nombre del servicio 'db' como host)
+$host = 'db'; // Nombre del servicio de MySQL en docker-compose.yml
+$db   = getenv('MYSQL_DATABASE') ?: 'congreso_db';
+$user = getenv('MYSQL_USER') ?: 'congreso_user';
+$pass = getenv('MYSQL_PASSWORD') ?: 'congreso_pass';
 $charset = 'utf8mb4';
 
 $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
@@ -18,8 +20,6 @@ try {
      $pdo = new PDO($dsn, $user, $pass, $options);
 } catch (\PDOException $e) {
      // En producción, loguea el error en lugar de mostrarlo
-     // error_log($e->getMessage());
-     // exit('Error de conexión a la base de datos.');
      throw new \PDOException($e->getMessage(), (int)$e->getCode());
 }
 

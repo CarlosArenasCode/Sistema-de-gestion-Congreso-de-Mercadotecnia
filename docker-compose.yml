@@ -60,10 +60,44 @@ services:
       - congreso_network
     restart: unless-stopped
 
+  # Servicio WhatsApp: Node.js con bot-whatsapp
+  whatsapp:
+    build:
+      context: ./whatsapp-service
+      dockerfile: Dockerfile
+    container_name: congreso_whatsapp
+    ports:
+      - "3001:3001"
+    volumes:
+      # Persistir sesión de WhatsApp para no tener que escanear QR cada vez
+      - whatsapp_sessions:/app/.wwebjs_auth
+      - whatsapp_cache:/app/.wwebjs_cache
+      # Desarrollo en tiempo real (descomentar para desarrollo)
+      # - ./whatsapp-service:/app
+      # - /app/node_modules
+    environment:
+      - PORT=3001
+      - WHATSAPP_NUMBER=524492106893
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_NAME=${MYSQL_DATABASE:-congreso_db}
+      - DB_USER=${MYSQL_USER:-congreso_user}
+      - DB_PASSWORD=${MYSQL_PASSWORD:-congreso_pass}
+      - NODE_ENV=production
+    depends_on:
+      - db
+    networks:
+      - congreso_network
+    restart: unless-stopped
+
 networks:
   congreso_network:
     driver: bridge
 
 volumes:
   db_data:
+    driver: local
+  whatsapp_sessions:
+    driver: local
+  whatsapp_cache:
     driver: local

@@ -1,0 +1,21 @@
+# Ignorar node_modules
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Ignorar sesiones de WhatsApp
+.wwebjs_auth/
+.wwebjs_cache/
+bot.qr.png
+
+# Ignorar variables de entorno
+.env.local
+.env.*.local
+
+# Ignorar logs
+*.log
+logs/
+
+# Ignorar archivos temporales
+*.tmp
+*.temp

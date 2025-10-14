@@ -9,7 +9,7 @@ error_reporting(E_ALL);
 
 require 'conexion.php';
 require 'send_notifications.php'; // Para envío de emails
-require 'whatsapp_service.php'; // Para envío de WhatsApp/SMS
+require 'whatsapp_client.php'; // Cliente para servicio WhatsApp en Docker
 
 // Datos recibidos del formulario
 $nombre_completo = $_POST['nombre_completo'] ?? '';
@@ -124,11 +124,18 @@ try {
 
     send_email($email, $asunto, $mensaje_email);
 
-    // Enviar código por WhatsApp/SMS al número del USUARIO
-    // FROM: +52 449 210 6893 (tu número emisor - WhatsApp Business)
+    // Enviar código por WhatsApp usando el servicio Docker
+    // FROM: +52 449 210 6893 (configurado en el servicio WhatsApp)
     // TO: $telefono (número del usuario)
-    // Se enviará por WhatsApp si USE_WHATSAPP=true, sino por SMS
-    enviar_codigo_verificacion_whatsapp($telefono, $codigo_verificacion, $nombre_completo);
+    $whatsappClient = new WhatsAppClient('http://whatsapp:3001');
+    $resultWhatsApp = $whatsappClient->sendVerificationCode($telefono, $codigo_verificacion, $nombre_completo);
+    
+    // Log del resultado (opcional)
+    if (!isset($resultWhatsApp['success']) || !$resultWhatsApp['success']) {
+        error_log("Advertencia: No se pudo enviar código por WhatsApp a {$telefono}: " . 
+                 ($resultWhatsApp['error'] ?? 'Error desconocido'));
+        // Nota: No detenemos el registro, el usuario puede verificar por email
+    }
 
     // Limpiar el buffer y redirigir a página de verificación
     ob_end_clean();

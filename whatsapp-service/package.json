@@ -1,0 +1,26 @@
+{
+  "name": "whatsapp-verification-service",
+  "version": "1.0.0",
+  "description": "Servicio de verificación de códigos por WhatsApp",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": ["whatsapp", "verification", "2fa"],
+  "author": "GJA Team",
+  "license": "MIT",
+  "dependencies": {
+    "@bot-whatsapp/bot": "^0.8.0",
+    "@bot-whatsapp/provider-baileys": "^0.8.0",
+    "@bot-whatsapp/database": "^0.8.0",
+    "express": "^4.18.2",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "mysql2": "^3.6.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}

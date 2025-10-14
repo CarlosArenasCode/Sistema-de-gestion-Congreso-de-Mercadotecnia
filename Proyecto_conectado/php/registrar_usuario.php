@@ -1,12 +1,15 @@
 <?php
 // registrar_usuario.php
 
+// Iniciar output buffering para prevenir problemas con headers
+ob_start();
+
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
 require 'conexion.php';
 require 'send_notifications.php'; // Para envío de emails
-require 'sms_service.php'; // Para envío de SMS
+require 'whatsapp_service.php'; // Para envío de WhatsApp/SMS
 
 // Datos recibidos del formulario
 $nombre_completo = $_POST['nombre_completo'] ?? '';
@@ -18,18 +21,28 @@ $password = $_POST['password'] ?? '';
 $password_confirm = $_POST['password_confirm'] ?? '';
 $rol = $_POST['rol'] ?? 'alumno'; 
 
-// Validación básica
-if (empty($nombre_completo) || empty($email) || empty($matricula) || empty($telefono) || empty($password)) {
-    echo "Error: Todos los campos son obligatorios (excepto semestre para profesores).";
+// Validación básica con mensajes específicos
+$campos_faltantes = [];
+if (empty($nombre_completo)) $campos_faltantes[] = "Nombre Completo";
+if (empty($email)) $campos_faltantes[] = "Email";
+if (empty($matricula)) $campos_faltantes[] = "Matrícula";
+if (empty($telefono)) $campos_faltantes[] = "Teléfono";
+if (empty($password)) $campos_faltantes[] = "Contraseña";
+
+if (!empty($campos_faltantes)) {
+    ob_end_clean();
+    echo "Error: Los siguientes campos son obligatorios: " . implode(", ", $campos_faltantes);
     exit;
 }
 
 if ($rol === 'alumno' && empty($semestre)) {
+    ob_end_clean();
     echo "Error: El semestre es obligatorio para los alumnos.";
     exit;
 }
 
 if ($password !== $password_confirm) {
+    ob_end_clean();
     echo "Error: Las contraseñas no coinciden.";
     exit;
 }
@@ -111,16 +124,19 @@ try {
 
     send_email($email, $asunto, $mensaje_email);
 
-    // Enviar código por SMS al número del USUARIO
-    // FROM: +52 449 210 6893 (tu número emisor)
+    // Enviar código por WhatsApp/SMS al número del USUARIO
+    // FROM: +52 449 210 6893 (tu número emisor - WhatsApp Business)
     // TO: $telefono (número del usuario)
-    enviar_codigo_verificacion_sms($telefono, $codigo_verificacion, $nombre_completo);
+    // Se enviará por WhatsApp si USE_WHATSAPP=true, sino por SMS
+    enviar_codigo_verificacion_whatsapp($telefono, $codigo_verificacion, $nombre_completo);
 
-    // Redirigir a página de verificación
+    // Limpiar el buffer y redirigir a página de verificación
+    ob_end_clean();
     header("Location: ../Front-end/verificar_codigo.html?email=" . urlencode($email));
     exit;
 
 } catch (PDOException $e) {
+    ob_end_clean(); // Limpiar buffer antes de mostrar error
     if ($e->getCode() == '23000') {
          echo "Error: El email o la matrícula ya están registrados.";
     } else {

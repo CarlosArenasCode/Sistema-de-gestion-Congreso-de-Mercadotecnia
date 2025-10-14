@@ -1586,4 +1586,3 @@ class SMTP
         return $this->last_smtp_transaction_id;
     }
 }
-define('RESET_URL_BASE', 'https://mi-dominio.com/Proyecto_conectado/Front-end');

@@ -1,10 +1,10 @@
 <?php
 /**
  * Página de Inicio - Sistema de Gestión de Congreso
- * Redirige a la pantalla principal de registro
+ * Redirige a la pantalla principal de login
  */
 
-// Redirección automática a la pantalla principal
-header('Location: /Front-end/registro_usuario.html');
+// Redirección automática al login
+header('Location: /Front-end/login.html');
 exit;
 ?>

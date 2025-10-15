@@ -20,9 +20,9 @@ El servicio de verificación por WhatsApp está **completamente funcional** y co
 ## 🌐 URLs de Acceso
 
 ### 📱 Aplicación Principal
-- **http://localhost:8080/** → Pantalla de registro de usuarios (redirección automática)
-- **http://localhost:8080/Front-end/registro_usuario.html** → Registro
+- **http://localhost:8080/** → Login de usuarios (redirección automática)
 - **http://localhost:8080/Front-end/login.html** → Login usuarios
+- **http://localhost:8080/Front-end/registro_usuario.html** → Registro
 - **http://localhost:8080/Front-end/login_admin.html** → Login administrador
 
 ### 🧪 Panel de Pruebas WhatsApp

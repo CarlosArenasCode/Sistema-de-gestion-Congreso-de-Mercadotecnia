@@ -12,7 +12,8 @@ El Document Root de Apache está configurado en `/var/www/html/Proyecto_conectad
 
 | Descripción | URL CORRECTA ✅ |
 |------------|-----------------|
-| **Página de Inicio (Registro)** | http://localhost:8080/ → Redirige automáticamente al registro |
+| **Página de Inicio (Login)** | http://localhost:8080/ → Redirige automáticamente al login |
+| **Login Usuario** | http://localhost:8080/Front-end/login.html |
 | **Registro de Usuario** | http://localhost:8080/Front-end/registro_usuario.html |
 | **Login Usuario** | http://localhost:8080/Front-end/login.html |
 | **Login Admin** | http://localhost:8080/Front-end/login_admin.html |

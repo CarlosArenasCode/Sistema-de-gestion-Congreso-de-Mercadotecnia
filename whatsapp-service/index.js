@@ -1,9 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const { createBot, createProvider, createFlow } = require('@bot-whatsapp/bot');
-const BaileysProvider = require('@bot-whatsapp/provider-baileys');
-const MockAdapter = require('@bot-whatsapp/database');
+const { Client, LocalAuth } = require('whatsapp-web.js');
+const qrcode = require('qrcode-terminal');
 require('dotenv').config();
 
 const app = express();
@@ -14,17 +13,18 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Variable global para el provider de WhatsApp
-let whatsappProvider = null;
+// Variable global para el cliente de WhatsApp
+let whatsappClient = null;
 let botStatus = 'initializing';
+let qrCode = null;
 
 // Función para normalizar número de teléfono
 function normalizePhoneNumber(phone) {
     // Eliminar espacios, guiones y paréntesis
     let normalized = phone.replace(/[\s\-\(\)]/g, '');
     
-    // Si empieza con +52, eliminar el +
-    if (normalized.startsWith('+52')) {
+    // Si empieza con +, eliminar el +
+    if (normalized.startsWith('+')) {
         normalized = normalized.substring(1);
     }
     
@@ -33,38 +33,73 @@ function normalizePhoneNumber(phone) {
         normalized = '52' + normalized;
     }
     
-    // Formato para Baileys: número@s.whatsapp.net
-    return normalized + '@s.whatsapp.net';
+    // Formato para WhatsApp Web: número@c.us
+    return normalized + '@c.us';
 }
 
-// Flow principal del bot (vacío, solo para inicializar)
-const flowPrincipal = createFlow([]);
-
-// Inicializar el bot de WhatsApp
-async function initWhatsAppBot() {
+// Inicializar el cliente de WhatsApp
+async function initWhatsAppClient() {
     try {
-        console.log('🚀 Inicializando bot de WhatsApp...');
+        console.log('🚀 Inicializando cliente de WhatsApp...');
         
-        const adapterDB = new MockAdapter();
-        const adapterProvider = createProvider(BaileysProvider, {
-            phoneNumber: process.env.WHATSAPP_NUMBER || '524492106893'
+        whatsappClient = new Client({
+            authStrategy: new LocalAuth({
+                dataPath: '/app/.wwebjs_auth'
+            }),
+            puppeteer: {
+                headless: true,
+                args: [
+                    '--no-sandbox',
+                    '--disable-setuid-sandbox',
+                    '--disable-dev-shm-usage',
+                    '--disable-accelerated-2d-canvas',
+                    '--no-first-run',
+                    '--no-zygote',
+                    '--disable-gpu'
+                ]
+            }
         });
-        
-        whatsappProvider = adapterProvider;
-        
-        await createBot({
-            flow: flowPrincipal,
-            provider: adapterProvider,
-            database: adapterDB,
+
+        // Evento: Código QR generado
+        whatsappClient.on('qr', (qr) => {
+            console.log('📱 Código QR generado. Escanea con WhatsApp:');
+            qrcode.generate(qr, { small: true });
+            qrCode = qr;
+            botStatus = 'qr_ready';
         });
-        
-        botStatus = 'ready';
-        console.log('✅ Bot de WhatsApp iniciado correctamente');
-        console.log('📱 Número configurado:', process.env.WHATSAPP_NUMBER);
+
+        // Evento: Cliente listo
+        whatsappClient.on('ready', () => {
+            botStatus = 'ready';
+            qrCode = null;
+            console.log('✅ Cliente de WhatsApp listo');
+            console.log('📱 Número configurado:', process.env.WHATSAPP_NUMBER);
+        });
+
+        // Evento: Cliente autenticado
+        whatsappClient.on('authenticated', () => {
+            console.log('🔐 Cliente autenticado correctamente');
+            botStatus = 'authenticated';
+        });
+
+        // Evento: Fallo de autenticación
+        whatsappClient.on('auth_failure', (msg) => {
+            console.error('❌ Fallo de autenticación:', msg);
+            botStatus = 'auth_failure';
+        });
+
+        // Evento: Cliente desconectado
+        whatsappClient.on('disconnected', (reason) => {
+            console.log('⚠️ Cliente desconectado:', reason);
+            botStatus = 'disconnected';
+        });
+
+        // Inicializar cliente
+        await whatsappClient.initialize();
         
     } catch (error) {
         botStatus = 'error';
-        console.error('❌ Error al iniciar bot de WhatsApp:', error);
+        console.error('❌ Error al iniciar cliente de WhatsApp:', error);
     }
 }
 
@@ -84,7 +119,8 @@ app.post('/send-verification-code', async (req, res) => {
             return res.status(503).json({
                 success: false,
                 error: 'El servicio de WhatsApp no está listo',
-                status: botStatus
+                status: botStatus,
+                qrAvailable: botStatus === 'qr_ready'
             });
         }
         
@@ -102,7 +138,7 @@ app.post('/send-verification-code', async (req, res) => {
                        `_Congreso de Mercadotecnia UAA_`;
         
         // Enviar mensaje
-        await whatsappProvider.sendText(normalizedPhone, message);
+        await whatsappClient.sendMessage(normalizedPhone, message);
         
         console.log(`✅ Código enviado a ${phone} (${normalizedPhone})`);
         
@@ -129,8 +165,31 @@ app.get('/health', (req, res) => {
         status: botStatus,
         service: 'whatsapp-verification',
         timestamp: new Date().toISOString(),
-        phoneNumber: process.env.WHATSAPP_NUMBER || '524492106893'
+        phoneNumber: process.env.WHATSAPP_NUMBER || '524492106893',
+        qrAvailable: botStatus === 'qr_ready'
     });
+});
+
+// Endpoint para obtener el código QR
+app.get('/qr', (req, res) => {
+    if (qrCode && botStatus === 'qr_ready') {
+        res.json({
+            success: true,
+            qr: qrCode,
+            message: 'Escanea este código QR con WhatsApp'
+        });
+    } else if (botStatus === 'ready') {
+        res.json({
+            success: false,
+            message: 'Ya estás autenticado, no necesitas QR'
+        });
+    } else {
+        res.json({
+            success: false,
+            message: 'Código QR no disponible',
+            status: botStatus
+        });
+    }
 });
 
 // Endpoint para probar el envío
@@ -145,6 +204,14 @@ app.post('/test-send', async (req, res) => {
             });
         }
         
+        if (botStatus !== 'ready') {
+            return res.status(503).json({
+                success: false,
+                error: 'El servicio no está listo',
+                status: botStatus
+            });
+        }
+        
         const testCode = Math.floor(100000 + Math.random() * 900000).toString();
         
         const normalizedPhone = normalizePhoneNumber(phone);
@@ -153,7 +220,7 @@ app.post('/test-send', async (req, res) => {
                        `Código de ejemplo: *${testCode}*\n\n` +
                        `_Sistema de Verificación - Congreso UAA_`;
         
-        await whatsappProvider.sendText(normalizedPhone, message);
+        await whatsappClient.sendMessage(normalizedPhone, message);
         
         res.json({
             success: true,
@@ -179,12 +246,30 @@ app.listen(PORT, () => {
     console.log(`   - POST /send-verification-code`);
     console.log(`   - POST /test-send`);
     console.log(`   - GET  /health`);
+    console.log(`   - GET  /qr`);
 });
 
-// Iniciar bot de WhatsApp
-initWhatsAppBot();
+// Iniciar cliente de WhatsApp
+initWhatsAppClient();
 
 // Manejo de errores no capturados
 process.on('unhandledRejection', (error) => {
     console.error('❌ Error no manejado:', error);
+});
+
+// Manejo de cierre graceful
+process.on('SIGINT', async () => {
+    console.log('\n⏹️ Cerrando servidor...');
+    if (whatsappClient) {
+        await whatsappClient.destroy();
+    }
+    process.exit(0);
+});
+
+process.on('SIGTERM', async () => {
+    console.log('\n⏹️ Cerrando servidor...');
+    if (whatsappClient) {
+        await whatsappClient.destroy();
+    }
+    process.exit(0);
 });

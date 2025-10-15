@@ -1,0 +1,35 @@
+# Ignorar archivos de entorno con credenciales sensibles
+.env
+
+# Ignorar datos locales de Docker
+data/
+uploads/
+constancias_pdf/
+
+# Ignorar logs
+*.log
+smtp_debug.log
+
+# Ignorar archivos de configuración local
+conexion.php
+smtp_config.php
+
+# Ignorar archivos temporales
+*.tmp
+*.bak
+*.swp
+*~
+
+# Ignorar archivos del sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Ignorar archivos de IDEs
+.vscode/
+.idea/
+*.sublime-*
+
+# Ignorar archivos de dependencias (si usas Composer en el futuro)
+vendor/
+node_modules/

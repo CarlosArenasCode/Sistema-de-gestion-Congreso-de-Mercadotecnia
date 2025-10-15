@@ -8,6 +8,7 @@ LABEL description="Servicio de verificación de códigos por WhatsApp"
 
 # Instalar dependencias del sistema
 RUN apk add --no-cache \
+    git \
     chromium \
     nss \
     freetype \
@@ -26,7 +27,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Instalar dependencias
-RUN npm ci --only=production
+RUN npm install --omit=dev
 
 # Copiar código fuente
 COPY . .

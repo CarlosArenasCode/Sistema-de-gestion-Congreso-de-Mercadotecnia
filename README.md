@@ -2,31 +2,82 @@
 
 ¡Bienvenido al sistema de gestión integral para eventos de Mercadotecnia! Este proyecto permite gestionar inscripciones, asistencias, y emisión de constancias de manera automatizada.
 
-## 🚀 Inicio Rápido con Docker
+## 🚀 Inicio Rápido con Docker (Recomendado)
 
-### Requisitos Previos
-- [Docker Desktop](https://www.docker.com/products/docker-desktop) instalado
-- Git (opcional)
+### ⚡ Requisitos Previos
+- [Docker Desktop](https://www.docker.com/products/docker-desktop) instalado y ejecutándose
+- Git (para clonar el repositorio)
+- PowerShell (Windows) o Bash (Linux/Mac)
 
-### Levantar el Proyecto en 1 Comando
+### 📦 Instalación en 3 Pasos
+
+#### 1. Clonar el repositorio
+```bash
+git clone https://github.com/CarlosArenasCode/Sistema-de-gestion-Congreso-de-Mercadotecnia.git
+cd Sistema-de-gestion-Congreso-de-Mercadotecnia
+```
+
+#### 2. Configurar variables de entorno
 ```powershell
-# Windows (PowerShell)
+# Copiar archivo de ejemplo
+Copy-Item .env.example .env
+
+# Editar con tus credenciales (opcional en desarrollo)
+notepad .env
+```
+
+#### 3. Iniciar el proyecto
+```powershell
+# Windows (PowerShell) - Script automático
 .\start-docker.ps1
 
-# Alternativamente (multiplataforma)
-docker compose up -d
+# O manualmente (multiplataforma)
+docker-compose up -d
 ```
 
-### URLs de Acceso
-- **📱 Aplicación Web:** http://localhost:8080/Front-end/login.html  
-- **🗄️ phpMyAdmin:** http://localhost:8081 (usuario: `congreso_user`, contraseña: `congreso_pass`)
+### 🌐 URLs de Acceso
 
-### Detener el Proyecto
-```bash
-docker compose down
+Una vez iniciado, accede a:
+
+| Servicio | URL | Descripción |
+|----------|-----|-------------|
+| 📱 **Aplicación Web** | http://localhost:8080/Front-end/login.html | Inicio de sesión |
+| 📝 **Registro** | http://localhost:8080/Front-end/registro_usuario.html | Registro de usuarios |
+| � **phpMyAdmin** | http://localhost:8081 | Gestión de base de datos |
+| 🔍 **Verificar Config** | http://localhost:8080/php/verificar_config.php | Estado de configuración 2FA |
+
+### 🔑 Credenciales por Defecto
+
+**phpMyAdmin / Base de Datos:**
+- Usuario: `congreso_user`
+- Contraseña: `congreso_pass`
+- Base de datos: `congreso_db`
+
+### 🛠️ Comandos Útiles
+
+```powershell
+# Validar que todo funciona
+.\validate-docker.ps1
+
+# Ver logs en tiempo real
+docker-compose logs -f
+
+# Detener servicios
+docker-compose down
+
+# Reiniciar servicios
+docker-compose restart
+
+# Reconstruir después de cambios
+docker-compose build --no-cache
+docker-compose up -d
 ```
 
-Para más detalles sobre Docker, consulta el [**📖 README_DOCKER.md**](./README_DOCKER.md)
+### 📚 Documentación Detallada
+
+- **[Guía Completa de Docker](./DOCKER_SETUP.md)** - Instalación, configuración y solución de problemas
+- **[Referencia Rápida](./QUICK_REFERENCE.md)** - Comandos esenciales de Docker
+- **[Configurar WhatsApp/SMS](./CONFIGURAR_WHATSAPP_PASO_A_PASO.md)** - Sistema de verificación 2FA
 
 ---
 

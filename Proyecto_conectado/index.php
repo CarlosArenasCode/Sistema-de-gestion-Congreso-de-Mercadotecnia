@@ -1,10 +1,10 @@
 <?php
 /**
  * Página de Inicio - Sistema de Gestión de Congreso
- * Muestra la página de bienvenida con enlaces a todos los servicios
+ * Redirige a la pantalla principal de registro
  */
 
-// Cargar la página de bienvenida HTML
-readfile(__DIR__ . '/welcome.html');
+// Redirección automática a la pantalla principal
+header('Location: /Front-end/registro_usuario.html');
 exit;
 ?>

@@ -19,10 +19,15 @@ El servicio de verificación por WhatsApp está **completamente funcional** y co
 
 ## 🌐 URLs de Acceso
 
-### 📱 Dashboard Principal (WhatsApp Testing)
-- **http://localhost:8080/** → Redirección automática al dashboard
-- **http://localhost:8080/php/test_whatsapp_docker.php** → Dashboard directo
-- **http://localhost:8080/test_whatsapp.php** → URL alternativa
+### 📱 Aplicación Principal
+- **http://localhost:8080/** → Pantalla de registro de usuarios (redirección automática)
+- **http://localhost:8080/Front-end/registro_usuario.html** → Registro
+- **http://localhost:8080/Front-end/login.html** → Login usuarios
+- **http://localhost:8080/Front-end/login_admin.html** → Login administrador
+
+### 🧪 Panel de Pruebas WhatsApp
+- **http://localhost:8080/php/test_whatsapp_docker.php** → Dashboard de pruebas WhatsApp
+- **http://localhost:8080/welcome.html** → Página de bienvenida con servicios
 
 ### 🗄️ Gestión de Base de Datos
 - **http://localhost:8081/** → phpMyAdmin

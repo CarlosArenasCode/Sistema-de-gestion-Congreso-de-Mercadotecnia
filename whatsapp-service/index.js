@@ -126,6 +126,7 @@ app.post('/send-verification-code', async (req, res) => {
         
         // Normalizar el número de teléfono
         const normalizedPhone = normalizePhoneNumber(phone);
+        console.log(`📤 Enviando código de verificación a: ${normalizedPhone}`);
         
         // Mensaje de verificación
         const userName = name ? name : 'Usuario';
@@ -140,7 +141,7 @@ app.post('/send-verification-code', async (req, res) => {
         // Enviar mensaje
         await whatsappClient.sendMessage(normalizedPhone, message);
         
-        console.log(`✅ Código enviado a ${phone} (${normalizedPhone})`);
+        console.log(`✅ Código de verificación enviado a ${phone} (${normalizedPhone})`);
         
         res.json({
             success: true,
@@ -215,12 +216,15 @@ app.post('/test-send', async (req, res) => {
         const testCode = Math.floor(100000 + Math.random() * 900000).toString();
         
         const normalizedPhone = normalizePhoneNumber(phone);
+        console.log(`📤 Enviando mensaje de prueba a: ${normalizedPhone}`);
+        
         const message = `🧪 *Mensaje de Prueba*\n\n` +
                        `Este es un mensaje de prueba.\n` +
                        `Código de ejemplo: *${testCode}*\n\n` +
                        `_Sistema de Verificación - Congreso UAA_`;
         
         await whatsappClient.sendMessage(normalizedPhone, message);
+        console.log(`✅ Mensaje de prueba enviado a ${phone} (${normalizedPhone})`);
         
         res.json({
             success: true,

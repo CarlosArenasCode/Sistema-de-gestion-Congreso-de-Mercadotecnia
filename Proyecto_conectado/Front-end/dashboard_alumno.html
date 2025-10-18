@@ -48,7 +48,7 @@
                 <li><a href="mi_qr.html">Mi Código QR</a></li>
                 <li><a href="mis_constancias.html">Mis Constancias</a></li>
                 <li><a href="justificar_falta.html">Justificar Falta</a></li>
-                <li><span id="user-name">Nombre</span> <a href="login.html" class="logout-button button">Cerrar Sesión</a></li>
+                <li><span id="user-name">Nombre</span> <a href="#" id="logout-btn" class="logout-button button">Cerrar Sesión</a></li>
             </ul>
         </nav>
     </header>
@@ -86,7 +86,31 @@
         <a href="#">Facebook</a> | <a href="#">Twitter</a> | <a href="#">Instagram</a>
     </footer>
 
+    <!-- Script de protección de sesión (DEBE IR PRIMERO) -->
+    <script src="../js/session-guard.js"></script>
+    
+    <!-- Scripts de funcionalidad -->
     <script src="../js/dashboard.js"></script>
     <script src="../js/mis_eventos.js"></script>
+    
+    <!-- Script para cerrar sesión -->
+    <script>
+        // Manejar el cierre de sesión
+        document.getElementById('logout-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
+                // Usar la función de logout del session-guard
+                if (window.sessionGuard && window.sessionGuard.logout) {
+                    window.sessionGuard.logout();
+                } else {
+                    // Fallback si session-guard no está disponible
+                    sessionStorage.clear();
+                    localStorage.clear();
+                    window.location.href = 'login.html';
+                }
+            }
+        });
+    </script>
 </body>
 </html>

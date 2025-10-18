@@ -1,4 +1,4 @@
-docker cp "Proyecto_conectado/Front-end/login.html" congreso_web:/var/www/html/Proyecto_conectado/Front-end/login.html<?php
+<?php
 session_start();
 require 'conexion.php';
 

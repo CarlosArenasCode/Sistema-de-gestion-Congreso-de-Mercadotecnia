@@ -26,11 +26,11 @@
                 <li><a href="admin_asistencia.html" class="nav-link" id="nav-admin-asistencia">Ver Asistencia</a></li>
                 <li><a href="admin_inscripciones.html" class="nav-link" id="nav-admin-inscripciones">Ver Inscripciones</a></li>
                 <li><a href="admin_constancias.html" class="nav-link" id="nav-admin-constancias">Constancias Emitidas</a></li>
-                <li><a href="admin_justificacion.html" class="nav-link active" id="nav-admin-justificaciones">Gestionar Justificaciones</a></li> <li class="user-menu"></li>
-
+                <li><a href="admin_justificacion.html" class="nav-link" id="nav-admin-justificaciones">Gestionar Justificaciones</a></li>
+                <li><a href="admin_personalizacion.html" class="nav-link" id="nav-admin-personalizacion">Personalización</a></li>
                 <li class="user-menu">
                     <span>Bienvenido, [Nombre Admin]</span>
-                    <a href="login.html" class="logout-button button">Cerrar Sesión</a>
+                    <a href="#" id="logout-btn" class="logout-button button">Cerrar Sesión</a>
                 </li>
             </ul>
         </nav>
@@ -55,6 +55,7 @@
                 <a href="admin_inscripciones.html" class="button">Ver Inscripciones</a>
                 <a href="admin_constancias.html" class="button">Emitir Constancias</a>
                 <a href="admin_justificacion.html" class="button">Gestionar Justificaciones</a>
+                <a href="admin_personalizacion.html" class="button" style="background-color: #6f42c1; color: white;">🎨 Personalizar Sitio</a>
                 <a href="admin_scan_qr.html" class="button secondary">Escanear QR</a>
                 <a href="admin_asistencia.html" class="button secondary">Ver Reportes de Asistencia</a>
              </div>
@@ -70,5 +71,20 @@
     
     <!-- Script de protección de sesión (DEBE IR PRIMERO) -->
     <script src="../js/session-guard.js"></script>
+    
+    <script>
+        // Logout mejorado
+        const logoutBtn = document.getElementById('logout-btn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (window.sessionGuard && typeof window.sessionGuard.logout === 'function') {
+                    window.sessionGuard.logout();
+                } else {
+                    window.location.href = 'login_admin.html';
+                }
+            });
+        }
+    </script>
 </body>
 </html>

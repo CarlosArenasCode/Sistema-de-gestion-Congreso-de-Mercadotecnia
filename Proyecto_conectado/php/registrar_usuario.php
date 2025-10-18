@@ -11,6 +11,24 @@ require 'conexion.php';
 require 'send_notifications.php'; // Para envío de emails
 require 'whatsapp_client.php'; // Cliente para servicio WhatsApp en Docker
 
+/**
+ * Formatea un número de teléfono al formato internacional
+ * Agrega el código de país +52 si no está presente
+ */
+function formatear_telefono($telefono) {
+    // Remover espacios y caracteres especiales (excepto +)
+    $telefono = preg_replace('/[^0-9+]/', '', $telefono);
+    
+    // Si no tiene código de país, agregar +52 (México)
+    if (!str_starts_with($telefono, '+')) {
+        // Remover 0 inicial si existe
+        $telefono = ltrim($telefono, '0');
+        $telefono = '+52' . $telefono;
+    }
+    
+    return $telefono;
+}
+
 // Datos recibidos del formulario
 $nombre_completo = $_POST['nombre_completo'] ?? '';
 $email = $_POST['email'] ?? '';

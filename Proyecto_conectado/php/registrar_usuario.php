@@ -140,7 +140,16 @@ try {
     </html>
     ";
 
-    send_email($email, $asunto, $mensaje_email);
+    // Intentar enviar código por EMAIL
+    $emailEnviado = false;
+    try {
+        $emailEnviado = send_email($email, $asunto, $mensaje_email);
+        if (!$emailEnviado) {
+            error_log("Advertencia: No se pudo enviar código por email a {$email}");
+        }
+    } catch (Exception $e) {
+        error_log("Error al enviar email: " . $e->getMessage());
+    }
 
     // Enviar código por WhatsApp usando el servicio Docker
     // FROM: +52 449 210 6893 (configurado en el servicio WhatsApp)

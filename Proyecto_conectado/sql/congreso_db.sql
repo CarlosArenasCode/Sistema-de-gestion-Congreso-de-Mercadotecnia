@@ -56,6 +56,7 @@ CREATE TABLE `usuarios` (
   `codigo_verificacion` varchar(6) DEFAULT NULL,
   `fecha_codigo` datetime DEFAULT NULL,
   `verificado` tinyint(1) NOT NULL DEFAULT 0,
+  `intentos_verificacion` int(11) DEFAULT 0,
   `fecha_registro` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 

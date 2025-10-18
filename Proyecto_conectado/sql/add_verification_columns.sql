@@ -19,5 +19,9 @@ ADD COLUMN fecha_codigo DATETIME NULL AFTER codigo_verificacion;
 ALTER TABLE usuarios 
 ADD COLUMN verificado TINYINT(1) DEFAULT 0 NOT NULL AFTER fecha_codigo;
 
+-- Agregar columna intentos_verificacion
+ALTER TABLE usuarios
+ADD COLUMN intentos_verificacion INT DEFAULT 0 AFTER verificado;
+
 -- Mostrar la estructura actualizada
 DESCRIBE usuarios;

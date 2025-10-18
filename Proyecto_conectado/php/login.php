@@ -1,4 +1,11 @@
 <?php
+// Configurar sesión antes de iniciarla
+ini_set('session.cookie_samesite', 'Lax');
+ini_set('session.cookie_httponly', '1');
+ini_set('session.use_strict_mode', '1');
+ini_set('session.cookie_lifetime', '0'); // Expira al cerrar navegador
+ini_set('session.gc_maxlifetime', '3600'); // 1 hora
+
 session_start();
 require 'conexion.php';
 

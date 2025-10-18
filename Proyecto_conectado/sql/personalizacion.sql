@@ -6,8 +6,7 @@ CREATE TABLE IF NOT EXISTS personalizacion (
     tipo ENUM('color', 'imagen', 'texto') DEFAULT 'texto',
     descripcion VARCHAR(255),
     fecha_modificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    modificado_por INT,
-    FOREIGN KEY (modificado_por) REFERENCES usuarios(id) ON DELETE SET NULL
+    modificado_por INT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Tabla para las imágenes del carrusel
@@ -20,8 +19,7 @@ CREATE TABLE IF NOT EXISTS carrusel_imagenes (
     tipo_fuente ENUM('url', 'archivo') DEFAULT 'url',
     fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     fecha_modificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    creado_por INT,
-    FOREIGN KEY (creado_por) REFERENCES usuarios(id) ON DELETE SET NULL
+    creado_por INT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Insertar valores por defecto para los colores principales

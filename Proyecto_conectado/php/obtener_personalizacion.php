@@ -9,71 +9,63 @@ $action = $_GET['action'] ?? 'get_all';
 try {
     switch ($action) {
         case 'get_colores':
-            getColores($conn);
+            getColores($pdo);
             break;
         
         case 'get_imagenes':
-            getImagenesCarrusel($conn);
+            getImagenesCarrusel($pdo);
             break;
         
         case 'get_all':
         default:
-            getAll($conn);
+            getAll($pdo);
             break;
     }
 } catch (Exception $e) {
     echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
 }
 
-function getColores($conn) {
+function getColores($pdo) {
     $sql = "SELECT clave, valor FROM personalizacion WHERE tipo = 'color'";
-    $result = $conn->query($sql);
+    $stmt = $pdo->query($sql);
     
     $colores = [];
-    if ($result) {
-        while ($row = $result->fetch_assoc()) {
-            $colores[$row['clave']] = $row['valor'];
-        }
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $colores[$row['clave']] = $row['valor'];
     }
     
     echo json_encode(['success' => true, 'colores' => $colores]);
 }
 
-function getImagenesCarrusel($conn) {
+function getImagenesCarrusel($pdo) {
     $sql = "SELECT url_imagen, alt_texto, orden FROM carrusel_imagenes WHERE activo = 1 ORDER BY orden ASC";
-    $result = $conn->query($sql);
+    $stmt = $pdo->query($sql);
     
     $imagenes = [];
-    if ($result) {
-        while ($row = $result->fetch_assoc()) {
-            $imagenes[] = $row;
-        }
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $imagenes[] = $row;
     }
     
     echo json_encode(['success' => true, 'imagenes' => $imagenes]);
 }
 
-function getAll($conn) {
+function getAll($pdo) {
     // Obtener colores
     $sql = "SELECT clave, valor FROM personalizacion WHERE tipo = 'color'";
-    $result = $conn->query($sql);
+    $stmt = $pdo->query($sql);
     
     $colores = [];
-    if ($result) {
-        while ($row = $result->fetch_assoc()) {
-            $colores[$row['clave']] = $row['valor'];
-        }
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $colores[$row['clave']] = $row['valor'];
     }
     
     // Obtener imágenes del carrusel
     $sql = "SELECT url_imagen, alt_texto, orden FROM carrusel_imagenes WHERE activo = 1 ORDER BY orden ASC";
-    $result = $conn->query($sql);
+    $stmt = $pdo->query($sql);
     
     $imagenes = [];
-    if ($result) {
-        while ($row = $result->fetch_assoc()) {
-            $imagenes[] = $row;
-        }
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $imagenes[] = $row;
     }
     
     echo json_encode([

@@ -74,6 +74,4 @@ function getAll($pdo) {
         'imagenes' => $imagenes
     ]);
 }
-
-$conn->close();
 ?>

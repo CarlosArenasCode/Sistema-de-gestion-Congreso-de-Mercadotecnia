@@ -148,15 +148,7 @@
             return;
         }
 
-        // Verificar sessionStorage primero (más rápido)
-        if (!hasSessionStorage()) {
-            console.warn('No hay datos de sesión en el navegador');
-            clearSession();
-            redirectToLogin();
-            return;
-        }
-
-        // Verificar sesión en el servidor
+        // PRIMERO verificar sesión en el servidor (más confiable)
         const sessionData = await checkServerSession();
         
         if (!sessionData.loggedIn) {
@@ -164,6 +156,16 @@
             clearSession();
             redirectToLogin();
             return;
+        }
+
+        // Si el servidor dice que hay sesión, sincronizar con sessionStorage
+        if (sessionData.loggedIn && !hasSessionStorage()) {
+            console.log('Sincronizando sessionStorage con sesión del servidor');
+            // Guardar datos del servidor en sessionStorage
+            if (sessionData.user) {
+                sessionStorage.setItem('userData', JSON.stringify(sessionData.user));
+                sessionStorage.setItem('token', sessionData.user.id || 'server-session');
+            }
         }
 
         // Verificar permisos de la página

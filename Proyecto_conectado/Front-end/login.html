@@ -83,16 +83,9 @@
                 const data = await response.json();
                 
                 if (data.success) {
-                    // Guardar datos en sessionStorage
-                    sessionStorage.setItem('userData', JSON.stringify(data.userData));
-                    sessionStorage.setItem('token', data.token);
-                    
-                    // Verificar si hay una URL de redirección guardada
-                    const redirectUrl = sessionStorage.getItem('redirectAfterLogin') || data.redirectUrl;
-                    sessionStorage.removeItem('redirectAfterLogin');
-                    
-                    // Redirigir al dashboard
-                    window.location.href = redirectUrl;
+                    // NO guardar nada en sessionStorage - la sesión PHP es suficiente
+                    // Redirigir directamente al dashboard
+                    window.location.href = data.redirectUrl;
                 } else {
                     // Mostrar error
                     errorDiv.textContent = data.message;

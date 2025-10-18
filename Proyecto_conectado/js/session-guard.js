@@ -148,33 +148,22 @@
             return;
         }
 
-        // PRIMERO verificar sesión en el servidor (más confiable)
+        // SOLO verificar sesión en el servidor (ignorar sessionStorage completamente)
         const sessionData = await checkServerSession();
         
         if (!sessionData.loggedIn) {
             console.warn('Sesión no válida en el servidor');
-            clearSession();
             redirectToLogin();
             return;
         }
 
-        // Si el servidor dice que hay sesión, sincronizar con sessionStorage
-        if (sessionData.loggedIn && !hasSessionStorage()) {
-            console.log('Sincronizando sessionStorage con sesión del servidor');
-            // Guardar datos del servidor en sessionStorage
-            if (sessionData.user) {
-                sessionStorage.setItem('userData', JSON.stringify(sessionData.user));
-                sessionStorage.setItem('token', sessionData.user.id || 'server-session');
-            }
-        }
-
         // Verificar permisos de la página
-        const userType = sessionData.rol || sessionData.tipo || getUserTypeFromSession();
-        if (!checkPagePermissions(userType)) {
+        const userType = sessionData.rol || sessionData.tipo;
+        if (userType && !checkPagePermissions(userType)) {
             return;
         }
 
-        console.log('Sesión verificada correctamente');
+        console.log('Sesión verificada correctamente - Usuario:', sessionData.user?.nombre || 'N/A');
     }
 
     /**
@@ -229,10 +218,8 @@
     // Exponer función para logout manual
     window.sessionGuard = {
         logout: function() {
-            clearSession();
-            localStorage.setItem('userLoggedOut', 'true');
-            setTimeout(() => localStorage.removeItem('userLoggedOut'), 1000);
-            redirectToLogin();
+            // Solo redirigir al login, la sesión PHP se destruye en el servidor
+            window.location.href = config.loginUrl;
         },
         checkSession: verifySession
     };

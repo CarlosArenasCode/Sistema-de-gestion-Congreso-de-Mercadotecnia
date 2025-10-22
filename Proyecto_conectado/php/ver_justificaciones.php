@@ -4,13 +4,13 @@ require_once 'conexion.php'; // Incluye la conexión y session_start()
 
 header('Content-Type: application/json');
 
-if (!isset($_SESSION['id_usuario'])) {
+if (!isset($_SESSION['usuario_id'])) {
     http_response_code(401); // Unauthorized
     echo json_encode(['error' => 'Usuario no autenticado.']);
     exit;
 }
 
-$id_usuario = $_SESSION['id_usuario'];
+$id_usuario = $_SESSION['usuario_id'];
 
 try {
     // Consulta para obtener las justificaciones del usuario

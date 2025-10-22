@@ -8,14 +8,14 @@ require_once 'conexion.php'; // $pdo estará disponible aquí
 header('Content-Type: application/json');
 
 // 3. Verificar autenticación (usando la sesión iniciada en conexion.php)
-if (!isset($_SESSION['id_usuario'])) {
+if (!isset($_SESSION['usuario_id'])) {
     http_response_code(401); // Unauthorized
     echo json_encode(['error' => 'Usuario no autenticado.']);
     exit;
 }
 
 // 4. Obtener ID de usuario
-$id_usuario = $_SESSION['id_usuario'];
+$id_usuario = $_SESSION['usuario_id'];
 
 // 5. Preparar la consulta SQL
 // Seleccionamos solo los eventos donde el usuario tiene una inscripción activa.

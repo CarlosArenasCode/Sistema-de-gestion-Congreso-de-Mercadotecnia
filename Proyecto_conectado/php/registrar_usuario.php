@@ -34,7 +34,8 @@ $nombre_completo = $_POST['nombre_completo'] ?? '';
 $email = $_POST['email'] ?? '';
 $matricula = $_POST['matricula'] ?? '';
 $semestre = $_POST['Semestre'] ?? '';
-$telefono = $_POST['telefono'] ?? ''; // Teléfono del USUARIO
+// Usar telefono_completo que ya viene formateado desde el frontend
+$telefono = $_POST['telefono_completo'] ?? $_POST['telefono'] ?? ''; 
 $password = $_POST['password'] ?? '';
 $password_confirm = $_POST['password_confirm'] ?? '';
 $rol = $_POST['rol'] ?? 'alumno'; 
@@ -66,7 +67,13 @@ if ($password !== $password_confirm) {
 }
 
 // Formatear teléfono del usuario
-$telefono = formatear_telefono($telefono);
+// Formatear teléfono solo si no viene del campo telefono_completo
+// Si viene de telefono_completo, ya está en formato +521XXXXXXXXXX
+if (!isset($_POST['telefono_completo']) || empty($_POST['telefono_completo'])) {
+    $telefono = formatear_telefono($telefono);
+}
+// Si ya viene formateado, solo asegurarse que tenga el formato correcto
+$telefono = preg_replace('/[^0-9+]/', '', $telefono);
 
 $password_hash = password_hash($password, PASSWORD_DEFAULT);
 

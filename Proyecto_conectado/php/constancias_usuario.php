@@ -4,12 +4,12 @@ require_once 'conexion.php';
 
 header('Content-Type: application/json');
 
-if (!isset($_SESSION['id_usuario'])) {
+if (!isset($_SESSION['usuario_id'])) {
     http_response_code(401);
     echo json_encode(['error' => 'Usuario no autenticado.']);
     exit;
 }
-$id_usuario = $_SESSION['id_usuario'];
+$id_usuario = $_SESSION['usuario_id'];
 
 try {
     

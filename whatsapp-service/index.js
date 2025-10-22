@@ -164,6 +164,7 @@ app.post('/send-verification-code', async (req, res) => {
 app.get('/health', (req, res) => {
     res.json({
         status: botStatus,
+        authenticated: botStatus === 'ready' || botStatus === 'authenticated',
         service: 'whatsapp-verification',
         timestamp: new Date().toISOString(),
         phoneNumber: process.env.WHATSAPP_NUMBER || '524492106893',

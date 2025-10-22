@@ -2,7 +2,11 @@
 
 require_once '../php/conexion.php';
 
-if (!isset($_SESSION['id_admin'])) { http_response_code(403); exit('Acceso denegado'); }
+// TODO: Reactivar cuando se implemente login de admin
+// if (!isset($_SESSION['usuario_id']) || $_SESSION['rol'] !== 'admin') { 
+//     http_response_code(403); 
+//     exit('Acceso denegado'); 
+// }
 
 header('Content-Type: application/json');
 

@@ -13,6 +13,8 @@ services:
       # Persistir archivos generados (constancias PDF, uploads)
       - ./data/uploads:/var/www/html/Proyecto_conectado/uploads
       - ./data/constancias_pdf:/var/www/html/Proyecto_conectado/constancias_pdf
+      # Directorio para imágenes del carrusel (sistema de personalización)
+      - ./data/carrusel:/var/www/html/Proyecto_conectado/uploads/carrusel
     environment:
       - APACHE_DOCUMENT_ROOT=/var/www/html/Proyecto_conectado
     depends_on:
@@ -26,7 +28,7 @@ services:
     image: mysql:8.0
     container_name: congreso_db
     ports:
-      - "3306:3306"
+      - "3307:3306"  # Puerto 3307 en host para no conflictuar con XAMPP
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
       MYSQL_DATABASE: ${MYSQL_DATABASE:-congreso_db}
@@ -37,6 +39,7 @@ services:
       - db_data:/var/lib/mysql
       # Inicializar BD automáticamente en el primer arranque
       - ./Proyecto_conectado/sql/congreso_db.sql:/docker-entrypoint-initdb.d/01-congreso_db.sql
+      - ./Proyecto_conectado/sql/personalizacion.sql:/docker-entrypoint-initdb.d/02-personalizacion.sql
     networks:
       - congreso_network
     restart: unless-stopped

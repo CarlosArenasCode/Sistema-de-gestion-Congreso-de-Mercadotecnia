@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estado de WhatsApp - Servicio de Notificaciones</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .whatsapp-icon {
+            text-align: center;
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+
+        .status-connected {
+            background: #25D366;
+            color: white;
+        }
+
+        .status-disconnected {
+            background: #ff4444;
+            color: white;
+        }
+
+        .status-loading {
+            background: #FFA500;
+            color: white;
+        }
+
+        .info-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #555;
+        }
+
+        .info-value {
+            color: #25D366;
+            font-weight: bold;
+        }
+
+        .qr-section {
+            text-align: center;
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .qr-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        #qrCode {
+            display: inline-block;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .qr-instructions {
+            margin-top: 15px;
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .qr-instructions ol {
+            text-align: left;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .qr-instructions li {
+            margin: 5px 0;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: #25D366;
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            margin: 10px 5px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #128C7E;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
+        }
+
+        .btn-secondary {
+            background: #667eea;
+        }
+
+        .btn-secondary:hover {
+            background: #764ba2;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #25D366;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: #ffe6e6;
+            color: #cc0000;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #cc0000;
+        }
+
+        .success-message {
+            background: #e6ffe6;
+            color: #006600;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #006600;
+        }
+
+        .buttons-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="whatsapp-icon">📱</div>
+        <h1>Servicio de WhatsApp</h1>
+        <div style="text-align: center;">
+            <span id="statusBadge" class="status-badge status-loading">🔄 Verificando...</span>
+        </div>
+
+        <div id="statusInfo" class="info-section" style="display: none;">
+            <div class="info-item">
+                <span class="info-label">Estado del Servicio:</span>
+                <span id="serviceStatus" class="info-value">-</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">WhatsApp Conectado:</span>
+                <span id="whatsappStatus" class="info-value">-</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Número Configurado:</span>
+                <span id="phoneNumber" class="info-value">-</span>
+            </div>
+        </div>
+
+        <div id="qrSection" class="qr-section" style="display: none;">
+            <h3>🔐 Escanea el Código QR</h3>
+            <div id="qrCode">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Cargando código QR...</p>
+                </div>
+            </div>
+            <div class="qr-instructions">
+                <p><strong>Para vincular WhatsApp:</strong></p>
+                <ol>
+                    <li>Abre WhatsApp en tu teléfono</li>
+                    <li>Toca <strong>Menú</strong> o <strong>Configuración</strong></li>
+                    <li>Selecciona <strong>Dispositivos vinculados</strong></li>
+                    <li>Toca <strong>Vincular un dispositivo</strong></li>
+                    <li>Escanea este código QR con tu teléfono</li>
+                </ol>
+            </div>
+        </div>
+
+        <div id="connectedMessage" class="success-message" style="display: none;">
+            <strong>✅ WhatsApp Conectado Exitosamente</strong>
+            <p>El servicio está listo para enviar notificaciones y códigos de verificación.</p>
+        </div>
+
+        <div id="errorMessage" class="error-message" style="display: none;">
+            <strong>❌ Error de Conexión</strong>
+            <p id="errorText">No se pudo conectar con el servicio de WhatsApp.</p>
+        </div>
+
+        <div class="buttons-container">
+            <button class="btn" onclick="checkStatus()">🔄 Actualizar Estado</button>
+            <button class="btn btn-secondary" onclick="window.location.href='dashboard_alumno.html'">🏠 Volver al Dashboard</button>
+        </div>
+    </div>
+
+    <script>
+        async function checkStatus() {
+            const statusBadge = document.getElementById('statusBadge');
+            const statusInfo = document.getElementById('statusInfo');
+            const qrSection = document.getElementById('qrSection');
+            const connectedMessage = document.getElementById('connectedMessage');
+            const errorMessage = document.getElementById('errorMessage');
+
+            // Resetear UI
+            statusBadge.className = 'status-badge status-loading';
+            statusBadge.textContent = '🔄 Verificando...';
+            statusInfo.style.display = 'none';
+            qrSection.style.display = 'none';
+            connectedMessage.style.display = 'none';
+            errorMessage.style.display = 'none';
+
+            try {
+                // Verificar estado del servicio
+                const response = await fetch('http://localhost:3001/health');
+                
+                if (!response.ok) {
+                    throw new Error('Servicio no disponible');
+                }
+
+                const data = await response.json();
+
+                // Actualizar información
+                document.getElementById('serviceStatus').textContent = data.status || 'Activo';
+                document.getElementById('whatsappStatus').textContent = data.authenticated ? 'Sí ✅' : 'No ❌';
+                document.getElementById('phoneNumber').textContent = data.phoneNumber || 'No configurado';
+
+                statusInfo.style.display = 'block';
+
+                if (data.authenticated) {
+                    // WhatsApp conectado
+                    statusBadge.className = 'status-badge status-connected';
+                    statusBadge.textContent = '✅ Conectado';
+                    connectedMessage.style.display = 'block';
+                } else {
+                    // Necesita escanear QR
+                    statusBadge.className = 'status-badge status-disconnected';
+                    statusBadge.textContent = '⚠️ Requiere Autenticación';
+                    qrSection.style.display = 'block';
+                    
+                    // Cargar código QR
+                    loadQRCode();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                statusBadge.className = 'status-badge status-disconnected';
+                statusBadge.textContent = '❌ Sin Conexión';
+                errorMessage.style.display = 'block';
+                document.getElementById('errorText').textContent = 
+                    'No se pudo conectar con el servicio de WhatsApp. Verifica que el contenedor Docker esté corriendo.';
+            }
+        }
+
+        async function loadQRCode() {
+            const qrCodeDiv = document.getElementById('qrCode');
+            
+            try {
+                const response = await fetch('http://localhost:3001/qr');
+                const data = await response.json();
+
+                if (data.qr) {
+                    // Crear imagen del QR usando una API de generación de QR
+                    const qrImg = document.createElement('img');
+                    qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(data.qr)}`;
+                    qrImg.alt = 'Código QR de WhatsApp';
+                    qrImg.style.width = '300px';
+                    qrImg.style.height = '300px';
+                    
+                    qrCodeDiv.innerHTML = '';
+                    qrCodeDiv.appendChild(qrImg);
+                } else if (data.authenticated) {
+                    qrCodeDiv.innerHTML = '<p style="color: #25D366; font-weight: bold;">✅ Ya está autenticado</p>';
+                } else {
+                    qrCodeDiv.innerHTML = '<p style="color: #ff4444;">⚠️ Código QR no disponible. Reinicia el contenedor.</p>';
+                }
+            } catch (error) {
+                console.error('Error cargando QR:', error);
+                qrCodeDiv.innerHTML = '<p style="color: #ff4444;">❌ Error cargando código QR</p>';
+            }
+        }
+
+        // Verificar estado al cargar la página
+        window.addEventListener('DOMContentLoaded', () => {
+            checkStatus();
+            
+            // Actualizar cada 30 segundos
+            setInterval(checkStatus, 30000);
+        });
+    </script>
+</body>
+</html>

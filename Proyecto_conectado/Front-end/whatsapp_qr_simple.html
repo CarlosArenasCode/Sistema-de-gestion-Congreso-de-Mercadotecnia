@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Código QR WhatsApp - Servicio de Notificaciones</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.3);
+            padding: 50px;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .whatsapp-logo {
+            font-size: 100px;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        h1 {
+            color: #128C7E;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+
+        .qr-container {
+            background: #f8f9fa;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+            display: inline-block;
+        }
+
+        #qrImage {
+            width: 350px;
+            height: 350px;
+            border: 5px solid #25D366;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(37, 211, 102, 0.3);
+        }
+
+        .instructions {
+            background: #e8f5e9;
+            border-left: 5px solid #25D366;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: left;
+            margin: 30px 0;
+        }
+
+        .instructions h3 {
+            color: #128C7E;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        .instructions ol {
+            margin-left: 20px;
+            color: #333;
+            line-height: 2;
+        }
+
+        .instructions li {
+            margin: 10px 0;
+            font-size: 15px;
+        }
+
+        .instructions strong {
+            color: #25D366;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: bold;
+            margin: 20px 0;
+            font-size: 16px;
+        }
+
+        .status-pending {
+            background: #FFA500;
+            color: white;
+        }
+
+        .status-connected {
+            background: #25D366;
+            color: white;
+        }
+
+        .btn-refresh {
+            background: #128C7E;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+
+        .btn-refresh:hover {
+            background: #0a6b5e;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(18, 140, 126, 0.4);
+        }
+
+        .loading {
+            display: none;
+            margin: 20px 0;
+        }
+
+        .spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #25D366;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .alert-info {
+            background: #e3f2fd;
+            color: #1976d2;
+            border-left: 5px solid #1976d2;
+        }
+
+        .alert-success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-left: 5px solid #2e7d32;
+        }
+
+        .footer {
+            margin-top: 30px;
+            color: #999;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="whatsapp-logo">📱</div>
+        <h1>WhatsApp Business API</h1>
+        <p class="subtitle">Sistema de Notificaciones del Congreso</p>
+
+        <div id="statusBadge" class="status status-pending">
+            ⏳ Esperando escaneo del código QR
+        </div>
+
+        <div class="qr-container">
+            <img id="qrImage" src="" alt="Código QR de WhatsApp">
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p style="margin-top: 10px; color: #666;">Cargando código QR...</p>
+        </div>
+
+        <div class="alert alert-info" id="alertInfo" style="display: block;">
+            <strong>ℹ️ Información:</strong> Este código QR es único y se regenera cada vez que reinicias el servicio. Escanéalo con WhatsApp para vincular el servicio.
+        </div>
+
+        <div class="alert alert-success" id="alertSuccess">
+            <strong>✅ ¡Conectado!</strong> WhatsApp se ha vinculado correctamente. El servicio está listo para enviar notificaciones.
+        </div>
+
+        <div class="instructions">
+            <h3>📋 Instrucciones para vincular WhatsApp:</h3>
+            <ol>
+                <li>Abre <strong>WhatsApp</strong> en tu teléfono 📲</li>
+                <li>Toca <strong>Menú (⋮)</strong> o <strong>Configuración (⚙️)</strong></li>
+                <li>Selecciona <strong>"Dispositivos vinculados"</strong></li>
+                <li>Toca <strong>"Vincular un dispositivo"</strong></li>
+                <li>Apunta tu cámara hacia este código QR ⬆️</li>
+                <li>Espera la confirmación de conexión ✅</li>
+            </ol>
+        </div>
+
+        <div>
+            <button class="btn-refresh" onclick="loadQR()">🔄 Actualizar Código QR</button>
+            <button class="btn-refresh" onclick="checkStatus()">📊 Verificar Estado</button>
+        </div>
+
+        <div class="footer">
+            <p>Servicio: http://localhost:3001</p>
+            <p>Estado actualizado automáticamente cada 10 segundos</p>
+        </div>
+    </div>
+
+    <script>
+        let checkInterval;
+
+        async function loadQR() {
+            const qrImage = document.getElementById('qrImage');
+            const loading = document.getElementById('loading');
+            const qrContainer = document.querySelector('.qr-container');
+
+            try {
+                loading.style.display = 'block';
+                qrContainer.style.display = 'none';
+
+                const response = await fetch('http://localhost:3001/qr');
+                const data = await response.json();
+
+                console.log('Respuesta /qr:', data);
+
+                if (data.qr) {
+                    // Generar imagen del QR usando API pública
+                    const qrDataUrl = `https://api.qrserver.com/v1/create-qr-code/?size=350x350&data=${encodeURIComponent(data.qr)}&margin=10`;
+                    qrImage.src = qrDataUrl;
+                    
+                    qrContainer.style.display = 'inline-block';
+                    loading.style.display = 'none';
+
+                    // Iniciar verificación automática
+                    startAutoCheck();
+                } else if (!data.success && data.message && data.message.includes('autenticado')) {
+                    // Ya está autenticado
+                    loading.style.display = 'none';
+                    showSuccess();
+                } else if (data.authenticated) {
+                    loading.style.display = 'none';
+                    showSuccess();
+                } else {
+                    loading.style.display = 'none';
+                    alert('No se pudo obtener el código QR. El servicio podría estar reiniciándose.\n\nPrueba refrescar la página en unos segundos.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                loading.style.display = 'none';
+                alert('Error al cargar el código QR. Asegúrate de que el contenedor de WhatsApp esté corriendo:\n\ndocker ps | grep whatsapp');
+            }
+        }
+
+        async function checkStatus() {
+            try {
+                const response = await fetch('http://localhost:3001/health');
+                const data = await response.json();
+
+                console.log('Respuesta /health:', data);
+
+                // Verificar si está autenticado:
+                // - status === 'ready' significa autenticado
+                // - phoneNumber presente significa autenticado
+                // - authenticated === true (cuando esté disponible)
+                const isAuthenticated = 
+                    data.status === 'ready' || 
+                    data.status === 'authenticated' ||
+                    (data.phoneNumber && !data.qrAvailable) ||
+                    data.authenticated === true;
+
+                if (isAuthenticated) {
+                    showSuccess(data.phoneNumber);
+                    stopAutoCheck();
+                } else {
+                    document.getElementById('statusBadge').className = 'status status-pending';
+                    document.getElementById('statusBadge').textContent = '⏳ Esperando escaneo del código QR';
+                }
+
+                return isAuthenticated;
+            } catch (error) {
+                console.error('Error checking status:', error);
+                return false;
+            }
+        }
+
+        function showSuccess(phoneNumber) {
+            document.getElementById('statusBadge').className = 'status status-connected';
+            document.getElementById('statusBadge').textContent = '✅ WhatsApp Conectado';
+            document.getElementById('alertInfo').style.display = 'none';
+            
+            const successAlert = document.getElementById('alertSuccess');
+            successAlert.style.display = 'block';
+            
+            if (phoneNumber) {
+                // Formatear el número de teléfono
+                const formatted = phoneNumber.replace(/(\d{2})(\d{3})(\d{3})(\d{4})/, '+$1 $2 $3 $4');
+                successAlert.innerHTML = `
+                    <strong>✅ ¡Conectado Exitosamente!</strong>
+                    <p>WhatsApp se ha vinculado correctamente.</p>
+                    <p><strong>Número configurado:</strong> ${formatted}</p>
+                    <p>El servicio está listo para enviar notificaciones y códigos de verificación.</p>
+                `;
+            }
+            
+            document.querySelector('.qr-container').style.display = 'none';
+            document.querySelector('.instructions').style.display = 'none';
+            document.querySelector('.loading').style.display = 'none';
+        }
+
+        function startAutoCheck() {
+            stopAutoCheck(); // Limpiar cualquier intervalo previo
+            checkInterval = setInterval(async () => {
+                const connected = await checkStatus();
+                if (connected) {
+                    stopAutoCheck();
+                }
+            }, 5000); // Verificar cada 5 segundos
+        }
+
+        function stopAutoCheck() {
+            if (checkInterval) {
+                clearInterval(checkInterval);
+                checkInterval = null;
+            }
+        }
+
+        // Cargar QR al iniciar
+        window.addEventListener('DOMContentLoaded', async () => {
+            const connected = await checkStatus();
+            if (!connected) {
+                loadQR();
+            }
+        });
+
+        // Limpiar intervalo al cerrar
+        window.addEventListener('beforeunload', () => {
+            stopAutoCheck();
+        });
+    </script>
+</body>
+</html>

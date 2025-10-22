@@ -15,7 +15,7 @@
 
 define('SMTP_HOST', 'smtp.office365.com');
 define('SMTP_USER', 'al529633@edu.uaa.mx'); // tu cuenta completa
-define('SMTP_PASS', 'Roaco2005');
+define('SMTP_PASS', 'Rodriguez05');
 define('SMTP_PORT', 587);
 define('SMTP_SECURE', 'tls'); // 'tls' o 'ssl' o ''
 define('SMTP_DEBUG', true);

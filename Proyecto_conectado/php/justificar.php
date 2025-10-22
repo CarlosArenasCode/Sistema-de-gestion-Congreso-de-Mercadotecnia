@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt = $pdo->prepare($sql);
         
         // Ejecutar la consulta con los valores recibidos
-        $stmt->execute([$_SESSION['id_usuario'], $evento, $fecha_falta, $motivo, $adjunto]);
+        $stmt->execute([$_SESSION['usuario_id'], $evento, $fecha_falta, $motivo, $adjunto]);
         
         // Redirigir o mostrar un mensaje de éxito
         echo "Justificación enviada correctamente.";

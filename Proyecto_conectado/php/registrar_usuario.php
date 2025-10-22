@@ -11,12 +11,31 @@ require 'conexion.php';
 require 'send_notifications.php'; // Para envío de emails
 require 'whatsapp_client.php'; // Cliente para servicio WhatsApp en Docker
 
+/**
+ * Formatea un número de teléfono al formato internacional
+ * Agrega el código de país +52 si no está presente
+ */
+function formatear_telefono($telefono) {
+    // Remover espacios y caracteres especiales (excepto +)
+    $telefono = preg_replace('/[^0-9+]/', '', $telefono);
+    
+    // Si no tiene código de país, agregar +52 (México)
+    if (!str_starts_with($telefono, '+')) {
+        // Remover 0 inicial si existe
+        $telefono = ltrim($telefono, '0');
+        $telefono = '+52' . $telefono;
+    }
+    
+    return $telefono;
+}
+
 // Datos recibidos del formulario
 $nombre_completo = $_POST['nombre_completo'] ?? '';
 $email = $_POST['email'] ?? '';
 $matricula = $_POST['matricula'] ?? '';
 $semestre = $_POST['Semestre'] ?? '';
-$telefono = $_POST['telefono'] ?? ''; // Teléfono del USUARIO
+// Usar telefono_completo que ya viene formateado desde el frontend
+$telefono = $_POST['telefono_completo'] ?? $_POST['telefono'] ?? ''; 
 $password = $_POST['password'] ?? '';
 $password_confirm = $_POST['password_confirm'] ?? '';
 $rol = $_POST['rol'] ?? 'alumno'; 
@@ -48,7 +67,13 @@ if ($password !== $password_confirm) {
 }
 
 // Formatear teléfono del usuario
-$telefono = formatear_telefono($telefono);
+// Formatear teléfono solo si no viene del campo telefono_completo
+// Si viene de telefono_completo, ya está en formato +521XXXXXXXXXX
+if (!isset($_POST['telefono_completo']) || empty($_POST['telefono_completo'])) {
+    $telefono = formatear_telefono($telefono);
+}
+// Si ya viene formateado, solo asegurarse que tenga el formato correcto
+$telefono = preg_replace('/[^0-9+]/', '', $telefono);
 
 $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
@@ -122,7 +147,16 @@ try {
     </html>
     ";
 
-    send_email($email, $asunto, $mensaje_email);
+    // Intentar enviar código por EMAIL
+    $emailEnviado = false;
+    try {
+        $emailEnviado = send_email($email, $asunto, $mensaje_email);
+        if (!$emailEnviado) {
+            error_log("Advertencia: No se pudo enviar código por email a {$email}");
+        }
+    } catch (Exception $e) {
+        error_log("Error al enviar email: " . $e->getMessage());
+    }
 
     // Enviar código por WhatsApp usando el servicio Docker
     // FROM: +52 449 210 6893 (configurado en el servicio WhatsApp)

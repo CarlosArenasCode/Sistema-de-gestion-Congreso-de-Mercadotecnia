@@ -38,7 +38,15 @@ try {
     $stmt->execute();
 
     // Obtener todos los resultados
-    $eventos = $stmt->fetchAll(); // Usa fetchAll() ya que esperamos múltiples filas
+    $eventos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Oracle: Convertir CLOBs a strings para JSON
+    foreach ($eventos as &$evento) {
+        if (isset($evento['descripcion']) && is_resource($evento['descripcion'])) {
+            $evento['descripcion'] = stream_get_contents($evento['descripcion']);
+        }
+    }
+    unset($evento); // Romper la referencia
 
     // 7. Devolver los resultados
     echo json_encode($eventos);

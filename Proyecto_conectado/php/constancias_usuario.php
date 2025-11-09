@@ -1,6 +1,10 @@
 <?php
 // php/constancias_usuario.php
+session_start();
 require_once 'conexion.php';
+
+// Limpiar buffer
+if (ob_get_level()) ob_clean();
 
 header('Content-Type: application/json');
 
@@ -12,49 +16,59 @@ if (!isset($_SESSION['id_usuario'])) {
 $id_usuario = $_SESSION['id_usuario'];
 
 try {
-    
+    // Oracle: Reescribir consulta usando WITH y EXTRACT para INTERVAL
     $sql = "
+        WITH potenciales AS (
+            -- Eventos tipo taller donde el usuario está inscrito
+            SELECT e.id_evento, e.nombre_evento, e.tipo_evento, e.horas_para_constancia
+            FROM eventos e
+            JOIN inscripciones i ON e.id_evento = i.id_evento
+            WHERE i.id_usuario = :id_usuario1 AND e.tipo_evento = 'taller'
+            
+            UNION
+            
+            -- Eventos tipo conferencia donde el usuario tiene asistencia
+            SELECT e.id_evento, e.nombre_evento, e.tipo_evento, e.horas_para_constancia
+            FROM eventos e
+            JOIN (SELECT DISTINCT id_evento FROM asistencia WHERE id_usuario = :id_usuario2) a ON e.id_evento = a.id_evento
+            WHERE e.tipo_evento = 'conferencia'
+        ),
+        att AS (
+            -- Datos de asistencia del usuario
+            SELECT
+                id_evento,
+                SUM(CASE WHEN hora_salida IS NOT NULL THEN 1 ELSE 0 END) as asistencia_completa_count,
+                -- Convertir INTERVAL a segundos
+                SUM(
+                    EXTRACT(DAY FROM duracion) * 86400 +
+                    EXTRACT(HOUR FROM duracion) * 3600 +
+                    EXTRACT(MINUTE FROM duracion) * 60 +
+                    EXTRACT(SECOND FROM duracion)
+                ) as duracion_total_seg
+            FROM asistencia
+            WHERE id_usuario = :id_usuario3
+            GROUP BY id_evento
+        )
         SELECT
             potenciales.id_evento,
             potenciales.nombre_evento,
             potenciales.tipo_evento,
             potenciales.horas_para_constancia,
-            COALESCE(att.asistencia_completa_count, 0) AS asistencia_completa,
-            COALESCE(att.duracion_total_seg, 0) AS duracion_total_seg,
+            NVL(att.asistencia_completa_count, 0) AS asistencia_completa,
+            NVL(att.duracion_total_seg, 0) AS duracion_total_seg,
             c.ruta_archivo_pdf
-        FROM
-            (
-                -- Subconsulta para obtener todos los eventos potenciales para el usuario
-                SELECT e.id_evento, e.nombre_evento, e.tipo_evento, e.horas_para_constancia
-                FROM eventos e
-                JOIN inscripciones i ON e.id_evento = i.id_evento
-                WHERE i.id_usuario = ? AND e.tipo_evento = 'taller'
-                
-                UNION
-                
-                SELECT e.id_evento, e.nombre_evento, e.tipo_evento, e.horas_para_constancia
-                FROM eventos e
-                JOIN (SELECT DISTINCT id_evento FROM asistencia WHERE id_usuario = ?) a ON e.id_evento = a.id_evento
-                WHERE e.tipo_evento = 'conferencia'
-            ) AS potenciales
-        LEFT JOIN
-            (
-                -- Subconsulta para agregar los datos de asistencia del usuario
-                SELECT
-                    id_evento,
-                    SUM(CASE WHEN hora_salida IS NOT NULL THEN 1 ELSE 0 END) as asistencia_completa_count,
-                    SUM(TIME_TO_SEC(duracion)) as duracion_total_seg
-                FROM asistencia
-                WHERE id_usuario = ?
-                GROUP BY id_evento
-            ) AS att ON potenciales.id_evento = att.id_evento
-        LEFT JOIN
-            constancias c ON potenciales.id_evento = c.id_evento AND c.id_usuario = ?
+        FROM potenciales
+        LEFT JOIN att ON potenciales.id_evento = att.id_evento
+        LEFT JOIN constancias c ON potenciales.id_evento = c.id_evento AND c.id_usuario = :id_usuario4
     ";
 
     $stmt = $pdo->prepare($sql);
-    // Pasamos el ID del usuario para cada '?' en la consulta
-    $stmt->execute([$id_usuario, $id_usuario, $id_usuario, $id_usuario]);
+    $stmt->execute([
+        ':id_usuario1' => $id_usuario,
+        ':id_usuario2' => $id_usuario,
+        ':id_usuario3' => $id_usuario,
+        ':id_usuario4' => $id_usuario
+    ]);
     $eventos_con_datos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     $resultado = [];

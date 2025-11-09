@@ -1,0 +1,71 @@
+FROM php:8.2-apache
+
+# Instalar dependencias del sistema
+RUN apt-get update && apt-get install -y \
+    libaio1t64 \
+    wget \
+    unzip \
+    alien \
+    libaio-dev \
+    libgd-dev \
+    libfreetype6-dev \
+    libjpeg62-turbo-dev \
+    libpng-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Descargar e instalar Oracle Instant Client 23.5
+RUN mkdir -p /opt/oracle && \
+    cd /opt/oracle && \
+    wget -q https://download.oracle.com/otn_software/linux/instantclient/2350000/instantclient-basic-linux.x64-23.5.0.24.07.zip && \
+    wget -q https://download.oracle.com/otn_software/linux/instantclient/2350000/instantclient-sdk-linux.x64-23.5.0.24.07.zip && \
+    wget -q https://download.oracle.com/otn_software/linux/instantclient/2350000/instantclient-sqlplus-linux.x64-23.5.0.24.07.zip && \
+    unzip -o -q instantclient-basic-linux.x64-23.5.0.24.07.zip && \
+    unzip -o -q instantclient-sdk-linux.x64-23.5.0.24.07.zip && \
+    unzip -o -q instantclient-sqlplus-linux.x64-23.5.0.24.07.zip && \
+    rm -f *.zip
+
+# Configurar variables de entorno para Oracle
+ENV ORACLE_HOME=/opt/oracle/instantclient_23_5
+ENV LD_LIBRARY_PATH=${ORACLE_HOME}:${LD_LIBRARY_PATH}
+ENV PATH=${ORACLE_HOME}:${PATH}
+ENV TNS_ADMIN=${ORACLE_HOME}
+
+# Crear symlink para libaio (Debian 12/Trixie usa libaio1t64)
+RUN ln -s /usr/lib/x86_64-linux-gnu/libaio.so.1t64 /usr/lib/x86_64-linux-gnu/libaio.so.1 || true
+
+# Instalar extensión OCI8 para PHP (Oracle Call Interface)
+RUN echo "instantclient,${ORACLE_HOME}" | pecl install oci8-3.3.0 && \
+    docker-php-ext-enable oci8
+
+# Configurar y compilar PDO_OCI (PDO driver para Oracle)
+RUN docker-php-ext-configure pdo_oci --with-pdo-oci=instantclient,${ORACLE_HOME} && \
+    docker-php-ext-install pdo_oci
+
+# Instalar extensión GD para generar imágenes (QR codes, constancias)
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg && \
+    docker-php-ext-install -j$(nproc) gd
+
+# Habilitar módulos de Apache necesarios
+RUN a2enmod rewrite headers
+
+# Configuración personalizada de PHP
+RUN echo "date.timezone = America/Mexico_City" > /usr/local/etc/php/conf.d/timezone.ini && \
+    echo "upload_max_filesize = 50M" > /usr/local/etc/php/conf.d/uploads.ini && \
+    echo "post_max_size = 50M" >> /usr/local/etc/php/conf.d/uploads.ini && \
+    echo "memory_limit = 256M" > /usr/local/etc/php/conf.d/memory.ini && \
+    echo "max_execution_time = 300" > /usr/local/etc/php/conf.d/execution.ini
+
+# Configurar permisos para Apache
+RUN chown -R www-data:www-data /var/www/html && \
+    chmod -R 755 /var/www/html
+
+# Crear directorios para uploads y constancias
+RUN mkdir -p /var/www/html/uploads /var/www/html/constancias_pdf && \
+    chown -R www-data:www-data /var/www/html/uploads /var/www/html/constancias_pdf && \
+    chmod -R 775 /var/www/html/uploads /var/www/html/constancias_pdf
+
+WORKDIR /var/www/html
+
+EXPOSE 80
+
+CMD ["apache2-foreground"]

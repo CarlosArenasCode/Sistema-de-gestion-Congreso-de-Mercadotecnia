@@ -66,10 +66,10 @@ services:
       - congreso_network
     restart: unless-stopped
 
-volumes:
-  oracle_data:
-    driver: local
-
 networks:
   congreso_network:
     driver: bridge
+
+volumes:
+  oracle_data:
+    driver: local

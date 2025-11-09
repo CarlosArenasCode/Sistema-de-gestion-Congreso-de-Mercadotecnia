@@ -136,6 +136,8 @@ function send_email($to, $subject, $htmlBody, $fromName = 'Congreso Universitari
             }
             $mail->addAddress($to);
             $mail->isHTML(true);
+            $mail->CharSet = 'UTF-8'; // Asegurar codificación UTF-8
+            $mail->Encoding = 'base64'; // Codificación segura para caracteres especiales
             $mail->Subject = $subject;
             $mail->Body = $htmlBody;
 

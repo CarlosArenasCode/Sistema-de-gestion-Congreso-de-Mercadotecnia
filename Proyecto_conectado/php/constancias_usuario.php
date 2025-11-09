@@ -8,12 +8,12 @@ if (ob_get_level()) ob_clean();
 
 header('Content-Type: application/json');
 
-if (!isset($_SESSION['id_usuario'])) {
+if (!isset($_SESSION['usuario_id'])) {
     http_response_code(401);
     echo json_encode(['error' => 'Usuario no autenticado.']);
     exit;
 }
-$id_usuario = $_SESSION['id_usuario'];
+$id_usuario = $_SESSION['usuario_id'];
 
 try {
     // Oracle: Reescribir consulta usando WITH y EXTRACT para INTERVAL

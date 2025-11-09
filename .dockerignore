@@ -1,34 +1,35 @@
-# Ignorar archivos que no deben ir en la imagen Docker
-.git
-.gitignore
+# Ignorar archivos de entorno con credenciales sensibles
 .env
-.vscode
-.idea
-*.log
-*.md
-docs/
-README.md
 
-# Archivos temporales y de desarrollo
+# Ignorar datos locales de Docker
+data/
+uploads/
+constancias_pdf/
+
+# Ignorar logs
+*.log
+smtp_debug.log
+
+# Ignorar archivos de configuración local
+conexion.php
+smtp_config.php
+
+# Ignorar archivos temporales
 *.tmp
 *.bak
 *.swp
 *~
+
+# Ignorar archivos del sistema operativo
 .DS_Store
 Thumbs.db
+desktop.ini
 
-# Dependencias y cache
-node_modules/
+# Ignorar archivos de IDEs
+.vscode/
+.idea/
+*.sublime-*
+
+# Ignorar archivos de dependencias (si usas Composer en el futuro)
 vendor/
-composer.lock
-package-lock.json
-
-# Archivos de configuración local (no compartir credenciales)
-Proyecto_conectado/php/conexion.php
-Proyecto_conectado/php/smtp_config.php
-
-# Datos generados
-data/
-Proyecto_conectado/uploads/
-Proyecto_conectado/constancias_pdf/
-*.pdf
+node_modules/

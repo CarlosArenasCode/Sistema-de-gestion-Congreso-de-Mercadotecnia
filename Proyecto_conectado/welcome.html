@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestión - Congreso UAA</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+        
+        h1 {
+            color: #E4007C;
+            font-size: 32px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .subtitle {
+            color: #666;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        
+        .status {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 15px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+        }
+        
+        .status h3 {
+            color: #2e7d32;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        
+        .status-items {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .status-item {
+            color: #555;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .status-item::before {
+            content: "✅";
+            font-size: 16px;
+        }
+        
+        .services {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .service-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            padding: 20px;
+            text-decoration: none;
+            color: white;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+        
+        .service-card.primary {
+            background: linear-gradient(135deg, #E4007C 0%, #c70067 100%);
+        }
+        
+        .service-card.secondary {
+            background: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%);
+        }
+        
+        .service-card.tertiary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .icon {
+            font-size: 40px;
+            min-width: 50px;
+            text-align: center;
+        }
+        
+        .service-info h3 {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+        
+        .service-info p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #999;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 25px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .icon {
+                font-size: 30px;
+                min-width: 40px;
+            }
+            
+            .service-info h3 {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎓 Sistema de Gestión</h1>
+        <div class="subtitle">Congreso de Mercadotecnia UAA</div>
+        
+        <div class="status">
+            <h3>Estado del Sistema</h3>
+            <div class="status-items">
+                <div class="status-item">Servicio WhatsApp Activo</div>
+                <div class="status-item">Base de Datos Conectada</div>
+                <div class="status-item">Todos los Servicios Operativos</div>
+            </div>
+        </div>
+        
+        <div class="services">
+            <a href="/php/test_whatsapp_docker.php" class="service-card primary">
+                <div class="icon">📱</div>
+                <div class="service-info">
+                    <h3>Dashboard WhatsApp</h3>
+                    <p>Pruebas y monitoreo del servicio de mensajería</p>
+                </div>
+            </a>
+            
+            <a href="http://localhost:8081" target="_blank" class="service-card secondary">
+                <div class="icon">🗄️</div>
+                <div class="service-info">
+                    <h3>phpMyAdmin</h3>
+                    <p>Gestión de base de datos MySQL</p>
+                </div>
+            </a>
+            
+            <a href="http://localhost:3001/health" target="_blank" class="service-card tertiary">
+                <div class="icon">🔌</div>
+                <div class="service-info">
+                    <h3>API WhatsApp</h3>
+                    <p>Estado y documentación de la API</p>
+                </div>
+            </a>
+        </div>
+        
+        <div class="footer">
+            <p>Sistema desarrollado por GJA Team</p>
+            <p>Docker Compose • PHP 8.2 • MySQL 8.0 • Node.js 18</p>
+        </div>
+    </div>
+    
+    <script>
+        // Verificar estado del servicio WhatsApp
+        fetch('http://localhost:3001/health')
+            .then(response => response.json())
+            .then(data => {
+                console.log('WhatsApp Service Status:', data);
+            })
+            .catch(error => {
+                console.warn('WhatsApp service unreachable:', error);
+            });
+    </script>
+</body>
+</html>

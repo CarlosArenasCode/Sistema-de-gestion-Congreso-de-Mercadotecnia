@@ -38,6 +38,7 @@
         }
         .registro-container input[type="text"],
         .registro-container input[type="email"],
+        .registro-container input[type="tel"],
         .registro-container input[type="password"] {
             width: 100%;
             padding: 10px;
@@ -70,12 +71,39 @@
         .registro-container .login-link a:hover {
             text-decoration: underline;
         }
+        .semestre-field {
+            transition: opacity 0.3s ease;
+        }
+        .semestre-field.hidden {
+            display: none;
+        }
+        .phone-input-group {
+            display: flex;
+            gap: 10px;
+        }
+        .phone-input-group select {
+            width: 120px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: white;
+            cursor: pointer;
+        }
+        .phone-input-group input {
+            flex: 1;
+        }
+        .phone-preview {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
     <div class="registro-container">
         <h2>Crear Cuenta</h2>
-        <form action="../php/registrar_usuario.php" method="POST">
+        <form action="../php/registrar_usuario.php" method="POST" id="registroForm">
             <div class="form-group">
                 <label for="nombre_completo">Nombre Completo:</label>
                 <input type="text" id="nombre_completo" name="nombre_completo" required>
@@ -85,12 +113,41 @@
                 <input type="email" id="email" name="email" required>
             </div>
             <div class="form-group">
-                <label for="matricula">Matrícula / ID Alumno:</label>
+                <label for="matricula">Matrícula / ID:</label>
                 <input type="text" id="matricula" name="matricula" required>
             </div>
             <div class="form-group">
+            <label>Soy:</label>
+            <div style="display: flex; align-items: center; justify-content: start; gap: 20px;">
+                <label for="rol_alumno" style="font-weight: normal;"><input type="radio" id="rol_alumno" name="rol" value="alumno" checked> Alumno</label>
+                <label for="rol_profesor" style="font-weight: normal;"><input type="radio" id="rol_profesor" name="rol" value="profesor"> Profesor</label>
+            </div>
+             </div>
+            <div class="form-group semestre-field" id="semestreField">
                 <label for="Semestre">Semestre:</label>
-                <input type="text" id="Semestre" name="Semestre" required>
+                <input type="text" id="Semestre" name="Semestre" placeholder="Ej: 5">
+            </div>
+            <div class="form-group">
+                <label for="telefono">Número de Teléfono:</label>
+                <div class="phone-input-group">
+                    <select id="codigo_pais" name="codigo_pais" required>
+                        <option value="+52" selected>🇲🇽 +52 (México)</option>
+                        <option value="+1">🇺🇸 +1 (USA/Canadá)</option>
+                        <option value="+34">🇪🇸 +34 (España)</option>
+                        <option value="+54">🇦🇷 +54 (Argentina)</option>
+                        <option value="+56">🇨🇱 +56 (Chile)</option>
+                        <option value="+57">🇨🇴 +57 (Colombia)</option>
+                        <option value="+51">🇵🇪 +51 (Perú)</option>
+                        <option value="+58">🇻🇪 +58 (Venezuela)</option>
+                    </select>
+                    <input type="tel" id="telefono" name="telefono" placeholder="449 580 3742" pattern="[0-9]{10}" maxlength="10" required>
+                </div>
+                <input type="hidden" id="telefono_completo" name="telefono_completo">
+                <div class="phone-preview" id="phonePreview">Formato: +52 1 449 580 3742</div>
+                <small style="color: #666; font-size: 12px;">
+                    <strong>Solo ingresa tu número de 10 dígitos.</strong><br>
+                    El sistema agregará automáticamente el "1" después de +52 para WhatsApp.
+                </small>
             </div>
             <div class="form-group">
                 <label for="password">Contraseña:</label>
@@ -100,18 +157,116 @@
                 <label for="password_confirm">Confirmar Contraseña:</label>
                 <input type="password" id="password_confirm" name="password_confirm" required>
             </div>
-            <div class="form-group">
-            <label>Soy:</label>
-            <div style="display: flex; align-items: center; justify-content: start; gap: 20px;">
-                <label for="rol_alumno" style="font-weight: normal;"><input type="radio" id="rol_alumno" name="rol" value="alumno" checked> Alumno</label>
-                <label for="rol_profesor" style="font-weight: normal;"><input type="radio" id="rol_profesor" name="rol" value="profesor"> Profesor</label>
-            </div>
-             </div>
             <button type="submit">Registrarse</button>
         </form>
         <div class="login-link">
             ¿Ya tienes cuenta? <a href="login.html">Inicia Sesión aquí</a>
         </div>
     </div>
+
+    <script>
+        // Referencias a elementos
+        const codigoPais = document.getElementById('codigo_pais');
+        const telefonoInput = document.getElementById('telefono');
+        const telefonoCompleto = document.getElementById('telefono_completo');
+        const phonePreview = document.getElementById('phonePreview');
+
+        // Función para actualizar la vista previa del teléfono
+        function updatePhonePreview() {
+            const codigo = codigoPais.value;
+            let numero = telefonoInput.value.replace(/\D/g, ''); // Solo números
+            
+            if (numero) {
+                let formatted = numero;
+                // Formatear para vista (3-3-4)
+                if (numero.length >= 3) {
+                    formatted = numero.substring(0, 3);
+                    if (numero.length >= 6) {
+                        formatted += ' ' + numero.substring(3, 6);
+                        if (numero.length > 6) {
+                            formatted += ' ' + numero.substring(6, 10);
+                        }
+                    } else if (numero.length > 3) {
+                        formatted += ' ' + numero.substring(3);
+                    }
+                }
+                
+                // IMPORTANTE: Para México (+52), SIEMPRE agregar el "1" automáticamente
+                // El usuario NO debe incluir el "1", se agrega automáticamente
+                if (codigo === '+52') {
+                    phonePreview.textContent = `Formato WhatsApp: ${codigo} 1 ${formatted}`;
+                    // El número completo: +52 + 1 + número de 10 dígitos
+                    telefonoCompleto.value = `${codigo}1${numero}`;
+                } else {
+                    // Para otros países, no agregar el "1"
+                    phonePreview.textContent = `Formato WhatsApp: ${codigo} ${formatted}`;
+                    telefonoCompleto.value = `${codigo}${numero}`;
+                }
+                
+                phonePreview.style.color = '#25D366'; // Verde WhatsApp
+            } else {
+                phonePreview.textContent = `Formato: ${codigo === '+52' ? codigo + ' 1 449 580 3742' : codigo + ' XXXXXXXXXX'}`;
+                phonePreview.style.color = '#666';
+                telefonoCompleto.value = '';
+            }
+        }
+
+        // Listeners para actualizar la vista previa
+        codigoPais.addEventListener('change', updatePhonePreview);
+        telefonoInput.addEventListener('input', function(e) {
+            // Permitir solo números
+            this.value = this.value.replace(/\D/g, '');
+            updatePhonePreview();
+        });
+
+        // Mostrar/ocultar campo de semestre según el rol
+        const rolAlumno = document.getElementById('rol_alumno');
+        const rolProfesor = document.getElementById('rol_profesor');
+        const semestreField = document.getElementById('semestreField');
+        const semestreInput = document.getElementById('Semestre');
+
+        function toggleSemestre() {
+            if (rolProfesor.checked) {
+                semestreField.classList.add('hidden');
+                semestreInput.removeAttribute('required');
+                semestreInput.value = ''; // Limpiar el valor
+            } else {
+                semestreField.classList.remove('hidden');
+                semestreInput.setAttribute('required', 'required');
+            }
+        }
+
+        rolAlumno.addEventListener('change', toggleSemestre);
+        rolProfesor.addEventListener('change', toggleSemestre);
+
+        // Validación antes de enviar
+        document.getElementById('registroForm').addEventListener('submit', function(e) {
+            const password = document.getElementById('password').value;
+            const passwordConfirm = document.getElementById('password_confirm').value;
+
+            if (password !== passwordConfirm) {
+                e.preventDefault();
+                alert('Las contraseñas no coinciden. Por favor, verifica.');
+                return false;
+            }
+
+            // Validar que el teléfono tenga 10 dígitos
+            const telefono = telefonoInput.value.replace(/\D/g, '');
+            if (telefono.length !== 10) {
+                e.preventDefault();
+                alert('Por favor, ingresa un número de teléfono válido de 10 dígitos.');
+                return false;
+            }
+
+            // Actualizar el campo oculto antes de enviar
+            updatePhonePreview();
+            
+            console.log('Teléfono completo a enviar:', telefonoCompleto.value);
+        });
+
+        // Ejecutar al cargar la página
+        toggleSemestre();
+        updatePhonePreview();
+    </script>
 </body>
 </html>

@@ -52,7 +52,7 @@ CREATE TABLE `usuarios` (
   `semestre` int(2) DEFAULT NULL,
   `telefono` varchar(20) DEFAULT NULL,
   `rol` enum('alumno','profesor') NOT NULL DEFAULT 'alumno',
-  `qr_code_data` varchar(255) DEFAULT NULL,
+  `codigo_qr` varchar(255) DEFAULT NULL,
   `codigo_verificacion` varchar(6) DEFAULT NULL,
   `fecha_codigo` datetime DEFAULT NULL,
   `verificado` tinyint(1) NOT NULL DEFAULT 0,
@@ -112,9 +112,9 @@ CREATE TABLE `justificaciones` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para `password_reset_tokens`
+-- Estructura de tabla para `tokens_reseteo_password`
 --
-CREATE TABLE `password_reset_tokens` (
+CREATE TABLE `tokens_reseteo_password` (
   `id_token` int(11) NOT NULL,
   `selector` varchar(255) NOT NULL,
   `token_hash` varchar(255) NOT NULL,
@@ -142,11 +142,11 @@ CREATE TABLE `inscripciones` (
 --
 ALTER TABLE `administradores` ADD PRIMARY KEY (`id_admin`), ADD UNIQUE KEY `email` (`email`);
 ALTER TABLE `eventos` ADD PRIMARY KEY (`id_evento`);
-ALTER TABLE `usuarios` ADD PRIMARY KEY (`id_usuario`), ADD UNIQUE KEY `email` (`email`), ADD UNIQUE KEY `matricula` (`matricula`), ADD UNIQUE KEY `qr_code_data` (`qr_code_data`);
+ALTER TABLE `usuarios` ADD PRIMARY KEY (`id_usuario`), ADD UNIQUE KEY `email` (`email`), ADD UNIQUE KEY `matricula` (`matricula`), ADD UNIQUE KEY `codigo_qr` (`codigo_qr`);
 ALTER TABLE `asistencia` ADD PRIMARY KEY (`id_asistencia`), ADD KEY `id_usuario` (`id_usuario`), ADD KEY `id_evento` (`id_evento`);
 ALTER TABLE `constancias` ADD PRIMARY KEY (`id_constancia`), ADD UNIQUE KEY `numero_serie` (`numero_serie`), ADD KEY `fk_constancias_usuario` (`id_usuario`), ADD KEY `fk_constancias_evento` (`id_evento`);
 ALTER TABLE `justificaciones` ADD PRIMARY KEY (`id_justificacion`), ADD KEY `id_usuario` (`id_usuario`), ADD KEY `id_evento` (`id_evento`), ADD KEY `id_admin_revisor` (`id_admin_revisor`);
-ALTER TABLE `password_reset_tokens` ADD PRIMARY KEY (`id_token`), ADD KEY `id_usuario` (`id_usuario`), ADD KEY `id_admin` (`id_admin`);
+ALTER TABLE `tokens_reseteo_password` ADD PRIMARY KEY (`id_token`), ADD KEY `id_usuario` (`id_usuario`), ADD KEY `id_admin` (`id_admin`);
 ALTER TABLE `inscripciones` ADD PRIMARY KEY (`id_inscripcion`), ADD UNIQUE KEY `idx_usuario_evento_inscripcion` (`id_usuario`,`id_evento`), ADD KEY `id_evento` (`id_evento`);
 
 --
@@ -158,7 +158,7 @@ ALTER TABLE `usuarios` MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `asistencia` MODIFY `id_asistencia` int(11) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `constancias` MODIFY `id_constancia` int(11) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `justificaciones` MODIFY `id_justificacion` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `password_reset_tokens` MODIFY `id_token` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `tokens_reseteo_password` MODIFY `id_token` int(11) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `inscripciones` MODIFY `id_inscripcion` int(11) NOT NULL AUTO_INCREMENT;
 
 --
@@ -177,9 +177,9 @@ ALTER TABLE `justificaciones`
   ADD CONSTRAINT `justificaciones_ibfk_2` FOREIGN KEY (`id_evento`) REFERENCES `eventos` (`id_evento`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `justificaciones_ibfk_3` FOREIGN KEY (`id_admin_revisor`) REFERENCES `administradores` (`id_admin`) ON DELETE SET NULL ON UPDATE CASCADE;
 
-ALTER TABLE `password_reset_tokens`
-  ADD CONSTRAINT `password_reset_tokens_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `password_reset_tokens_ibfk_2` FOREIGN KEY (`id_admin`) REFERENCES `administradores` (`id_admin`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `tokens_reseteo_password`
+  ADD CONSTRAINT `tokens_reseteo_password_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `tokens_reseteo_password_ibfk_2` FOREIGN KEY (`id_admin`) REFERENCES `administradores` (`id_admin`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE `inscripciones`
   ADD CONSTRAINT `inscripciones_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`) ON DELETE CASCADE ON UPDATE CASCADE,

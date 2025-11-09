@@ -7,10 +7,10 @@ document.addEventListener('DOMContentLoaded', () => {
         fetch('../php/qr_usuario.php')  // Petición al backend para obtener el QR
             .then(response => response.json())
             .then(data => {
-                if (data.qr_code_data) {
+                if (data.codigo_qr) {
                     // Si se genera el código QR, mostrarlo
                     const img = document.createElement('img');
-                    img.src = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(data.qr_code_data)}&size=250x250`;
+                    img.src = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(data.codigo_qr)}&size=250x250`;
                     qrContainer.innerHTML = '';  // Limpiar el contenedor
                     qrContainer.appendChild(img);
                     errorContainer.style.display = 'none';  // Ocultar mensaje de error

@@ -17,23 +17,23 @@ if (!isset($_SESSION['usuario_id']) || !isset($_SESSION['nombre'])) {
 $nombre = $_SESSION['nombre'];
 $usuario_id = $_SESSION['usuario_id'];
 
-// Obtener el qr_code_data actual usando el ID del usuario
-$stmt = $pdo->prepare("SELECT qr_code_data FROM usuarios WHERE id_usuario = ?");
+// Obtener el codigo_qr actual usando el ID del usuario
+$stmt = $pdo->prepare("SELECT codigo_qr FROM usuarios WHERE id_usuario = ?");
 $stmt->execute([$usuario_id]);
 $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if ($usuario) {
     // Eliminar cualquier timestamp anterior
-    $qr_base = preg_replace('/&timestamp=\d+/', '', $usuario['qr_code_data']);
+    $qr_base = preg_replace('/&timestamp=\d+/', '', $usuario['codigo_qr']);
 
     // Generar nuevo código con timestamp
     $nuevo_qr = $qr_base . '&timestamp=' . time();
 
     // Guardar el nuevo código en la base de datos usando el ID del usuario
-    $update = $pdo->prepare("UPDATE usuarios SET qr_code_data = ? WHERE id_usuario = ?");
+    $update = $pdo->prepare("UPDATE usuarios SET codigo_qr = ? WHERE id_usuario = ?");
     $update->execute([$nuevo_qr, $usuario_id]);
 
-    echo json_encode(['qr_code_data' => $nuevo_qr]);
+    echo json_encode(['codigo_qr' => $nuevo_qr]);
 } else {
     echo json_encode(['error' => 'Usuario no encontrado']);
 }

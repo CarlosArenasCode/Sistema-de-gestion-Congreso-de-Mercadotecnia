@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch(`../php_admin/constancias_controller.php?action=get_elegibles&id_evento=${eventoId}`);
             const data = await response.json();
             if (data.success) {
-                renderTabla(data.usuarios, eventoId);
+                renderTabla(data.usuarios);
             } else {
                 throw new Error(data.error || 'No se pudieron cargar los datos.');
             }
@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function renderTabla(usuarios, eventoId) {
+    function renderTabla(usuarios) {
         constanciasTableBody.innerHTML = '';
         if (usuarios.length === 0) {
             constanciasTableBody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No hay usuarios inscritos en este evento.</td></tr>';

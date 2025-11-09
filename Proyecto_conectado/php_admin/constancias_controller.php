@@ -1,7 +1,6 @@
 <?php
-// php_admin/constancias_controller.oracle.php
+// php_admin/constancias_controller.php
 require_once '../php/conexion.php';
-require_once '../php/oracle_helpers.php';
 require_once '../php/generar_constancia.php';
 
 header('Content-Type: application/json');
@@ -22,7 +21,7 @@ switch ($action) {
         generarUnaConstancia();
         break;
     case 'get_eventos_filtro':
-        getEventosFiltro();
+        getEventosFiltro(); // CORREGIDO
         break;
     default:
         http_response_code(400);
@@ -35,7 +34,7 @@ function getEventosFiltro() {
     echo json_encode(['success' => true, 'eventos' => $stmt->fetchAll(PDO::FETCH_ASSOC)]);
 }
 
-// --- FUNCIÓN getElegibles() MIGRADA A ORACLE ---
+// --- FUNCIÓN getElegibles() COMPLETAMENTE REESCRITA PARA MÁXIMA ESTABILIDAD ---
 function getElegibles() {
     global $pdo;
     $id_evento_filtro = $_GET['id_evento'] ?? null;
@@ -55,15 +54,9 @@ function getElegibles() {
         }
 
         if ($evento_info['tipo_evento'] == 'taller') {
-            $sql_users = "SELECT u.id_usuario, u.nombre_completo 
-                         FROM usuarios u 
-                         JOIN inscripciones i ON u.id_usuario = i.id_usuario 
-                         WHERE i.id_evento = ? AND i.estado = 'Inscrito'";
+            $sql_users = "SELECT u.id_usuario, u.nombre_completo FROM usuarios u JOIN inscripciones i ON u.id_usuario = i.id_usuario WHERE i.id_evento = ? AND i.estado = 'Inscrito'";
         } else {
-            $sql_users = "SELECT DISTINCT u.id_usuario, u.nombre_completo 
-                         FROM usuarios u 
-                         JOIN asistencia a ON u.id_usuario = a.id_usuario 
-                         WHERE a.id_evento = ?";
+            $sql_users = "SELECT DISTINCT u.id_usuario, u.nombre_completo FROM usuarios u JOIN asistencia a ON u.id_usuario = a.id_usuario WHERE a.id_evento = ?";
         }
         $stmt_users = $pdo->prepare($sql_users);
         $stmt_users->execute([$id_evento_filtro]);
@@ -77,22 +70,12 @@ function getElegibles() {
         $user_ids = array_column($usuarios_base, 'id_usuario');
         $placeholders = implode(',', array_fill(0, count($user_ids), '?'));
         
-        // Oracle: Convertir INTERVAL a segundos usando EXTRACT
-        // INTERVAL DAY TO SECOND se convierte: días*86400 + horas*3600 + minutos*60 + segundos
         $sql_details = "
             SELECT
                 u.id_usuario,
                 COALESCE(SUM(CASE WHEN a.hora_salida IS NOT NULL THEN 1 ELSE 0 END), 0) as asistencia_completa_count,
-                COALESCE(
-                    SUM(
-                        EXTRACT(DAY FROM a.duracion) * 86400 +
-                        EXTRACT(HOUR FROM a.duracion) * 3600 +
-                        EXTRACT(MINUTE FROM a.duracion) * 60 +
-                        EXTRACT(SECOND FROM a.duracion)
-                    ), 
-                    0
-                ) as duracion_total_seg,
-                CASE WHEN MAX(c.id_constancia) IS NOT NULL THEN 1 ELSE 0 END as emitida,
+                COALESCE(SUM(TIME_TO_SEC(a.duracion)), 0) as duracion_total_seg,
+                MAX(c.id_constancia) IS NOT NULL as emitida,
                 MAX(c.ruta_archivo_pdf) as ruta_archivo_pdf
             FROM usuarios u
             LEFT JOIN asistencia a ON u.id_usuario = a.id_usuario AND a.id_evento = ?
@@ -112,10 +95,7 @@ function getElegibles() {
         $resultado_final = [];
         foreach ($usuarios_base as $usuario) {
             $details = $details_map[$usuario['id_usuario']] ?? [
-                'asistencia_completa_count' => 0, 
-                'duracion_total_seg' => 0, 
-                'emitida' => 0, 
-                'ruta_archivo_pdf' => null
+                'asistencia_completa_count' => 0, 'duracion_total_seg' => 0, 'emitida' => false, 'ruta_archivo_pdf' => null
             ];
 
             $usuario['elegible'] = false;
@@ -125,7 +105,6 @@ function getElegibles() {
                 $usuario['elegible'] = true;
             }
 
-            // Oracle devuelve 1/0 en lugar de booleano, convertir a bool
             $usuario['emitida'] = (bool)$details['emitida'];
             $usuario['ruta_archivo_pdf'] = $details['ruta_archivo_pdf'];
             $resultado_final[] = $usuario;
@@ -135,7 +114,6 @@ function getElegibles() {
 
     } catch (Exception $e) {
         http_response_code(500);
-        error_log("Error en getElegibles (Oracle): " . $e->getMessage());
         echo json_encode(['success' => false, 'error' => $e->getMessage()]);
     }
 }
@@ -149,13 +127,10 @@ function generarUnaConstancia() {
         return;
     }
     try {
-        // La función generarConstancia() debe ser compatible con Oracle
-        // Asegúrate de que generar_constancia.php use conexion.oracle.php
         $resultado = generarConstancia($id_usuario, $id_evento);
         echo json_encode($resultado);
     } catch (Exception $e) {
         http_response_code(500);
-        error_log("Error en generarUnaConstancia (Oracle): " . $e->getMessage());
         echo json_encode(['success' => false, 'message' => $e->getMessage()]);
     }
 }

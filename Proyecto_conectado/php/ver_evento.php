@@ -1,10 +1,6 @@
 <?php
 // php/ver_evento.php
-session_start(); // Iniciar sesión antes de requerir conexion
 require_once 'conexion.php'; 
-
-// Limpiar cualquier output buffer previo
-if (ob_get_level()) ob_clean();
 
 header('Content-Type: application/json');
 
@@ -16,10 +12,10 @@ if (!isset($_SESSION['usuario_id'])) {
 $id_usuario = $_SESSION['usuario_id'];
 
 try {
-    // Oracle: Usar CASE en lugar de IF, y convertir booleano a número
+    
     $sql = "SELECT
                 e.*,
-                CASE WHEN i.id_usuario IS NOT NULL AND i.estado = 'Inscrito' THEN 1 ELSE 0 END AS is_inscrito
+                IF(i.id_usuario IS NOT NULL AND i.estado = 'Inscrito', 1, 0) AS is_inscrito
             FROM
                 eventos e
             LEFT JOIN
@@ -31,14 +27,6 @@ try {
     $stmt->bindParam(':id_usuario', $id_usuario, PDO::PARAM_INT);
     $stmt->execute();
     $eventos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    // Oracle: Convertir CLOBs a strings antes de json_encode
-    foreach ($eventos as &$evento) {
-        if (isset($evento['descripcion']) && is_resource($evento['descripcion'])) {
-            $evento['descripcion'] = stream_get_contents($evento['descripcion']);
-        }
-    }
-    unset($evento); // Romper referencia
 
     echo json_encode($eventos);
 

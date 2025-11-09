@@ -1,6 +1,5 @@
 <?php
 require_once '../php/conexion.php';
-require_once '../php/oracle_helpers.php';
 
 header('Content-Type: application/json');
 
@@ -28,14 +27,11 @@ try {
 function getAsistencias($pdo, $return_data = false) {
     $searchTerm = $_GET['search'] ?? null;
 
-    // Oracle: TO_CHAR para formatear fechas y horas desde TIMESTAMP
     $sql = "SELECT
-                a.id_usuario, 
-                u.nombre_completo AS nombre_usuario, 
-                e.nombre_evento,
-                TO_CHAR(a.fecha, 'DD/MM/YYYY') AS fecha,
-                TO_CHAR(a.hora_entrada, 'HH24:MI') AS hora_entrada,
-                TO_CHAR(a.hora_salida, 'HH24:MI') AS hora_salida,
+                a.id_usuario, u.nombre_completo AS nombre_usuario, e.nombre_evento,
+                DATE_FORMAT(a.fecha, '%d/%m/%Y') AS fecha,
+                TIME_FORMAT(a.hora_entrada, '%H:%i') AS hora_entrada,
+                TIME_FORMAT(a.hora_salida, '%H:%i') AS hora_salida,
                 a.duracion
             FROM asistencia a
             LEFT JOIN usuarios u ON a.id_usuario = u.id_usuario
@@ -44,16 +40,17 @@ function getAsistencias($pdo, $return_data = false) {
 
     $params = [];
     
+    // --- LÓGICA DE FILTRO CORREGIDA CON PARÁMETROS POSICIONALES (?) ---
     if (!empty($searchTerm)) {
-        // Oracle: UPPER para búsqueda case-insensitive, TO_CHAR para fecha y números
         $sql .= " AND (
-            UPPER(u.nombre_completo) LIKE UPPER(?) OR 
-            UPPER(e.nombre_evento) LIKE UPPER(?) OR 
-            UPPER(u.matricula) LIKE UPPER(?) OR
-            TO_CHAR(a.fecha, 'YYYY-MM-DD') LIKE ? OR
-            TO_CHAR(a.id_usuario) = ?
+            u.nombre_completo LIKE ? OR 
+            e.nombre_evento LIKE ? OR 
+            u.matricula LIKE ? OR
+            a.fecha LIKE ? OR
+            a.id_usuario = ?
         )";
         $search_like = '%' . $searchTerm . '%';
+        // Se crea un array con los valores en el orden de los '?'
         $params = [$search_like, $search_like, $search_like, $search_like, $searchTerm];
     }
 
@@ -64,23 +61,9 @@ function getAsistencias($pdo, $return_data = false) {
     $asistencias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     foreach ($asistencias as &$row) {
-        // Oracle: duracion es INTERVAL, convertir a formato legible
-        if ($row['duracion']) {
-            // Oracle PDO puede devolver INTERVAL como string o recurso
-            if (is_string($row['duracion'])) {
-                // Formato: +000000000 HH:MI:SS.ffffff
-                if (preg_match('/\+(\d+)\s+(\d+):(\d+):(\d+)/', $row['duracion'], $matches)) {
-                    $days = (int)$matches[1];
-                    $hours = (int)$matches[2] + ($days * 24); // Convertir días a horas
-                    $minutes = (int)$matches[3];
-                    $row['duracion_formateada'] = "{$hours}h {$minutes}m";
-                } else {
-                    $row['duracion_formateada'] = '-';
-                }
-            } else {
-                // Si es un objeto, intentar obtener el valor
-                $row['duracion_formateada'] = '-';
-            }
+        if ($row['duracion'] && preg_match('/^(\d{2,}):(\d{2}):(\d{2})$/', $row['duracion'], $matches)) {
+            $h = (int)$matches[1]; $m = (int)$matches[2];
+            $row['duracion_formateada'] = "{$h}h {$m}m";
         } else {
             $row['duracion_formateada'] = '-';
         }

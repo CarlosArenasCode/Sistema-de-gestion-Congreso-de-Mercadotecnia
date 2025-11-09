@@ -16,14 +16,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     <p><strong>Eventos Programados:</strong> ${stats.eventos_programados}</p>
                     <p><strong>Justificaciones Pendientes:</strong> <span style="color: #dc3545; font-weight: bold;">${stats.justificaciones_pendientes}</span></p>
                 `;
-                
-                // Actualizar nombre del admin en el menú
-                if (data.admin_nombre) {
-                    const adminNameElements = document.querySelectorAll('.user-menu span');
-                    adminNameElements.forEach(el => {
-                        el.textContent = `Bienvenido, ${data.admin_nombre}`;
-                    });
-                }
             }
         } catch (error) {
             statsContainer.innerHTML = '<p>No se pudieron cargar las estadísticas.</p>';

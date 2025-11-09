@@ -1,8 +1,7 @@
 <?php
-// php/generar_constancia.php - Versión Oracle
+// php/generar_constancia.php
 require_once 'conexion.php';
-require_once 'oracle_helpers.php';
-require_once 'fpdf/fpdf.php';
+require_once 'fpdf/fpdf.php'; // Esta es la línea que corregimos
 
 // if (!isset($_SESSION['id_admin'])) {
 //     http_response_code(403);
@@ -13,17 +12,7 @@ function generarConstancia($id_usuario, $id_evento) {
     global $pdo;
 
     // 1. Obtener datos del usuario y del evento
-    // Oracle: TO_CHAR para convertir DATE a string
-    $stmt = $pdo->prepare("
-        SELECT 
-            u.nombre_completo, 
-            e.nombre_evento, 
-            e.ponente, 
-            TO_CHAR(e.fecha_inicio, 'YYYY-MM-DD') as fecha_inicio 
-        FROM usuarios u, eventos e 
-        WHERE u.id_usuario = :id_usuario 
-        AND e.id_evento = :id_evento
-    ");
+    $stmt = $pdo->prepare("SELECT u.nombre_completo, e.nombre_evento, e.ponente, e.fecha_inicio FROM usuarios u, eventos e WHERE u.id_usuario = :id_usuario AND e.id_evento = :id_evento");
     $stmt->execute([':id_usuario' => $id_usuario, ':id_evento' => $id_evento]);
     $datos = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -78,17 +67,9 @@ function generarConstancia($id_usuario, $id_evento) {
     $ruta_db = 'constancias_generadas/' . $nombre_archivo;
 
     if ($stmt_check->fetch()) {
-        // Oracle: SYSDATE en lugar de NOW()
-        $sql = "UPDATE constancias 
-                SET ruta_archivo_pdf = :ruta, 
-                    fecha_emision = SYSDATE, 
-                    numero_serie = :serie 
-                WHERE id_usuario = :id_usuario 
-                AND id_evento = :id_evento";
+        $sql = "UPDATE constancias SET ruta_archivo_pdf = :ruta, fecha_emision = NOW(), numero_serie = :serie WHERE id_usuario = :id_usuario AND id_evento = :id_evento";
     } else {
-        // Oracle: fecha_emision se establece por defecto con SYSDATE en el trigger/default
-        $sql = "INSERT INTO constancias (id_usuario, id_evento, numero_serie, ruta_archivo_pdf) 
-                VALUES (:id_usuario, :id_evento, :serie, :ruta)";
+        $sql = "INSERT INTO constancias (id_usuario, id_evento, numero_serie, ruta_archivo_pdf) VALUES (:id_usuario, :id_evento, :serie, :ruta)";
     }
     
     $stmt_db = $pdo->prepare($sql);
@@ -99,10 +80,6 @@ function generarConstancia($id_usuario, $id_evento) {
         ':ruta' => $ruta_db
     ]);
 
-    return [
-        'success' => true, 
-        'message' => "Constancia para {$datos['nombre_completo']} generada/actualizada.", 
-        'path' => $ruta_completa
-    ];
+    return ['success' => true, 'message' => "Constancia para {$datos['nombre_completo']} generada/actualizada.", 'path' => $ruta_completa];
 }
 ?>

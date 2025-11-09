@@ -175,11 +175,6 @@ function sendEventCreatedToAll($pdo, $id_evento) {
     $evento = $stmt->fetch(PDO::FETCH_ASSOC);
     if (!$evento) return false;
 
-    // Convertir CLOB a string si es necesario (Oracle)
-    if (is_resource($evento['descripcion'])) {
-        $evento['descripcion'] = stream_get_contents($evento['descripcion']);
-    }
-
     $subject = "Nuevo evento: " . $evento['nombre_evento'];
     $date = isset($evento['fecha_inicio']) ? $evento['fecha_inicio'] : '';
     $time = isset($evento['hora_inicio']) ? $evento['hora_inicio'] : '';

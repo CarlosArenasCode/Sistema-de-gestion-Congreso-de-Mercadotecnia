@@ -38,14 +38,6 @@ try {
     
     $justificaciones = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Oracle: Convertir CLOBs a strings antes de json_encode
-    foreach ($justificaciones as &$just) {
-        if (isset($just['motivo']) && is_resource($just['motivo'])) {
-            $just['motivo'] = stream_get_contents($just['motivo']);
-        }
-    }
-    unset($just);
-
     if ($justificaciones) {
         echo json_encode($justificaciones);
     } else {

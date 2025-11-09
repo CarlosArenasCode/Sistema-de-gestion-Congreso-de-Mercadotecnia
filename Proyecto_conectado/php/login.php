@@ -24,14 +24,14 @@ if (empty($matricula) || empty($password)) {
 }
 
 try {
-    // Buscar usuario por matrícula
-    $consulta = $pdo->prepare("SELECT * FROM usuarios WHERE matricula = ?");
-    $consulta->execute([$matricula]);
+    // Primero intentar login como usuario (matrícula)
+    $consulta = $pdo->prepare("SELECT * FROM usuarios WHERE matricula = :matricula");
+    $consulta->execute([':matricula' => $matricula]);
     $usuario = $consulta->fetch(PDO::FETCH_ASSOC);
 
     if ($usuario && password_verify($password, $usuario['password_hash'])) {
         // Verificar si la cuenta está verificada
-        if ($usuario['verificado'] == 0) {
+        if (isset($usuario['verificado']) && $usuario['verificado'] == 0) {
             echo json_encode([
                 'success' => false,
                 'verified' => false,
@@ -48,7 +48,7 @@ try {
         $_SESSION['matricula'] = $usuario['matricula'];
         $_SESSION['rol'] = 'alumno';
         $_SESSION['tipo'] = 'alumno';
-        $_SESSION['verificado'] = $usuario['verificado'];
+        $_SESSION['verificado'] = isset($usuario['verificado']) ? $usuario['verificado'] : 1;
         $_SESSION['last_activity'] = time();
 
         // Generar token de sesión
@@ -58,7 +58,7 @@ try {
         echo json_encode([
             'success' => true,
             'message' => 'Inicio de sesión exitoso',
-            'redirectUrl' => '../Front-end/dashboard_alumno.html',
+            'redirectUrl' => '/Front-end/dashboard_alumno.html',
             'userData' => [
                 'id' => $usuario['id_usuario'],
                 'nombre' => $usuario['nombre_completo'],
@@ -66,17 +66,53 @@ try {
                 'matricula' => $usuario['matricula'],
                 'rol' => 'alumno',
                 'tipo' => 'alumno',
-                'verificado' => $usuario['verificado']
+                'verificado' => isset($usuario['verificado']) ? $usuario['verificado'] : 1
             ],
             'token' => $token
         ]);
         exit;
-    } else {
-        echo json_encode([
-            'success' => false,
-            'message' => 'Matrícula o contraseña incorrectos.'
-        ]);
     }
+    
+    // Si no es usuario, intentar login como administrador (email)
+    $consulta_admin = $pdo->prepare("SELECT * FROM administradores WHERE email = :email");
+    $consulta_admin->execute([':email' => $matricula]); // Usando matrícula como email para admin
+    $admin = $consulta_admin->fetch(PDO::FETCH_ASSOC);
+
+    if ($admin && password_verify($password, $admin['password_hash'])) {
+        // Inicio de sesión exitoso como admin
+        $_SESSION['admin_id'] = $admin['id_admin'];
+        $_SESSION['nombre'] = $admin['nombre_completo'];
+        $_SESSION['email'] = $admin['email'];
+        $_SESSION['rol'] = $admin['rol'];
+        $_SESSION['tipo'] = 'admin';
+        $_SESSION['last_activity'] = time();
+
+        // Generar token de sesión
+        $token = bin2hex(random_bytes(32));
+        $_SESSION['session_token'] = $token;
+
+        echo json_encode([
+            'success' => true,
+            'message' => 'Inicio de sesión exitoso',
+            'redirectUrl' => '/Front-end/admin_dashboard.html',
+            'userData' => [
+                'id' => $admin['id_admin'],
+                'nombre' => $admin['nombre_completo'],
+                'email' => $admin['email'],
+                'rol' => $admin['rol'],
+                'tipo' => 'admin'
+            ],
+            'token' => $token
+        ]);
+        exit;
+    }
+    
+    // Si no se encontró en ninguna tabla
+    echo json_encode([
+        'success' => false,
+        'message' => 'Matrícula o contraseña incorrectos.'
+    ]);
+
 
 } catch (PDOException $e) {
     echo json_encode([

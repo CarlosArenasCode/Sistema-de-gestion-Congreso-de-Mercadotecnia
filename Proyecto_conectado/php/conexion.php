@@ -12,6 +12,14 @@
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
+// Configurar charset UTF-8 para PHP
+ini_set('default_charset', 'UTF-8');
+mb_internal_encoding('UTF-8');
+mb_http_output('UTF-8');
+
+// Asegurar que todas las salidas usen UTF-8
+header('Content-Type: text/html; charset=UTF-8');
+
 // =====================================================
 // CONFIGURACIÓN DE CONEXIÓN ORACLE
 // =====================================================

@@ -131,7 +131,7 @@ function getUsuarioDetalle($pdo, $id_usuario) {
             nombre_completo, 
             email, 
             semestre, 
-            qr_code_data 
+            codigo_qr 
         FROM usuarios 
         WHERE id_usuario = :id_usuario
     ");
@@ -174,11 +174,11 @@ function saveUsuario($pdo, $data) {
                        : null,
     ];
 
-    // Generar qr_code_data si es un nuevo usuario
+    // Generar codigo_qr si es un nuevo usuario
     if (!$id_usuario) {
-        $params[':qr_code_data'] = $data['qr_code_data'] ?? uniqid('userqr_');
-    } elseif (isset($data['qr_code_data']) && !empty($data['qr_code_data'])) {
-        $params[':qr_code_data'] = $data['qr_code_data'];
+        $params[':codigo_qr'] = $data['codigo_qr'] ?? uniqid('userqr_');
+    } elseif (isset($data['codigo_qr']) && !empty($data['codigo_qr'])) {
+        $params[':codigo_qr'] = $data['codigo_qr'];
     }
 
     if ($id_usuario) {
@@ -191,8 +191,8 @@ function saveUsuario($pdo, $data) {
             $sql_password_part = ", password_hash = :password_hash";
         }
         
-        if (isset($params[':qr_code_data'])) {
-            $sql_qr_part = ", qr_code_data = :qr_code_data";
+        if (isset($params[':codigo_qr'])) {
+            $sql_qr_part = ", codigo_qr = :codigo_qr";
         }
 
         $sql = "UPDATE usuarios SET 
@@ -216,9 +216,9 @@ function saveUsuario($pdo, $data) {
         $params[':password_hash'] = password_hash($data['password'], PASSWORD_DEFAULT);
         
         $sql = "INSERT INTO usuarios 
-                (nombre_completo, email, matricula, semestre, password_hash, qr_code_data) 
+                (nombre_completo, email, matricula, semestre, password_hash, codigo_qr) 
                 VALUES 
-                (:nombre_completo, :email, :matricula, :semestre, :password_hash, :qr_code_data)";
+                (:nombre_completo, :email, :matricula, :semestre, :password_hash, :codigo_qr)";
         
         $message = "Usuario creado correctamente.";
     }

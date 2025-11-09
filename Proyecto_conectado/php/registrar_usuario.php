@@ -88,11 +88,11 @@ function guidv4($data = null) {
     $data[8] = chr(ord($data[8]) & 0x3f | 0x80);
     return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
 }
-$qr_code_data = guidv4();
+$codigo_qr = guidv4();
 
 try {
     // Insertar usuario con verificado = 0 (no verificado)
-    $sql = "INSERT INTO usuarios (nombre_completo, email, password_hash, matricula, semestre, telefono, rol, qr_code_data, codigo_verificacion, fecha_codigo, verificado)
+    $sql = "INSERT INTO usuarios (nombre_completo, email, password_hash, matricula, semestre, telefono, rol, codigo_qr, codigo_verificacion, fecha_codigo, verificado)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)";
 
     $stmt = $pdo->prepare($sql);
@@ -105,12 +105,14 @@ try {
         ($rol === 'alumno' ? $semestre : null),
         $telefono,
         $rol,
-        $qr_code_data,
+        $codigo_qr,
         $codigo_verificacion,
         $fecha_codigo
     ]);
 
-    $id_usuario = $pdo->lastInsertId();
+    // Oracle: Obtener el último ID insertado usando helper
+    require_once 'oracle_helpers.php';
+    $id_usuario = OracleHelper::getLastInsertId($pdo, 'usuarios', 'id_usuario');
 
     // Enviar código por EMAIL
     $asunto = "Código de Verificación - Congreso de Mercadotecnia";

@@ -11,12 +11,26 @@ cookies.txt
 # PDFs generados temporalmente
 Proyecto_conectado/constancias_pdf/*.pdf
 !Proyecto_conectado/constancias_pdf/.gitkeep
+Proyecto_conectado/constancias_generadas/
 
 # Archivos subidos por usuarios
 Proyecto_conectado/uploads/*
 !Proyecto_conectado/uploads/.gitkeep
 data/uploads/*
 !data/uploads/.gitkeep
+
+# Datos de la aplicación
+data/
+
+# Scripts de prueba y debug
+Proyecto_conectado/test_*.php
+Proyecto_conectado/debug_*.php
+Proyecto_conectado/fix_*.php
+Proyecto_conectado/create_test_user.php
+Proyecto_conectado/verify_data.php
+Proyecto_conectado/reporte_final.php
+oracle/create_test_user.sql
+oracle/migration/
 
 # Logs de PHP
 *.log

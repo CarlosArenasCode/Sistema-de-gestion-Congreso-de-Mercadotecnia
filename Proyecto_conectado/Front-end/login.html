@@ -4,77 +4,79 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Congreso Universitario - Iniciar Sesión</title>
-    <link rel="stylesheet" href="../CSS/style.css"> </head>
+    <link rel="stylesheet" href="../CSS/style.css">
+</head>
 <body>
     <!-- Pantalla de carga -->
-<div id="pantalla-carga">
-    <div class="collage">
-      <img src="https://www.uaa.mx/portal/wp-content/uploads/2025/07/redes-LQSTJ_pweb-scaled.jpg" alt="Imagen 1">
-      <img src="https://www.uaa.mx/portal/wp-content/uploads/2024/07/Banner_MKT-04.jpg" alt="Imagen 2">
-      <img src="https://www.uaa.mx/portal/wp-content/uploads/2024/07/Encuentro-MKT-30-Aniv-IMG_8696-1024x729.jpg" alt="Imagen 3">
-      <img src="https://www.uaa.mx/portal/wp-content/uploads/2024/07/Encuentro-MKT-30-Aniv-IMG_8465-300x200.jpg" alt="Imagen 4">
-      <img src="https://www.uaa.mx/portal/wp-content/uploads/2024/07/Expo-MKT-Credito-Facebook-Mercadotecnia-UAA_2-300x169.jpg" alt="Imagen 5">
-      <img src="https://www.uaa.mx/portal/wp-content/uploads/2025/03/GracielaSalazar.jpg" alt="Imagen 6">
+    <div id="pantalla-carga">
+        <div class="collage">
+            <img src="https://www.uaa.mx/portal/wp-content/uploads/2025/07/redes-LQSTJ_pweb-scaled.jpg" alt="Imagen 1">
+            <img src="https://www.uaa.mx/portal/wp-content/uploads/2024/07/Banner_MKT-04.jpg" alt="Imagen 2">
+            <img src="https://www.uaa.mx/portal/wp-content/uploads/2024/07/Encuentro-MKT-30-Aniv-IMG_8696-1024x729.jpg" alt="Imagen 3">
+            <img src="https://www.uaa.mx/portal/wp-content/uploads/2024/07/Encuentro-MKT-30-Aniv-IMG_8465-300x200.jpg" alt="Imagen 4">
+            <img src="https://www.uaa.mx/portal/wp-content/uploads/2024/07/Expo-MKT-Credito-Facebook-Mercadotecnia-UAA_2-300x169.jpg" alt="Imagen 5">
+            <img src="https://www.uaa.mx/portal/wp-content/uploads/2025/03/GracielaSalazar.jpg" alt="Imagen 6">
+        </div>
     </div>
-  </div>
   
     <header>
         <h1>Congreso Universitario</h1>
-        </header>
+    </header>
 
     <main class="login-container">
         <h2>Iniciar Sesión</h2>
-        <form id="login-form" action="../php/login.php" method="POST">
+        
+        <!-- Ayuda de credenciales -->
+        <div style="background-color: #e3f2fd; padding: 12px; border-radius: 6px; margin-bottom: 20px; font-size: 13px; border-left: 4px solid #2196f3;">
+            <strong>💡 Credenciales de prueba:</strong><br>
+            <strong>Usuario:</strong> A12345678 / Test123456<br>
+            <strong>Admin:</strong> admin@congreso.com / admin123
+        </div>
+        
+        <form id="login-form">
             <div class="form-group">
-                <label for="university-id">ID Universitario:</label>
-                <input type="text" id="university-id" name="university_id" required placeholder="Ej. 123456">
+                <label for="university_id">ID Universitario / Email:</label>
+                <input type="text" id="university_id" name="university_id" placeholder="Matrícula o Email" required>
             </div>
             <div class="form-group">
                 <label for="password">Contraseña:</label>
-                <input type="password" id="password" name="password" required>
+                <input type="password" id="password" name="password" placeholder="Contraseña" required>
             </div>
-            <div class="form-actions">
-                <button type="submit">Ingresar</button>
-                <div class="registro-link" style="margin-top: 15px; font-size: 14px; text-align: center;">
-                    ¿No tienes cuenta? <a href="registro_usuario.html">Regístrate aquí</a>
-                </div>
-                <div class="forgot-password-link" style="margin-top: 10px; font-size: 14px; text-align: center;">
-                    <a href="recuperar_pass.html">¿Olvidaste tu contraseña?</a>
-                </div>
+            <button type="submit" id="submit-btn">Ingresar</button>
+            <div class="error" id="error-msg" style="display:none; color:#d32f2f; background-color:#ffebee; padding:10px; border-radius:4px; margin-top:10px;"></div>
+            <div class="success" id="success-msg" style="display:none; color:#2e7d32; background-color:#e8f5e9; padding:10px; border-radius:4px; margin-top:10px;"></div>
+            
+            <div class="registro-link" style="margin-top: 15px; font-size: 14px; text-align: center;">
+                ¿No tienes cuenta? <a href="registro_usuario.html">Regístrate aquí</a>
             </div>
-            <div id="login-error" class="error-message" style="display: none;">
-                </div>
+            <div class="forgot-password-link" style="margin-top: 10px; font-size: 14px; text-align: center;">
+                <a href="recuperar_pass.html">¿Olvidaste tu contraseña?</a>
+            </div>
         </form>
-         <p>¿Eres Administrador? <a href="login_admin.html">Ingresa aquí</a></p> </main>
+        <p>¿Eres Administrador? <a href="login_admin.html">Ingresa aquí</a></p>
+    </main>
 
     <footer>
         <p>&copy; 2025 Universidad Autonoma de Aguascalientes. Todos los derechos reservados.</p>
     </footer>
 
-    <!-- Session guard NO necesario en página pública -->
-
     <script>
-        // Mostrar mensaje si el parámetro ?registro=exitoso está en la URL
-        const params = new URLSearchParams(window.location.search);
-        if (params.get("registro") === "exitoso") {
-            alert("¡Registro exitoso! Ahora puedes iniciar sesión.");
-        }
-
-        // Manejar el envío del formulario de login
         document.getElementById('login-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const formData = new FormData(this);
-            const errorDiv = document.getElementById('login-error');
-            const submitButton = this.querySelector('button[type="submit"]');
+            const errorDiv = document.getElementById('error-msg');
+            const successDiv = document.getElementById('success-msg');
+            const submitBtn = document.getElementById('submit-btn');
             
-            // Deshabilitar botón durante el proceso
-            submitButton.disabled = true;
-            submitButton.textContent = 'Iniciando sesión...';
             errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Procesando...';
             
             try {
-                const response = await fetch('../php/login.php', {
+                const response = await fetch('/php/login.php', {
                     method: 'POST',
                     body: formData
                 });
@@ -82,69 +84,49 @@
                 const data = await response.json();
                 
                 if (data.success) {
-                    // NO guardar nada en sessionStorage - la sesión PHP es suficiente
-                    // Redirigir directamente al dashboard
-                    window.location.href = data.redirectUrl;
+                    successDiv.textContent = '¡Login exitoso! Redirigiendo...';
+                    successDiv.style.display = 'block';
+                    
+                    // Guardar datos de sesión
+                    if (data.userData) {
+                        sessionStorage.setItem('userData', JSON.stringify(data.userData));
+                        sessionStorage.setItem('sessionToken', data.token);
+                    }
+                    
+                    // Redirigir según el tipo de usuario
+                    setTimeout(() => {
+                        if (data.redirectUrl) {
+                            window.location.href = data.redirectUrl;
+                        } else if (data.userData && data.userData.tipo === 'admin') {
+                            window.location.href = '/Front-end/admin_dashboard.html';
+                        } else {
+                            window.location.href = '/Front-end/dashboard_alumno.html';
+                        }
+                    }, 500);
                 } else {
-                    // Mostrar error
                     errorDiv.textContent = data.message;
                     errorDiv.style.display = 'block';
-                    errorDiv.style.color = '#ff4444';
-                    errorDiv.style.padding = '10px';
-                    errorDiv.style.marginTop = '10px';
-                    errorDiv.style.borderRadius = '5px';
-                    errorDiv.style.backgroundColor = '#ffe6e6';
-                    
-                    // Si no está verificado, redirigir
-                    if (data.verified === false && data.redirectUrl) {
-                        setTimeout(() => {
-                            window.location.href = data.redirectUrl;
-                        }, 2000);
-                    }
                 }
             } catch (error) {
-                console.error('Error:', error);
-                errorDiv.textContent = 'Error al iniciar sesión. Por favor, intenta de nuevo.';
+                errorDiv.textContent = 'Error de conexión: ' + error.message;
                 errorDiv.style.display = 'block';
             } finally {
-                submitButton.disabled = false;
-                submitButton.textContent = 'Ingresar';
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Ingresar';
             }
         });
     </script>
-<script>
-    const imagenes = [
-      "imagenes/imagen1.jpg",
-      "imagenes/imagen2.jpg",
-      "imagenes/imagen3.jpg",
-      "imagenes/imagen4.jpg",
-      "imagenes/imagen5.jpg",
-      "imagenes/imagen6.jpg",
-      "imagenes/imagen7.jpg",
-      "imagenes/imagen8.jpg"
-    ];
-  
-    function cargarImagenesAleatorias(cantidad) {
-      const collage = document.getElementById("collage-container");
-      const usadas = new Set();
-  
-      while (usadas.size < cantidad && usadas.size < imagenes.length) {
-        const index = Math.floor(Math.random() * imagenes.length);
-        if (!usadas.has(index)) {
-          usadas.add(index);
-          const img = document.createElement("img");
-          img.src = imagenes[index];
-          collage.appendChild(img);
-        }
-      }
-    }
-  
-    window.addEventListener("load", function () {
-      cargarImagenesAleatorias(8); // Puedes aumentar este número
-      setTimeout(function () {
-        document.getElementById("pantalla-carga").style.display = "full";
-      }, 3500);
-    });
-  </script>
-    </body>
+    
+    <script>
+        // Script de la pantalla de carga
+        window.addEventListener("load", function () {
+            setTimeout(function () {
+                const pantallaCarga = document.getElementById("pantalla-carga");
+                if (pantallaCarga) {
+                    pantallaCarga.style.display = "none";
+                }
+            }, 3500);
+        });
+    </script>
+</body>
 </html>

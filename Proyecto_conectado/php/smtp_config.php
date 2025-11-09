@@ -13,13 +13,21 @@
 // Port: 587
 // Secure: tls
 
-define('SMTP_HOST', 'smtp.office365.com');
-define('SMTP_USER', 'al529633@edu.uaa.mx'); // tu cuenta completa
-define('SMTP_PASS', 'Rodriguez05');
+// =====================================================
+// CONFIGURACIÓN SMTP - GMAIL (Recomendado para desarrollo)
+// =====================================================
+// Para usar Gmail:
+// 1. Ve a https://myaccount.google.com/apppasswords
+// 2. Genera una "Contraseña de aplicación" (App Password)
+// 3. Usa esa contraseña aquí (NO tu contraseña normal de Gmail)
+
+define('SMTP_HOST', 'smtp.gmail.com');
+define('SMTP_USER', 'TU_EMAIL@gmail.com'); // ⚠️ CAMBIAR POR TU EMAIL
+define('SMTP_PASS', 'TU_APP_PASSWORD');     // ⚠️ CAMBIAR POR APP PASSWORD DE GMAIL
 define('SMTP_PORT', 587);
-define('SMTP_SECURE', 'tls'); // 'tls' o 'ssl' o ''
-define('SMTP_DEBUG', true);
-define('RESET_URL_BASE', 'http://localhost/Proyecto/Sistema-de-gestion-Congreso-de-Mercadotecnia/Proyecto_conectado/Front-end/reset_password.html');
+define('SMTP_SECURE', 'tls'); // 'tls' para puerto 587, 'ssl' para puerto 465
+define('SMTP_DEBUG', 0);      // 0=off, 1=client, 2=client+server
+define('RESET_URL_BASE', 'http://localhost:8080/Front-end/reset_password.html');
 
 
 /* Notas importantes:

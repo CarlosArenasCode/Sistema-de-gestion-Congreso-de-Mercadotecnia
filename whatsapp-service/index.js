@@ -20,21 +20,44 @@ let qrCode = null;
 
 // Función para normalizar número de teléfono
 function normalizePhoneNumber(phone) {
-    // Eliminar espacios, guiones y paréntesis
-    let normalized = phone.replace(/[\s\-\(\)]/g, '');
-    
-    // Si empieza con +, eliminar el +
-    if (normalized.startsWith('+')) {
-        normalized = normalized.substring(1);
+    if (!phone) return '';
+
+    // Quitar todo lo que no sea dígito
+    let digits = String(phone).replace(/\D/g, '');
+
+    // Manejar prefijo internacional con 00 (p.ej. 001234...)
+    if (digits.startsWith('00')) {
+        digits = digits.replace(/^00/, '');
     }
-    
-    // Si no empieza con 52, agregarlo
-    if (!normalized.startsWith('52')) {
-        normalized = '52' + normalized;
+
+    // Casos comunes:
+    // - 10 dígitos: asumimos número local (p.ej. 4492106893) -> prefix 52
+    // - 11 dígitos que empiezan con '1' (p.ej. 14492106893): añadimos 52 delante -> 5214492106893
+    // - Empieza con 52 (con o sin 1): se acepta tal cual
+
+    if (digits.length === 10) {
+        // número local: agregar código país 52 (sin el '1' por defecto)
+        return '52' + digits + '@c.us';
     }
-    
-    // Formato para WhatsApp Web: número@c.us
-    return normalized + '@c.us';
+
+    if (digits.length === 11 && digits.startsWith('1')) {
+        // usuario envió '1' + 10 dígitos -> convertir a 52 1 xxxxxxxxxx
+        return '52' + digits + '@c.us';
+    }
+
+    if (digits.startsWith('52')) {
+        return digits + '@c.us';
+    }
+
+    // Si viene algo distinto pero con más de 10 dígitos, intentar tomar último bloque de 10
+    if (digits.length > 10) {
+        // Si el usuario envió por ejemplo '521449...' o similares ya se habría capturado arriba.
+        // Como fallback agregamos 52 delante si no existe.
+        return '52' + digits + '@c.us';
+    }
+
+    // Fallback final: prefijar 52
+    return '52' + digits + '@c.us';
 }
 
 // Inicializar el cliente de WhatsApp
@@ -255,6 +278,13 @@ app.get('/', (req, res) => {
             margin: 20px auto;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        /* Formulario de prueba */
+        .test-form { margin-top: 20px; text-align: left; }
+        .test-form input[type="text"] { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 10px; font-size: 16px; }
+        .test-form label { display: inline-flex; align-items: center; gap: 8px; margin-right: 10px; color: #495057; }
+        .test-form .send-btn { background: #28a745; color: white; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer; font-weight: 700; }
+        .test-form .send-btn[disabled] { opacity: 0.6; cursor: not-allowed; }
+        .test-result { margin-top: 12px; font-size: 14px; }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
 </head>
@@ -277,7 +307,29 @@ app.get('/', (req, res) => {
             </ol>
         </div>
         
-        <button class="refresh-btn" onclick="location.reload()">🔄 Actualizar Estado</button>
+        <div class="test-form" id="testFormContainer">
+            <h3>📨 Enviar mensaje de prueba</h3>
+            <p>Ingresa el número telefónico (10 dígitos). Selecciona el código de país en el desplegable; el prefijo se añadirá automáticamente (para México <strong>+52</strong> se añadirá también el <strong>1</strong> automáticamente).</p>
+            <div style="display:flex; gap:10px; margin-bottom:10px;">
+                <select id="countryCode" style="width:40%; padding:10px; border-radius:8px; border:1px solid #ddd; font-size:16px;">
+                    <option value="52" selected>+52 (Mexico)</option>
+                    <option value="1">+1 (USA/Canadá)</option>
+                    <option value="34">+34 (España)</option>
+                    <option value="44">+44 (Reino Unido)</option>
+                    <option value="51">+51 (Perú)</option>
+                    <option value="57">+57 (Colombia)</option>
+                    <option value="58">+58 (Venezuela)</option>
+                    <option value="598">+598 (Uruguay)</option>
+                    <option value="">Otro</option>
+                </select>
+                <input type="text" id="testPhone" placeholder="4492106893" maxlength="20" style="flex:1; padding:10px; border-radius:8px; border:1px solid #ddd; font-size:16px;" />
+            </div>
+            <div>
+                <button class="send-btn" id="sendTestBtn" onclick="sendTest()">Enviar prueba</button>
+                <button class="refresh-btn" onclick="location.reload()">🔄 Actualizar Estado</button>
+            </div>
+            <div id="testResult" class="test-result"></div>
+        </div>
     </div>
     
     <script>
@@ -286,6 +338,8 @@ app.get('/', (req, res) => {
                 const response = await fetch('/health');
                 const data = await response.json();
                 const statusContainer = document.getElementById('statusContainer');
+                // Mostrar/ocultar formulario de prueba según estado
+                updateTestFormVisibility(data.status);
                 const qrcodeDiv = document.getElementById('qrcode');
                 
                 if (data.status === 'ready' || data.status === 'authenticated') {
@@ -326,6 +380,67 @@ app.get('/', (req, res) => {
                 checkStatus();
             }
         }, 10000);
+
+        // Función para enviar prueba desde la UI
+        async function sendTest() {
+            const phoneInput = document.getElementById('testPhone');
+                const countryCodeSelect = document.getElementById('countryCode');
+                const resultDiv = document.getElementById('testResult');
+                const sendBtn = document.getElementById('sendTestBtn');
+
+                let raw = (phoneInput.value || '').trim();
+                // Extraer solo dígitos del número ingresado
+                const digits = raw.replace(/\D/g, '');
+                if (!digits || digits.length !== 10) {
+                    resultDiv.innerHTML = '<span style="color:#dc3545;">Ingresa un número válido de 10 dígitos (solo números).</span>';
+                    return;
+                }
+
+                const countryCode = (countryCodeSelect && countryCodeSelect.value) ? countryCodeSelect.value : '52';
+                let phone;
+                // Para México (+52) se añade el '1' automáticamente entre el código y el número
+                if (countryCode === '52') {
+                    phone = '+52 1 ' + digits;
+                } else if (countryCode === '') {
+                    // Si eligieron 'Otro', enviamos solo el número tal cual (asumiremos que será normalizado en el servidor)
+                    phone = digits;
+                } else {
+                    phone = '+' + countryCode + ' ' + digits;
+                }
+
+            // Deshabilitar botón mientras se envía
+            sendBtn.disabled = true;
+            resultDiv.innerHTML = 'Enviando...';
+
+            try {
+                const resp = await fetch('/test-send', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone })
+                });
+                const data = await resp.json();
+                if (data && data.success) {
+                    resultDiv.innerHTML = '<span style="color:#155724;">✅ ' + (data.message || 'Mensaje enviado') + '</span>';
+                } else {
+                    resultDiv.innerHTML = '<span style="color:#dc3545;">❌ ' + (data.error || data.message || 'Error al enviar') + '</span>';
+                }
+            } catch (err) {
+                resultDiv.innerHTML = '<span style="color:#dc3545;">❌ Error de conexión: ' + err.message + '</span>';
+            } finally {
+                sendBtn.disabled = false;
+            }
+        }
+
+        // Mostrar u ocultar el formulario de prueba según estado
+        function updateTestFormVisibility(status) {
+            const container = document.getElementById('testFormContainer');
+            if (!container) return;
+            if (status === 'ready' || status === 'authenticated') {
+                container.style.display = 'block';
+            } else {
+                container.style.display = 'none';
+            }
+        }
     </script>
 </body>
 </html>

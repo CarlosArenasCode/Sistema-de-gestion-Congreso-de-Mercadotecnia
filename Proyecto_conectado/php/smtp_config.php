@@ -14,19 +14,19 @@
 // Secure: tls
 
 // =====================================================
-// CONFIGURACIÓN SMTP - GMAIL (Recomendado para desarrollo)
+// CONFIGURACIÓN SMTP - GMAIL (Congreso de Mercadotecnia)
 // =====================================================
-// Para usar Gmail:
-// 1. Ve a https://myaccount.google.com/apppasswords
-// 2. Genera una "Contraseña de aplicación" (App Password)
-// 3. Usa esa contraseña aquí (NO tu contraseña normal de Gmail)
+// Configuración para Gmail
+// Host: smtp.gmail.com
+// Port: 587
+// Secure: tls
 
 define('SMTP_HOST', 'smtp.gmail.com');
-define('SMTP_USER', 'TU_EMAIL@gmail.com'); // ⚠️ CAMBIAR POR TU EMAIL
-define('SMTP_PASS', 'TU_APP_PASSWORD');     // ⚠️ CAMBIAR POR APP PASSWORD DE GMAIL
+define('SMTP_USER', 'mercadotecnia.congreso@gmail.com');
+define('SMTP_PASS', 'dodjeovfvscljvly'); // Contraseña de aplicación (sin espacios)
 define('SMTP_PORT', 587);
 define('SMTP_SECURE', 'tls'); // 'tls' para puerto 587, 'ssl' para puerto 465
-define('SMTP_DEBUG', 0);      // 0=off, 1=client, 2=client+server
+define('SMTP_DEBUG', true);      // Activar debug para ver errores detallados
 define('RESET_URL_BASE', 'http://localhost:8080/Front-end/reset_password.html');
 
 

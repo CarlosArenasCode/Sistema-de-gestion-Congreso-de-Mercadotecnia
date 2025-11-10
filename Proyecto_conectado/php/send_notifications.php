@@ -15,6 +15,7 @@ function send_email($to, $subject, $htmlBody, $fromName = 'Congreso Universitari
 
     // Primero, intentar PHPMailer si fue instalado con Composer o agregado en /php/PHPMailer
     $composerAutoload = __DIR__ . '/vendor/autoload.php';
+    $manualPHPMailer611 = __DIR__ . '/PHPMailer-6.11.1/src/PHPMailer.php';
     $manualPHPMailer = __DIR__ . '/PHPMailer/src/PHPMailer.php';
     // Try loading PHPMailer via Composer first, then via manual include; if neither present, fall back to mail().
     $mail = null;
@@ -25,6 +26,23 @@ function send_email($to, $subject, $htmlBody, $fromName = 'Congreso Universitari
         } catch (\Exception $e) {
             error_log('[send_notifications] Error instantiating PHPMailer via Composer: ' . $e->getMessage());
             $mail = null;
+        }
+    } elseif (file_exists($manualPHPMailer611)) {
+        // PHPMailer-6.11.1 version
+        $srcDir = __DIR__ . '/PHPMailer-6.11.1/src';
+        if (file_exists($srcDir . '/Exception.php')) require_once $srcDir . '/Exception.php';
+        if (file_exists($srcDir . '/PHPMailer.php')) require_once $srcDir . '/PHPMailer.php';
+        if (file_exists($srcDir . '/SMTP.php')) require_once $srcDir . '/SMTP.php';
+        // If class is available, instantiate
+        if (class_exists('PHPMailer\\PHPMailer\\PHPMailer')) {
+            try {
+                $mail = new PHPMailer\PHPMailer\PHPMailer(true);
+            } catch (\Exception $e) {
+                error_log('[send_notifications] Error instantiating PHPMailer 6.11.1: ' . $e->getMessage());
+                $mail = null;
+            }
+        } else {
+            error_log('[send_notifications] PHPMailer class not found after including PHPMailer-6.11.1/src files');
         }
     } elseif (file_exists($manualPHPMailer)) {
         // Composer not available but PHPMailer downloaded manually into php/PHPMailer

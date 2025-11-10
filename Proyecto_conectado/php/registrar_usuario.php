@@ -138,6 +138,7 @@ try {
                 <p>Gracias por registrarte. Para activar tu cuenta, utiliza el siguiente código de verificación:</p>
                 <div class='code'>{$codigo_verificacion}</div>
                 <p><strong>Este código expira en 15 minutos.</strong></p>
+                <p>También recibirás este código por WhatsApp en el número: {$telefono}</p>
                 <p>Por seguridad, no compartas este código con nadie.</p>
                 <p>Si no solicitaste este registro, puedes ignorar este correo.</p>
             </div>
@@ -149,28 +150,67 @@ try {
     </html>
     ";
 
-    // Intentar enviar código por EMAIL
+    // ===========================================
+    // ENVÍO DE CÓDIGO POR EMAIL
+    // ===========================================
     $emailEnviado = false;
     try {
-        $emailEnviado = send_email($email, $asunto, $mensaje_email);
-        if (!$emailEnviado) {
-            error_log("Advertencia: No se pudo enviar código por email a {$email}");
+        error_log("[REGISTRO] Intentando enviar código por email a: {$email}");
+        $emailEnviado = send_email($email, $asunto, $mensaje_email, 'Congreso de Mercadotecnia UAA');
+        
+        if ($emailEnviado) {
+            error_log("[REGISTRO] ✅ Código enviado exitosamente por email a: {$email}");
+        } else {
+            error_log("[REGISTRO] ⚠️ No se pudo enviar código por email a: {$email}");
         }
     } catch (Exception $e) {
-        error_log("Error al enviar email: " . $e->getMessage());
+        error_log("[REGISTRO] ❌ Error al enviar email a {$email}: " . $e->getMessage());
     }
 
-    // Enviar código por WhatsApp usando el servicio Docker
-    // FROM: +52 449 210 6893 (configurado en el servicio WhatsApp)
-    // TO: $telefono (número del usuario)
-    $whatsappClient = new WhatsAppClient('http://whatsapp:3001');
-    $resultWhatsApp = $whatsappClient->sendVerificationCode($telefono, $codigo_verificacion, $nombre_completo);
+    // ===========================================
+    // ENVÍO DE CÓDIGO POR WHATSAPP
+    // ===========================================
+    $whatsappEnviado = false;
+    try {
+        error_log("[REGISTRO] Intentando enviar código por WhatsApp a: {$telefono}");
+        
+        // Crear cliente WhatsApp (servicio en Docker)
+        $whatsappClient = new WhatsAppClient('http://whatsapp:3001');
+        
+        // Verificar que el servicio esté disponible
+        $healthCheck = $whatsappClient->checkHealth();
+        
+        if (isset($healthCheck['status']) && ($healthCheck['status'] === 'ready' || $healthCheck['status'] === 'authenticated')) {
+            // Servicio disponible, enviar código
+            $resultWhatsApp = $whatsappClient->sendVerificationCode($telefono, $codigo_verificacion, $nombre_completo);
+            
+            if (isset($resultWhatsApp['success']) && $resultWhatsApp['success']) {
+                $whatsappEnviado = true;
+                error_log("[REGISTRO] ✅ Código enviado exitosamente por WhatsApp a: {$telefono}");
+            } else {
+                $errorMsg = $resultWhatsApp['error'] ?? $resultWhatsApp['message'] ?? 'Error desconocido';
+                error_log("[REGISTRO] ⚠️ No se pudo enviar código por WhatsApp a {$telefono}: {$errorMsg}");
+            }
+        } else {
+            $serviceStatus = $healthCheck['status'] ?? 'unknown';
+            error_log("[REGISTRO] ⚠️ Servicio WhatsApp no disponible. Estado: {$serviceStatus}");
+        }
+        
+    } catch (Exception $e) {
+        error_log("[REGISTRO] ❌ Error al enviar WhatsApp a {$telefono}: " . $e->getMessage());
+    }
+
+    // ===========================================
+    // RESUMEN DEL ENVÍO
+    // ===========================================
+    $metodos_exitosos = [];
+    if ($emailEnviado) $metodos_exitosos[] = "Email";
+    if ($whatsappEnviado) $metodos_exitosos[] = "WhatsApp";
     
-    // Log del resultado (opcional)
-    if (!isset($resultWhatsApp['success']) || !$resultWhatsApp['success']) {
-        error_log("Advertencia: No se pudo enviar código por WhatsApp a {$telefono}: " . 
-                 ($resultWhatsApp['error'] ?? 'Error desconocido'));
-        // Nota: No detenemos el registro, el usuario puede verificar por email
+    if (count($metodos_exitosos) > 0) {
+        error_log("[REGISTRO] 📧 Código {$codigo_verificacion} enviado a {$nombre_completo} por: " . implode(" y ", $metodos_exitosos));
+    } else {
+        error_log("[REGISTRO] ⚠️ Código {$codigo_verificacion} generado para {$nombre_completo}, pero no se pudo enviar por ningún medio");
     }
 
     // Limpiar el buffer y redirigir a página de verificación

@@ -70,13 +70,14 @@ Write-Host ""
 
 Add-FirewallRuleIfNotExists -RuleName "Docker Web Puerto 8081" -Port 8081 -Description "Permite acceso a la aplicación web del Congreso de Mercadotecnia"
 Add-FirewallRuleIfNotExists -RuleName "Docker WhatsApp Puerto 3001" -Port 3001 -Description "Permite acceso al servicio WhatsApp del Congreso"
-Add-FirewallRuleIfNotExists -RuleName "Docker Oracle Puerto 1521" -Port 1521 -Description "Permite acceso a Oracle Database (opcional)"
+Add-FirewallRuleIfNotExists -RuleName "Docker Oracle Puerto 1521" -Port 1521 -Description "Permite acceso a Oracle Database"
+Add-FirewallRuleIfNotExists -RuleName "Docker Oracle EM Puerto 5500" -Port 5500 -Description "Permite acceso a Oracle Enterprise Manager"
 
 # Verificar reglas creadas
 Write-Host "🔍 Verificando reglas creadas..." -ForegroundColor Cyan
 Write-Host ""
 
-$rules = @("Docker Web Puerto 8081", "Docker WhatsApp Puerto 3001", "Docker Oracle Puerto 1521")
+$rules = @("Docker Web Puerto 8081", "Docker WhatsApp Puerto 3001", "Docker Oracle Puerto 1521", "Docker Oracle EM Puerto 5500")
 
 foreach ($ruleName in $rules) {
     $ruleCheck = netsh advfirewall firewall show rule name="$ruleName" 2>&1
@@ -98,17 +99,27 @@ $mainIP = ($ipAddresses | Select-Object -First 1).IPAddress
 
 Write-Host "📋 URLs para compartir con tu compañero:" -ForegroundColor Cyan
 Write-Host ""
-Write-Host "  Aplicación Web:" -ForegroundColor Yellow
+Write-Host "  🌐 Aplicación Web:" -ForegroundColor Yellow
 Write-Host "    http://$mainIP:8081" -ForegroundColor White
 Write-Host ""
-Write-Host "  Registro:" -ForegroundColor Yellow
+Write-Host "  📝 Registro:" -ForegroundColor Yellow
 Write-Host "    http://$mainIP:8081/Front-end/registro_usuario.html" -ForegroundColor White
 Write-Host ""
-Write-Host "  Login:" -ForegroundColor Yellow
+Write-Host "  🔐 Login:" -ForegroundColor Yellow
 Write-Host "    http://$mainIP:8081/Front-end/login.html" -ForegroundColor White
 Write-Host ""
-Write-Host "  WhatsApp QR:" -ForegroundColor Yellow
+Write-Host "  💬 WhatsApp QR:" -ForegroundColor Yellow
 Write-Host "    http://$mainIP:3001" -ForegroundColor White
+Write-Host ""
+Write-Host "  🗄️ Oracle Database:" -ForegroundColor Yellow
+Write-Host "    Host: $mainIP" -ForegroundColor White
+Write-Host "    Puerto: 1521" -ForegroundColor White
+Write-Host "    Servicio: FREEPDB1" -ForegroundColor White
+Write-Host "    Usuario: congreso_user / congreso_pass" -ForegroundColor White
+Write-Host ""
+Write-Host "  ⚙️ Oracle Enterprise Manager:" -ForegroundColor Yellow
+Write-Host "    https://$mainIP:5500/em" -ForegroundColor White
+Write-Host "    Usuario: sys as sysdba / OraclePass123!" -ForegroundColor White
 Write-Host ""
 
 Write-Host "⚠️  IMPORTANTE:" -ForegroundColor Yellow
@@ -116,6 +127,7 @@ Write-Host "  1. Ambas computadoras deben estar en la MISMA RED (mismo WiFi)" -F
 Write-Host "  2. Docker debe estar corriendo: docker-compose ps" -ForegroundColor Yellow
 Write-Host "  3. Si la IP cambia, ejecuta este script nuevamente" -ForegroundColor Yellow
 Write-Host "  4. Puerto 8081 (no 8080) - cambio por conflicto con Oracle local" -ForegroundColor Yellow
+Write-Host "  5. Oracle EM usa HTTPS (puede mostrar advertencia de seguridad)" -ForegroundColor Yellow
 Write-Host ""
 
 Read-Host "Presiona Enter para salir"

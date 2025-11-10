@@ -7,7 +7,10 @@ Esta guía te permitirá acceder a la aplicación Docker desde otra computadora 
 - **IP Principal**: `10.13.208.45`
 - **Puerto Web**: `8081` (cambiado de 8080 por conflicto con Oracle local)
 - **Puerto WhatsApp**: `3001`
-- **Puerto Oracle**: `1521`
+- **Puerto Oracle DB**: `1521`
+- **Puerto Oracle EM**: `5500`
+
+**Todos los servicios Docker están expuestos para acceso de red**
 
 ## 🔧 Paso 1: Configurar Firewall de Windows (REQUIERE ADMIN)
 
@@ -28,6 +31,9 @@ netsh advfirewall firewall add rule name="Docker WhatsApp Puerto 3001" dir=in ac
 
 # Permitir puerto 1521 (Oracle Database) - OPCIONAL
 netsh advfirewall firewall add rule name="Docker Oracle Puerto 1521" dir=in action=allow protocol=TCP localport=1521
+
+# Permitir puerto 5500 (Oracle Enterprise Manager) - OPCIONAL
+netsh advfirewall firewall add rule name="Docker Oracle EM Puerto 5500" dir=in action=allow protocol=TCP localport=5500
 
 # Verificar reglas creadas
 netsh advfirewall firewall show rule name="Docker Web Puerto 8081"
@@ -94,6 +100,22 @@ El puerto fue cambiado de **8080** a **8081** porque Oracle Database instalado l
 6. **WhatsApp QR (para escanear código)**:
    ```
    http://10.13.208.45:3001
+   ```
+
+7. **Oracle Database (para SQL Developer, DBeaver, etc.)**:
+   ```
+   Host: 10.13.208.45
+   Puerto: 1521
+   Servicio: FREEPDB1
+   Usuario: congreso_user
+   Password: congreso_pass
+   ```
+
+8. **Oracle Enterprise Manager (interfaz web de admin)**:
+   ```
+   https://10.13.208.45:5500/em
+   Usuario: sys as sysdba
+   Password: OraclePass123!
    ```
 
 ## ✅ Paso 3: Verificar Conexión

@@ -91,6 +91,28 @@ function guidv4($data = null) {
 $codigo_qr = guidv4();
 
 try {
+    // ===========================================
+    // VERIFICACIÓN DE DUPLICADOS (antes de insertar)
+    // ===========================================
+    
+    // Verificar si el email ya existe
+    $checkEmail = $pdo->prepare("SELECT COUNT(*) FROM usuarios WHERE LOWER(email) = LOWER(?)");
+    $checkEmail->execute([$email]);
+    if ($checkEmail->fetchColumn() > 0) {
+        ob_end_clean();
+        echo "Error: Ya existe una cuenta con el email '{$email}'. Por favor usa otro email o <a href='../Front-end/login.html'>inicia sesión</a>.";
+        exit;
+    }
+    
+    // Verificar si la matrícula ya existe
+    $checkMatricula = $pdo->prepare("SELECT COUNT(*) FROM usuarios WHERE matricula = ?");
+    $checkMatricula->execute([$matricula]);
+    if ($checkMatricula->fetchColumn() > 0) {
+        ob_end_clean();
+        echo "Error: La matrícula '{$matricula}' ya está registrada. Por favor verifica tu matrícula o <a href='../Front-end/login.html'>inicia sesión</a>.";
+        exit;
+    }
+    
     // Insertar usuario con verificado = 0 (no verificado)
     $sql = "INSERT INTO usuarios (nombre_completo, email, password_hash, matricula, semestre, telefono, rol, codigo_qr, codigo_verificacion, fecha_codigo, verificado)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)";
@@ -220,10 +242,25 @@ try {
 
 } catch (PDOException $e) {
     ob_end_clean(); // Limpiar buffer antes de mostrar error
-    if ($e->getCode() == '23000') {
-         echo "Error: El email o la matrícula ya están registrados.";
+    
+    // Log del error para debugging
+    error_log("[REGISTRO] ❌ Error PDO: " . $e->getMessage());
+    
+    // Detectar tipo de violación de constraint
+    $errorMsg = $e->getMessage();
+    
+    if ($e->getCode() == '23000' || strpos($errorMsg, 'ORA-00001') !== false) {
+        // Constraint de unicidad violado
+        if (strpos($errorMsg, 'UK_USUARIOS_EMAIL') !== false || strpos($errorMsg, 'EMAIL') !== false) {
+            echo "Error: Ya existe una cuenta con el email '{$email}'. Por favor usa otro email o inicia sesión.";
+        } elseif (strpos($errorMsg, 'UK_USUARIOS_MATRICULA') !== false || strpos($errorMsg, 'MATRICULA') !== false) {
+            echo "Error: La matrícula '{$matricula}' ya está registrada. Por favor verifica tu matrícula o inicia sesión.";
+        } else {
+            echo "Error: El email o la matrícula ya están registrados. Por favor verifica tus datos.";
+        }
     } else {
-         echo "Error al registrar el usuario: " . $e->getMessage();
+        // Otro tipo de error
+        echo "Error al registrar el usuario. Por favor intenta nuevamente o contacta al administrador.";
     }
 }
 ?>

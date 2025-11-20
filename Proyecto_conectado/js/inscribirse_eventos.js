@@ -89,7 +89,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const horaFinFormatted = event.hora_fin.substring(0, 5);
 
             let buttonHtml = '';
-            if (event.is_inscrito) {
+            // Convertir a número para asegurar comparación correcta
+            const isInscrito = parseInt(event.is_inscrito) === 1;
+            
+            if (isInscrito) {
                 buttonHtml = `<button class="button cancel-button" data-event-id="${event.id_evento}">Cancelar Inscripción</button>`;
             } else if (event.cupo_actual >= event.cupo_maximo) {
                 buttonHtml = `<button class="button disabled-button" disabled>Cupo Lleno</button>`;

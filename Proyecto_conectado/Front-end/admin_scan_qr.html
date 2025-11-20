@@ -28,7 +28,6 @@
         </div>
 
         <div id="camera-feed">
-            [Simulador de Cámara - Activar con JavaScript]
         </div>
         <div style="margin-top:10px; display:flex; gap:12px; align-items:center;">
             <label style="display:flex; gap:8px; align-items:center;"><input type="checkbox" id="fast-mode-checkbox"> Modo rápido (auto-registro)</label>
@@ -73,9 +72,58 @@
         <p>&copy; 2025 Congreso Universitario. Todos los derechos reservados</p>
     </footer>
 
+    <!-- Socket.IO Client CDN -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    
+    <!-- WebSocket Client -->
+    <script src="../js/websocket-client.js"></script>
+    
+    <!-- QR Scanner -->
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    
+    <!-- Scripts de Admin -->
     <script src="../js_admin/admin_common.js"></script>
-    <script src="../js_admin/admin_scan.js"></script> 
+    <script src="../js_admin/admin_scan.js"></script>
+    
+    <!-- Inicializar WebSocket para Admins -->
+    <script>
+        // Inicializar cliente WebSocket
+        const ws = new AttendanceWebSocket({
+            serverUrl: 'http://localhost:3001',
+            debug: true
+        });
+        
+        // Conectar al servidor
+        ws.connect();
+        
+        // Unirse a sala de administradores
+        ws.on('connected', () => {
+            ws.joinAdmin();
+            console.log('✅ Admin conectado a WebSocket');
+        });
+        
+        // Escuchar actualizaciones de asistencia
+        ws.on('attendance:admin:update', (data) => {
+            console.log('📝 Nueva asistencia detectada:', data);
+            
+            // Actualizar UI con animación
+            const resultMessage = document.getElementById('result-message');
+            if (resultMessage) {
+                resultMessage.textContent = `✅ ${data.nombre_completo} registrado en ${data.nombre_evento}`;
+                resultMessage.parentElement.classList.add('flash-success');
+                
+                setTimeout(() => {
+                    resultMessage.parentElement.classList.remove('flash-success');
+                }, 600);
+            }
+        });
+        
+        // Notificar al WebSocket cuando se registre asistencia localmente
+        // (esto ya lo hace el PHP, pero podemos agregar feedback visual)
+        document.addEventListener('attendanceRegistered', (event) => {
+            console.log('🔔 Asistencia registrada localmente, esperando confirmación WebSocket...');
+        });
+    </script>
 
     <!-- Session guard DESHABILITADO - usando solo sesión PHP -->
     <!-- <script src="../js/session-guard.js"></script> -->

@@ -44,7 +44,7 @@ services:
       dockerfile: Dockerfile.oracle
     container_name: congreso_web_oracle
     ports:
-      - "8080:80"
+      - "8081:80"  # Cambiado de 8080 a 8081 para evitar conflicto con Oracle local
     volumes:
       # Montar el código para desarrollo en tiempo real
       - ./Proyecto_conectado:/var/www/html

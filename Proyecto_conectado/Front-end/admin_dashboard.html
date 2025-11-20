@@ -40,11 +40,17 @@
         <h2>Panel de Administración</h2>
         <p>Bienvenido al panel de control del Congreso Universitario.</p>
 
-        <section class="quick-stats content-box"> <h3>Estadísticas Rápidas</h3>
-            <div class="stats-container"> <p><strong>Usuarios Registrados:</strong> 150</p>
-                <p><strong>Eventos Programados:</strong> 25</p>
-                <p><strong>Asistencia Promedio (Hoy):</strong> 75%</p>
-                </div>
+        <section class="quick-stats content-box"> 
+            <h3>Estadísticas en Tiempo Real 🔴</h3>
+            <div class="stats-container"> 
+                <p><strong>Asistencias Registradas (Total):</strong> <span id="stat-total-attendance" data-stat="totalAttendance">0</span></p>
+                <p><strong>Eventos Activos:</strong> <span id="stat-active-events" data-stat="activeEvents">0</span></p>
+                <p><strong>Clientes Conectados:</strong> <span id="stat-connected-clients" data-stat="connectedClients">0</span></p>
+                <p><strong>Última Actualización:</strong> <span id="stat-last-update">--</span></p>
+            </div>
+            <div id="websocket-status" style="margin-top: 10px; padding: 8px; border-radius: 4px; background: #f8f9fa;">
+                <small>🔌 <span id="ws-status-text">Conectando a servidor...</span></small>
+            </div>
         </section>
 
         <section class="admin-actions content-box">
@@ -66,8 +72,83 @@
     <footer>
         <p>&copy; 2025 Congreso Universitario. Todos los derechos reservados.</p>
     </footer>
+    
+    <!-- Socket.IO Client CDN -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    
+    <!-- WebSocket Client -->
+    <script src="../js/websocket-client.js"></script>
+    
+    <!-- Dashboard Scripts -->
     <script src="../js_admin/admin_dashboard.js"></script>
 
+    <!-- WebSocket Integration -->
+    <script>
+        // Inicializar cliente WebSocket
+        const ws = new AttendanceWebSocket({
+            serverUrl: 'http://localhost:3001',
+            debug: true
+        });
+        
+        // Elementos del DOM
+        const wsStatusText = document.getElementById('ws-status-text');
+        const wsStatusContainer = document.getElementById('websocket-status');
+        const lastUpdateEl = document.getElementById('stat-last-update');
+        
+        // Conectar al servidor
+        ws.connect();
+        
+        // Manejar conexión exitosa
+        ws.on('connected', () => {
+            ws.joinAdmin();
+            wsStatusText.textContent = '✅ Conectado - Actualizaciones en tiempo real activas';
+            wsStatusContainer.style.background = '#d4edda';
+            wsStatusContainer.style.color = '#155724';
+        });
+        
+        // Manejar desconexión
+        ws.on('disconnected', () => {
+            wsStatusText.textContent = '⚠️ Desconectado - Reintentando...';
+            wsStatusContainer.style.background = '#fff3cd';
+            wsStatusContainer.style.color = '#856404';
+        });
+        
+        // Actualizar cuando se registra asistencia
+        ws.on('attendance:admin:update', (data) => {
+            console.log('📊 Actualización de asistencia:', data);
+            
+            // Actualizar estadísticas
+            if (data.stats) {
+                document.getElementById('stat-total-attendance').textContent = data.stats.totalAttendance;
+                document.getElementById('stat-active-events').textContent = data.stats.activeEvents;
+                document.getElementById('stat-connected-clients').textContent = data.stats.connectedClients;
+                lastUpdateEl.textContent = new Date(data.stats.lastUpdate).toLocaleTimeString('es-MX');
+            }
+            
+            // Mostrar animación de actualización
+            const statsContainer = document.querySelector('.quick-stats');
+            statsContainer.style.animation = 'pulse 0.5s ease-in-out';
+            setTimeout(() => {
+                statsContainer.style.animation = '';
+            }, 500);
+        });
+        
+        // Actualizar estadísticas generales
+        ws.on('stats:update', (stats) => {
+            document.getElementById('stat-total-attendance').textContent = stats.totalAttendance;
+            document.getElementById('stat-active-events').textContent = stats.activeEvents;
+            document.getElementById('stat-connected-clients').textContent = stats.connectedClients;
+            lastUpdateEl.textContent = new Date(stats.lastUpdate).toLocaleTimeString('es-MX');
+        });
+        
+        // Solicitar estadísticas al unirse
+        ws.on('joined:admin', (data) => {
+            console.log('✅ Unido a sala de admin');
+            if (data.stats) {
+                ws.trigger('stats:update', data.stats);
+            }
+        });
+    </script>
     
     <!-- Session guard DESHABILITADO - usando solo sesión PHP -->
     <!-- <script src="../js/session-guard.js"></script> -->
@@ -86,5 +167,12 @@
             });
         }
     </script>
+    
+    <style>
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+    </style>
 </body>
 </html>

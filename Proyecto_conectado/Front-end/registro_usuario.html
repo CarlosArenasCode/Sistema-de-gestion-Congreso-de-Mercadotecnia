@@ -157,7 +157,15 @@
                 <label for="password_confirm">Confirmar Contraseña:</label>
                 <input type="password" id="password_confirm" name="password_confirm" required>
             </div>
-            <button type="submit">Registrarse</button>
+
+            <div class="form-group" style="display: flex; align-items: flex-start; gap: 10px; margin-top: 15px;">
+                <input type="checkbox" id="acepta_tyc" name="acepta_tyc" required style="width: auto; margin-top: 4px;">
+                <label for="acepta_tyc" style="font-weight: normal; font-size: 14px; line-height: 1.4;">
+                    He leído y acepto los <a href="terminos_legales.html" target="_blank" style="color: #E4007C; text-decoration: underline;">Términos y Condiciones</a> y el Aviso de Privacidad.
+                </label>
+            </div>
+
+            <button type="submit" id="btn-registrar" disabled style="background-color: #ccc; cursor: not-allowed;">Registrarse</button>
         </form>
         <div class="login-link">
             ¿Ya tienes cuenta? <a href="login.html">Inicia Sesión aquí</a>
@@ -165,7 +173,92 @@
     </div>
 
     <script>
-        // Referencias a elementos
+        // Lógica para habilitar el botón de registro solo si acepta TyC
+        const checkTyC = document.getElementById('acepta_tyc');
+        const btnRegistrar = document.getElementById('btn-registrar');
+
+        checkTyC.addEventListener('change', function() {
+            if (this.checked) {
+                btnRegistrar.disabled = false;
+                btnRegistrar.style.backgroundColor = '#E4007C';
+                btnRegistrar.style.cursor = 'pointer';
+            } else {
+                btnRegistrar.disabled = true;
+                btnRegistrar.style.backgroundColor = '#ccc';
+                btnRegistrar.style.cursor = 'not-allowed';
+            }
+        });
+
+        // --- PERSISTENCIA DE DATOS (LocalStorage) ---
+        const form = document.getElementById('registroForm');
+        
+        function getInputs() {
+            return form.querySelectorAll('input, select');
+        }
+
+        function saveFormData() {
+            console.log('Guardando datos en LocalStorage...');
+            getInputs().forEach(input => {
+                // No guardar contraseñas por seguridad
+                if (input.type !== 'password' && input.type !== 'hidden' && input.name) {
+                    if (input.type === 'radio' || input.type === 'checkbox') {
+                        // Manejar valor por defecto 'on' para checkboxes sin value
+                        let val = input.value;
+                        if (input.type === 'checkbox' && !input.hasAttribute('value')) val = 'on';
+                        
+                        localStorage.setItem('registro_' + input.name + '_' + val, input.checked);
+                    } else {
+                        localStorage.setItem('registro_' + input.name, input.value);
+                    }
+                }
+            });
+        }
+
+        function loadFormData() {
+            console.log('Intentando cargar datos del LocalStorage...');
+            getInputs().forEach(input => {
+                if (input.type !== 'password' && input.type !== 'hidden' && input.name) {
+                    if (input.type === 'radio' || input.type === 'checkbox') {
+                        let val = input.value;
+                        if (input.type === 'checkbox' && !input.hasAttribute('value')) val = 'on';
+                        
+                        const checked = localStorage.getItem('registro_' + input.name + '_' + val);
+                        if (checked === 'true') {
+                            input.checked = true;
+                            input.dispatchEvent(new Event('change'));
+                        } else if (checked === 'false') {
+                            input.checked = false;
+                            input.dispatchEvent(new Event('change'));
+                        }
+                    } else {
+                        const value = localStorage.getItem('registro_' + input.name);
+                        if (value !== null) {
+                            input.value = value;
+                            // Disparar ambos eventos para asegurar que scripts dependientes (como el teléfono) reaccionen
+                            input.dispatchEvent(new Event('input'));
+                            input.dispatchEvent(new Event('change'));
+                        }
+                    }
+                }
+            });
+        }
+
+        // Escuchar cambios en todos los inputs
+        getInputs().forEach(input => {
+            input.addEventListener('input', saveFormData);
+            input.addEventListener('change', saveFormData);
+            input.addEventListener('blur', saveFormData); // Guardar también al salir del campo
+        });
+
+        // Guardar explícitamente al hacer clic en el enlace de TyC
+        const linkTyC = document.querySelector('a[href="terminos_legales.html"]');
+        if (linkTyC) {
+            linkTyC.addEventListener('click', saveFormData);
+        }
+
+        // Cargar datos guardados (al final para asegurar que los listeners existan)
+        // Usamos setTimeout para asegurar que el DOM esté totalmente listo
+        setTimeout(loadFormData, 100);
         const codigoPais = document.getElementById('codigo_pais');
         const telefonoInput = document.getElementById('telefono');
         const telefonoCompleto = document.getElementById('telefono_completo');

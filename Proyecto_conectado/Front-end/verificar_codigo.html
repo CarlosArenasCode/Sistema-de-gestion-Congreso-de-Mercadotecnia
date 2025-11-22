@@ -152,6 +152,17 @@
 
     <script>
         // Obtener email del URL
+            <script>
+        // Limpiar datos de registro del LocalStorage al llegar a esta página (registro exitoso)
+        document.addEventListener('DOMContentLoaded', function() {
+            // Identificar claves que empiezan con 'registro_' y borrarlas
+            Object.keys(localStorage).forEach(key => {
+                if (key.startsWith('registro_')) {
+                    localStorage.removeItem(key);
+                }
+            });
+        });
+
         const urlParams = new URLSearchParams(window.location.search);
         const email = urlParams.get('email');
         

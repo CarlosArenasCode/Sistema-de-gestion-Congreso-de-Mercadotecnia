@@ -4,8 +4,11 @@
 -- Base de datos: Oracle Database 23ai Free
 -- =====================================================
 
+SET SQLBLANKLINES ON;
+SET DEFINE OFF;
+
 -- Conectar a la PDB
-ALTER SESSION SET CONTAINER = FREEPDB1;
+-- ALTER SESSION SET CONTAINER = FREEPDB1;
 
 -- =====================================================
 -- Crear tabla de personalización

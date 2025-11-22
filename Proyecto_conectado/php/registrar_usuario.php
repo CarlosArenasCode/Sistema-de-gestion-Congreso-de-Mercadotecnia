@@ -113,9 +113,9 @@ try {
         exit;
     }
     
-    // Insertar usuario con verificado = 0 (no verificado)
-    $sql = "INSERT INTO usuarios (nombre_completo, email, password_hash, matricula, semestre, telefono, rol, codigo_qr, codigo_verificacion, fecha_codigo, verificado)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)";
+    // Insertar usuario con verificado = 0 (no verificado) y acepta_tyc = 1 (aceptado en registro)
+    $sql = "INSERT INTO usuarios (nombre_completo, email, password_hash, matricula, semestre, telefono, rol, codigo_qr, codigo_verificacion, fecha_codigo, verificado, acepta_tyc, fecha_aceptacion)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 1, SYSTIMESTAMP)";
 
     $stmt = $pdo->prepare($sql);
 

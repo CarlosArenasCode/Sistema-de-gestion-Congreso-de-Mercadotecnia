@@ -46,8 +46,9 @@ try {
         $_SESSION['nombre'] = $usuario['nombre_completo'];
         $_SESSION['email'] = $usuario['email'];
         $_SESSION['matricula'] = $usuario['matricula'];
-        $_SESSION['rol'] = 'alumno';
-        $_SESSION['tipo'] = 'alumno';
+        // Usar el rol real de la base de datos, o 'alumno' por defecto si no está definido
+        $_SESSION['rol'] = isset($usuario['rol']) ? $usuario['rol'] : 'alumno';
+        $_SESSION['tipo'] = 'alumno'; // Tipo de usuario general (vs admin)
         $_SESSION['verificado'] = isset($usuario['verificado']) ? $usuario['verificado'] : 1;
         $_SESSION['last_activity'] = time();
 
@@ -64,7 +65,7 @@ try {
                 'nombre' => $usuario['nombre_completo'],
                 'email' => $usuario['email'],
                 'matricula' => $usuario['matricula'],
-                'rol' => 'alumno',
+                'rol' => isset($usuario['rol']) ? $usuario['rol'] : 'alumno',
                 'tipo' => 'alumno',
                 'verificado' => isset($usuario['verificado']) ? $usuario['verificado'] : 1
             ],

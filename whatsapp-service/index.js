@@ -3,9 +3,19 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
+const http = require('http');
+const { Server } = require('socket.io');
 require('dotenv').config();
 
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+    cors: {
+        origin: "*", // En producción, especificar dominios permitidos
+        methods: ["GET", "POST"]
+    }
+});
+
 const PORT = process.env.PORT || 3001;
 
 // Middleware
@@ -17,6 +27,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 let whatsappClient = null;
 let botStatus = 'initializing';
 let qrCode = null;
+
+// Estadísticas en tiempo real
+let realtimeStats = {
+    totalAttendance: 0,
+    activeEvents: 0,
+    connectedClients: 0,
+    lastUpdate: new Date().toISOString()
+};
 
 // Función para normalizar número de teléfono
 function normalizePhoneNumber(phone) {
@@ -183,6 +201,143 @@ app.post('/send-verification-code', async (req, res) => {
     }
 });
 
+// ============================================
+// WEBSOCKET - SOCKET.IO CONFIGURATION
+// ============================================
+
+io.on('connection', (socket) => {
+    console.log(`🔌 Cliente conectado: ${socket.id}`);
+    realtimeStats.connectedClients++;
+    
+    // Enviar estado actual al conectarse
+    socket.emit('connection:established', {
+        socketId: socket.id,
+        timestamp: new Date().toISOString(),
+        message: 'Conectado al servidor de asistencia en tiempo real'
+    });
+
+    // Unirse a una sala de evento específico
+    socket.on('join:event', (eventId) => {
+        socket.join(`event_${eventId}`);
+        console.log(`📍 Cliente ${socket.id} se unió al evento ${eventId}`);
+        socket.emit('joined:event', { eventId, timestamp: new Date().toISOString() });
+    });
+
+    // Unirse a la sala de administradores
+    socket.on('join:admin', () => {
+        socket.join('admins');
+        console.log(`👤 Admin ${socket.id} conectado`);
+        socket.emit('joined:admin', { 
+            stats: realtimeStats,
+            timestamp: new Date().toISOString() 
+        });
+    });
+
+    // Unirse a la sala de un usuario específico
+    socket.on('join:user', (userId) => {
+        socket.join(`user_${userId}`);
+        console.log(`👤 Usuario ${userId} conectado (${socket.id})`);
+        socket.emit('joined:user', { userId, timestamp: new Date().toISOString() });
+    });
+
+    // Solicitar estadísticas actuales
+    socket.on('request:stats', () => {
+        socket.emit('stats:update', realtimeStats);
+    });
+
+    // Desconexión
+    socket.on('disconnect', () => {
+        console.log(`🔌 Cliente desconectado: ${socket.id}`);
+        realtimeStats.connectedClients--;
+    });
+});
+
+// ============================================
+// ENDPOINT PARA NOTIFICAR ASISTENCIA (llamado desde PHP)
+// ============================================
+
+app.post('/notify-attendance', (req, res) => {
+    try {
+        const { 
+            id_usuario, 
+            id_evento, 
+            nombre_completo, 
+            matricula, 
+            nombre_evento,
+            tipo_registro, // 'entrada' o 'salida'
+            timestamp 
+        } = req.body;
+
+        if (!id_usuario || !id_evento || !nombre_completo) {
+            return res.status(400).json({
+                success: false,
+                error: 'Faltan datos requeridos'
+            });
+        }
+
+        const attendanceData = {
+            id_usuario,
+            id_evento,
+            nombre_completo,
+            matricula,
+            nombre_evento,
+            tipo_registro: tipo_registro || 'entrada',
+            timestamp: timestamp || new Date().toISOString()
+        };
+
+        // Actualizar estadísticas
+        realtimeStats.totalAttendance++;
+        realtimeStats.lastUpdate = new Date().toISOString();
+
+        // Emitir a todos los clientes conectados
+        io.emit('attendance:registered', attendanceData);
+
+        // Emitir al evento específico
+        io.to(`event_${id_evento}`).emit('attendance:event:update', attendanceData);
+
+        // Emitir al usuario específico
+        io.to(`user_${id_usuario}`).emit('attendance:confirmed', {
+            ...attendanceData,
+            message: `Tu asistencia ha sido registrada en ${nombre_evento}`
+        });
+
+        // Emitir a administradores con estadísticas actualizadas
+        io.to('admins').emit('attendance:admin:update', {
+            ...attendanceData,
+            stats: realtimeStats
+        });
+
+        console.log(`✅ Asistencia notificada vía WebSocket: ${nombre_completo} (${matricula}) - ${nombre_evento}`);
+
+        res.json({
+            success: true,
+            message: 'Notificación enviada vía WebSocket',
+            connectedClients: realtimeStats.connectedClients,
+            data: attendanceData
+        });
+
+    } catch (error) {
+        console.error('❌ Error al notificar asistencia:', error);
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+});
+
+// Endpoint para obtener estadísticas
+app.get('/stats', (req, res) => {
+    res.json({
+        success: true,
+        stats: realtimeStats,
+        connectedClients: io.engine.clientsCount
+    });
+});
+
+// ============================================
+// ENDPOINTS DE WHATSAPP (EXISTENTES)
+// ============================================
+
 // Endpoint para verificar el estado del servicio
 app.get('/health', (req, res) => {
     res.json({
@@ -191,7 +346,11 @@ app.get('/health', (req, res) => {
         service: 'whatsapp-verification',
         timestamp: new Date().toISOString(),
         phoneNumber: process.env.WHATSAPP_NUMBER || '524492106893',
-        qrAvailable: botStatus === 'qr_ready'
+        qrAvailable: botStatus === 'qr_ready',
+        websocket: {
+            enabled: true,
+            connectedClients: realtimeStats.connectedClients
+        }
     });
 });
 
@@ -521,13 +680,17 @@ app.post('/test-send', async (req, res) => {
 });
 
 // Iniciar servidor
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`🌐 Servidor corriendo en http://localhost:${PORT}`);
+    console.log(`🔌 WebSocket Server activo`);
     console.log(`📡 Endpoints disponibles:`);
-    console.log(`   - POST /send-verification-code`);
+    console.log(`   - POST /send-verification-code (WhatsApp)`);
+    console.log(`   - POST /notify-attendance (WebSocket)`);
     console.log(`   - POST /test-send`);
     console.log(`   - GET  /health`);
+    console.log(`   - GET  /stats`);
     console.log(`   - GET  /qr`);
+    console.log(`   - WS   / (Socket.IO)`);
 });
 
 // Iniciar cliente de WhatsApp

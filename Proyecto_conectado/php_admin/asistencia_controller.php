@@ -33,10 +33,9 @@ switch ($action) {
 
 function getEventosActivos() {
     global $pdo;
-    // Oracle: TRUNC(SYSDATE) para fecha actual, comparación de fechas sin hora
-    $sql = "SELECT id_evento, nombre_evento, fecha_inicio
+    // Mostrar todos los eventos disponibles, ordenados por fecha
+    $sql = "SELECT id_evento, nombre_evento, fecha_inicio, fecha_fin
             FROM eventos
-            WHERE TRUNC(fecha_inicio) <= TRUNC(SYSDATE) AND TRUNC(fecha_fin) >= TRUNC(SYSDATE) 
             ORDER BY fecha_inicio ASC, nombre_evento ASC";
     try {
         $stmt = $pdo->query($sql);
@@ -85,7 +84,7 @@ function validarQr() {
             exit;
         }
 
-        $stmtUsuario = $pdo->prepare("SELECT id_usuario, nombre_completo FROM usuarios WHERE qr_code_data = :qr_data");
+        $stmtUsuario = $pdo->prepare("SELECT id_usuario, nombre_completo FROM usuarios WHERE codigo_qr = :qr_data");
         $stmtUsuario->bindParam(':qr_data', $qr_data, PDO::PARAM_STR);
         $stmtUsuario->execute();
         $usuario = $stmtUsuario->fetch(PDO::FETCH_ASSOC);

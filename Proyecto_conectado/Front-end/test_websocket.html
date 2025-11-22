@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test WebSocket - Sistema de Asistencia</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .status-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+
+        .status-indicator.connected {
+            background: #28a745;
+        }
+
+        .status-indicator.disconnected {
+            background: #dc3545;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .stat {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        .stat-value {
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .log-container {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            border-radius: 8px;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+
+        .log-entry {
+            margin-bottom: 8px;
+            padding: 4px;
+        }
+
+        .log-entry.success {
+            color: #4ec9b0;
+        }
+
+        .log-entry.error {
+            color: #f48771;
+        }
+
+        .log-entry.info {
+            color: #569cd6;
+        }
+
+        .log-entry.warning {
+            color: #dcdcaa;
+        }
+
+        .test-form {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .badge.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge.danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔌 Test WebSocket - Sistema de Asistencia</h1>
+        <p class="subtitle">Panel de pruebas para validar la conexión y eventos del WebSocket</p>
+
+        <!-- Estado de Conexión -->
+        <div class="status-card">
+            <h3>Estado de Conexión</h3>
+            <div>
+                <span class="status-indicator disconnected" id="status-indicator"></span>
+                <strong id="connection-status">Desconectado</strong>
+                <span class="badge danger" id="status-badge">Offline</span>
+            </div>
+            <div style="margin-top: 10px; color: #666;">
+                <small>Socket ID: <span id="socket-id">N/A</span></small>
+            </div>
+        </div>
+
+        <!-- Estadísticas -->
+        <div class="grid">
+            <div class="card">
+                <h3>📊 Estadísticas del Servidor</h3>
+                <div class="stat">
+                    <span>Total Asistencias:</span>
+                    <span class="stat-value" id="stat-total">0</span>
+                </div>
+                <div class="stat">
+                    <span>Eventos Activos:</span>
+                    <span class="stat-value" id="stat-events">0</span>
+                </div>
+                <div class="stat">
+                    <span>Clientes Conectados:</span>
+                    <span class="stat-value" id="stat-clients">0</span>
+                </div>
+                <div class="stat">
+                    <span>Última Actualización:</span>
+                    <span class="stat-value" id="stat-update">N/A</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>🎯 Acciones de Prueba</h3>
+                <button onclick="connectWebSocket()" id="btn-connect">Conectar</button>
+                <button onclick="disconnectWebSocket()" id="btn-disconnect" disabled>Desconectar</button>
+                <button onclick="requestStats()" id="btn-stats" disabled>Solicitar Stats</button>
+                <button onclick="joinAdmin()" id="btn-join-admin" disabled>Unirse a Admin</button>
+                <button onclick="clearLogs()">Limpiar Logs</button>
+            </div>
+        </div>
+
+        <!-- Formulario de Prueba -->
+        <div class="test-form">
+            <h3>🧪 Simular Registro de Asistencia</h3>
+            <div class="grid">
+                <div class="form-group">
+                    <label>ID Usuario:</label>
+                    <input type="number" id="test-user-id" value="1" placeholder="1">
+                </div>
+                <div class="form-group">
+                    <label>ID Evento:</label>
+                    <input type="number" id="test-event-id" value="1" placeholder="1">
+                </div>
+            </div>
+            <div class="grid">
+                <div class="form-group">
+                    <label>Nombre Completo:</label>
+                    <input type="text" id="test-name" value="Juan Pérez García" placeholder="Nombre del alumno">
+                </div>
+                <div class="form-group">
+                    <label>Matrícula:</label>
+                    <input type="text" id="test-matricula" value="AL123456" placeholder="AL123456">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Nombre del Evento:</label>
+                <input type="text" id="test-event-name" value="Conferencia de Marketing Digital" placeholder="Nombre del evento">
+            </div>
+            <button onclick="simulateAttendance()">📝 Simular Asistencia</button>
+        </div>
+
+        <!-- Logs -->
+        <div>
+            <h3>📋 Logs del Sistema</h3>
+            <div class="log-container" id="log-container">
+                <div class="log-entry info">Esperando eventos...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Socket.IO Client -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+
+    <script>
+        let socket = null;
+        let connected = false;
+
+        // Elementos del DOM
+        const statusIndicator = document.getElementById('status-indicator');
+        const connectionStatus = document.getElementById('connection-status');
+        const statusBadge = document.getElementById('status-badge');
+        const socketIdEl = document.getElementById('socket-id');
+        const logContainer = document.getElementById('log-container');
+
+        // Botones
+        const btnConnect = document.getElementById('btn-connect');
+        const btnDisconnect = document.getElementById('btn-disconnect');
+        const btnStats = document.getElementById('btn-stats');
+        const btnJoinAdmin = document.getElementById('btn-join-admin');
+
+        // Stats
+        const statTotal = document.getElementById('stat-total');
+        const statEvents = document.getElementById('stat-events');
+        const statClients = document.getElementById('stat-clients');
+        const statUpdate = document.getElementById('stat-update');
+
+        function log(message, type = 'info') {
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logContainer.appendChild(entry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+
+        function updateConnectionStatus(isConnected) {
+            connected = isConnected;
+            
+            if (isConnected) {
+                statusIndicator.className = 'status-indicator connected';
+                connectionStatus.textContent = 'Conectado';
+                statusBadge.textContent = 'Online';
+                statusBadge.className = 'badge success';
+                
+                btnConnect.disabled = true;
+                btnDisconnect.disabled = false;
+                btnStats.disabled = false;
+                btnJoinAdmin.disabled = false;
+            } else {
+                statusIndicator.className = 'status-indicator disconnected';
+                connectionStatus.textContent = 'Desconectado';
+                statusBadge.textContent = 'Offline';
+                statusBadge.className = 'badge danger';
+                socketIdEl.textContent = 'N/A';
+                
+                btnConnect.disabled = false;
+                btnDisconnect.disabled = true;
+                btnStats.disabled = true;
+                btnJoinAdmin.disabled = true;
+            }
+        }
+
+        function connectWebSocket() {
+            if (socket) {
+                log('Ya hay una conexión activa', 'warning');
+                return;
+            }
+
+            log('Intentando conectar a http://localhost:3001...', 'info');
+
+            socket = io('http://localhost:3001', {
+                transports: ['websocket', 'polling'],
+                reconnection: true
+            });
+
+            // Eventos de conexión
+            socket.on('connect', () => {
+                log('✅ Conectado exitosamente', 'success');
+                socketIdEl.textContent = socket.id;
+                updateConnectionStatus(true);
+            });
+
+            socket.on('connection:established', (data) => {
+                log(`Conexión establecida: ${JSON.stringify(data)}`, 'success');
+            });
+
+            socket.on('disconnect', (reason) => {
+                log(`⚠️ Desconectado: ${reason}`, 'warning');
+                updateConnectionStatus(false);
+            });
+
+            socket.on('connect_error', (error) => {
+                log(`❌ Error de conexión: ${error.message}`, 'error');
+                updateConnectionStatus(false);
+            });
+
+            // Eventos de asistencia
+            socket.on('attendance:registered', (data) => {
+                log(`📝 Asistencia registrada: ${data.nombre_completo} en ${data.nombre_evento}`, 'success');
+            });
+
+            socket.on('attendance:confirmed', (data) => {
+                log(`✅ Asistencia confirmada: ${data.message}`, 'success');
+            });
+
+            socket.on('attendance:admin:update', (data) => {
+                log(`👤 Update Admin: ${data.nombre_completo}`, 'info');
+                if (data.stats) {
+                    updateStats(data.stats);
+                }
+            });
+
+            // Eventos de stats
+            socket.on('stats:update', (stats) => {
+                log(`📊 Estadísticas actualizadas`, 'info');
+                updateStats(stats);
+            });
+
+            // Confirmaciones de sala
+            socket.on('joined:admin', (data) => {
+                log(`✅ Unido a sala de administradores`, 'success');
+                if (data.stats) {
+                    updateStats(data.stats);
+                }
+            });
+
+            socket.on('joined:event', (data) => {
+                log(`✅ Unido al evento ${data.eventId}`, 'success');
+            });
+
+            socket.on('joined:user', (data) => {
+                log(`✅ Unido como usuario ${data.userId}`, 'success');
+            });
+        }
+
+        function disconnectWebSocket() {
+            if (!socket) {
+                log('No hay conexión activa', 'warning');
+                return;
+            }
+
+            socket.disconnect();
+            socket = null;
+            log('Desconectado manualmente', 'info');
+            updateConnectionStatus(false);
+        }
+
+        function requestStats() {
+            if (!connected) {
+                log('No conectado', 'error');
+                return;
+            }
+
+            log('Solicitando estadísticas...', 'info');
+            socket.emit('request:stats');
+        }
+
+        function joinAdmin() {
+            if (!connected) {
+                log('No conectado', 'error');
+                return;
+            }
+
+            log('Uniéndose a sala de administradores...', 'info');
+            socket.emit('join:admin');
+        }
+
+        function updateStats(stats) {
+            statTotal.textContent = stats.totalAttendance || 0;
+            statEvents.textContent = stats.activeEvents || 0;
+            statClients.textContent = stats.connectedClients || 0;
+            statUpdate.textContent = new Date(stats.lastUpdate).toLocaleTimeString('es-MX');
+        }
+
+        function simulateAttendance() {
+            const userId = document.getElementById('test-user-id').value;
+            const eventId = document.getElementById('test-event-id').value;
+            const name = document.getElementById('test-name').value;
+            const matricula = document.getElementById('test-matricula').value;
+            const eventName = document.getElementById('test-event-name').value;
+
+            if (!userId || !eventId || !name || !matricula || !eventName) {
+                alert('Por favor completa todos los campos');
+                return;
+            }
+
+            const data = {
+                id_usuario: parseInt(userId),
+                id_evento: parseInt(eventId),
+                nombre_completo: name,
+                matricula: matricula,
+                nombre_evento: eventName,
+                tipo_registro: 'entrada',
+                timestamp: new Date().toISOString()
+            };
+
+            log(`Enviando solicitud de asistencia simulada...`, 'info');
+
+            fetch('http://localhost:3001/notify-attendance', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    log(`✅ Asistencia simulada enviada correctamente`, 'success');
+                    log(`Clientes notificados: ${result.connectedClients}`, 'info');
+                } else {
+                    log(`❌ Error: ${result.error}`, 'error');
+                }
+            })
+            .catch(error => {
+                log(`❌ Error al simular: ${error.message}`, 'error');
+            });
+        }
+
+        function clearLogs() {
+            logContainer.innerHTML = '<div class="log-entry info">Logs limpiados...</div>';
+        }
+
+        // Auto-conectar al cargar
+        window.addEventListener('load', () => {
+            log('Página cargada. Presiona "Conectar" para iniciar', 'info');
+        });
+    </script>
+</body>
+</html>

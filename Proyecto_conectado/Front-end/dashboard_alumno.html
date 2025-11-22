@@ -102,6 +102,7 @@
     <script src="../js/dashboard.js"></script>
     <script src="../js/mis_eventos.js"></script>
     
+<<<<<<< HEAD
     <!-- Footer con Términos y Condiciones -->
     <footer style="text-align: center; padding: 20px; margin-top: 40px; border-top: 1px solid #eee; color: #777; font-size: 14px;">
         <p>&copy; 2025 Congreso de Mercadotecnia. Todos los derechos reservados.</p>
@@ -113,6 +114,54 @@
 
     <!-- SCRIPT FUNDAMENTAL PARA EL MODAL DE T&C -->
     <script src="../js/terminos_modal.js"></script>
+=======
+    <!-- Socket.IO Client CDN -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    
+    <!-- WebSocket Client -->
+    <script src="../js/websocket-client.js"></script>
+    
+    <!-- WebSocket Integration for Students -->
+    <script>
+        // Obtener ID de usuario de sessionStorage
+        const userData = JSON.parse(sessionStorage.getItem('userData') || '{}');
+        const userId = userData.id;
+        
+        if (userId) {
+            // Inicializar WebSocket
+            const ws = new AttendanceWebSocket({
+                serverUrl: 'http://localhost:3001',
+                debug: false // Menos verbose para alumnos
+            });
+            
+            ws.connect();
+            
+            // Unirse a sala de usuario cuando se conecte
+            ws.on('connected', () => {
+                ws.joinUser(userId);
+                console.log(`✅ Conectado a notificaciones en tiempo real (Usuario: ${userId})`);
+            });
+            
+            // Recibir confirmación de asistencia
+            ws.on('attendance:confirmed', (data) => {
+                console.log('✅ Tu asistencia fue registrada:', data);
+                
+                // Mostrar alerta visual
+                alert(`✅ Asistencia Confirmada\n\n${data.message}\n\nFecha: ${new Date(data.timestamp).toLocaleString('es-MX')}`);
+                
+                // Solicitar permiso para notificaciones nativas (solo la primera vez)
+                if ('Notification' in window && Notification.permission === 'default') {
+                    Notification.requestPermission();
+                }
+            });
+            
+            // Escuchar todas las asistencias (para estadísticas si queremos)
+            ws.on('attendance:registered', (data) => {
+                console.log('📊 Nueva asistencia en el sistema:', data.nombre_evento);
+            });
+        }
+    </script>
+>>>>>>> f10c3843e59709ae56c4277bf09b57f2ed709aec
     
     <!-- Script para cerrar sesión -->
     <script>
@@ -121,6 +170,11 @@
             e.preventDefault();
             
             if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
+                // Desconectar WebSocket antes de salir
+                if (typeof ws !== 'undefined') {
+                    ws.disconnect();
+                }
+                
                 // Usar la función de logout del session-guard
                 if (window.sessionGuard && window.sessionGuard.logout) {
                     window.sessionGuard.logout();

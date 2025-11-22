@@ -10,7 +10,7 @@ error_reporting(E_ALL);
 
 require 'conexion.php';
 require 'send_notifications.php';
-require 'sms_service.php';
+require 'whatsapp_client.php'; // Cliente WhatsApp Docker
 
 try {
     $email = $_POST['email'] ?? '';
@@ -99,24 +99,69 @@ try {
                 <p>Has solicitado un nuevo código de verificación:</p>
                 <div class='code'>{$nuevo_codigo}</div>
                 <p><strong>Este código expira en 15 minutos.</strong></p>
+                <p>También recibirás este código por WhatsApp.</p>
             </div>
         </div>
     </body>
     </html>
     ";
 
-    send_email($email, $asunto, $mensaje_email);
+    // ===========================================
+    // ENVIAR POR EMAIL
+    // ===========================================
+    $emailEnviado = false;
+    try {
+        $emailEnviado = send_email($email, $asunto, $mensaje_email, 'Congreso de Mercadotecnia UAA');
+        if ($emailEnviado) {
+            error_log("[REENVIO] ✅ Código enviado por email a: {$email}");
+        }
+    } catch (Exception $e) {
+        error_log("[REENVIO] ❌ Error al enviar email: " . $e->getMessage());
+    }
 
-    // Enviar por SMS al número del USUARIO
-    // FROM: +52 449 210 6893 (tu número emisor)
-    // TO: $usuario['telefono'] (número del usuario)
-    enviar_codigo_verificacion_sms($usuario['telefono'], $nuevo_codigo, $usuario['nombre_completo']);
+    // ===========================================
+    // ENVIAR POR WHATSAPP
+    // ===========================================
+    $whatsappEnviado = false;
+    if (!empty($usuario['telefono'])) {
+        try {
+            $whatsappClient = new WhatsAppClient('http://whatsapp:3001');
+            $healthCheck = $whatsappClient->checkHealth();
+            
+            if (isset($healthCheck['status']) && ($healthCheck['status'] === 'ready' || $healthCheck['status'] === 'authenticated')) {
+                $resultWhatsApp = $whatsappClient->sendVerificationCode(
+                    $usuario['telefono'], 
+                    $nuevo_codigo, 
+                    $usuario['nombre_completo']
+                );
+                
+                if (isset($resultWhatsApp['success']) && $resultWhatsApp['success']) {
+                    $whatsappEnviado = true;
+                    error_log("[REENVIO] ✅ Código enviado por WhatsApp a: {$usuario['telefono']}");
+                }
+            } else {
+                error_log("[REENVIO] ⚠️ Servicio WhatsApp no disponible");
+            }
+        } catch (Exception $e) {
+            error_log("[REENVIO] ❌ Error al enviar WhatsApp: " . $e->getMessage());
+        }
+    }
 
-    error_log("Código reenviado a: " . $email);
+    // ===========================================
+    // RESPUESTA
+    // ===========================================
+    $metodos = [];
+    if ($emailEnviado) $metodos[] = "email";
+    if ($whatsappEnviado) $metodos[] = "WhatsApp";
+
+    error_log("[REENVIO] Código {$nuevo_codigo} reenviado a: {$email} por " . implode(' y ', $metodos));
 
     echo json_encode([
         'success' => true,
-        'message' => 'Nuevo código enviado por email y SMS'
+        'message' => count($metodos) > 0 
+            ? 'Nuevo código enviado por ' . implode(' y ', $metodos)
+            : 'Código generado. Revisa tu email',
+        'metodos' => $metodos
     ]);
 
 } catch (PDOException $e) {

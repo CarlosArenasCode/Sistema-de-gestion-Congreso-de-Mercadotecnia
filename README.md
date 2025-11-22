@@ -78,6 +78,35 @@ docker-compose up -d
 - **[Guía Completa de Docker](./DOCKER_SETUP.md)** - Instalación, configuración y solución de problemas
 - **[Referencia Rápida](./QUICK_REFERENCE.md)** - Comandos esenciales de Docker
 - **[Configurar WhatsApp/SMS](./CONFIGURAR_WHATSAPP_PASO_A_PASO.md)** - Sistema de verificación 2FA
+- **[🔌 WebSocket en Tiempo Real](./WEBSOCKET_README.md)** - Sistema de notificaciones y asistencia en vivo
+- **[🧪 Pruebas WebSocket](./PRUEBAS_WEBSOCKET.md)** - Guía rápida para probar WebSocket
+
+---
+
+## 🔌 Sistema WebSocket (NUEVO)
+
+### ⚡ Notificaciones en Tiempo Real
+
+El sistema ahora incluye **WebSocket con Socket.IO** para actualizaciones instantáneas:
+
+✅ **Asistencias en tiempo real** - Dashboard se actualiza sin refrescar  
+✅ **Notificaciones instantáneas** - Alumnos reciben confirmación al escanear QR  
+✅ **Estadísticas en vivo** - Contadores actualizados automáticamente  
+✅ **Múltiples salas** - Eventos, usuarios y administradores separados  
+
+### 🎯 Probar WebSocket
+
+**Test rápido:**
+```
+http://localhost:8081/Front-end/test_websocket.html
+```
+
+**En producción:**
+1. Abre `admin_dashboard.html` - Verás estadísticas en tiempo real
+2. Abre `admin_scan_qr.html` - Escanea un QR
+3. Dashboard se actualiza **instantáneamente** sin refrescar
+
+**Ver documentación completa:** [WEBSOCKET_README.md](./WEBSOCKET_README.md)
 
 ---
 

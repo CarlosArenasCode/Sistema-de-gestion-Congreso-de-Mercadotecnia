@@ -30,7 +30,7 @@ try {
             -- Eventos tipo conferencia donde el usuario tiene asistencia
             SELECT e.id_evento, e.nombre_evento, e.tipo_evento, e.horas_para_constancia
             FROM eventos e
-            JOIN (SELECT DISTINCT id_evento FROM asistencia WHERE id_usuario = :id_usuario2) a ON e.id_evento = a.id_evento
+            JOIN (SELECT DISTINCT id_evento FROM asistencias WHERE id_usuario = :id_usuario2) a ON e.id_evento = a.id_evento
             WHERE e.tipo_evento = 'conferencia'
         ),
         att AS (
@@ -45,7 +45,7 @@ try {
                     EXTRACT(MINUTE FROM duracion) * 60 +
                     EXTRACT(SECOND FROM duracion)
                 ) as duracion_total_seg
-            FROM asistencia
+            FROM asistencias
             WHERE id_usuario = :id_usuario3
             GROUP BY id_evento
         )

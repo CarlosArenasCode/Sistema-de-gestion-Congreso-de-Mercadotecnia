@@ -91,11 +91,6 @@ function guidv4($data = null) {
 $codigo_qr = guidv4();
 
 try {
-<<<<<<< HEAD
-    // Insertar usuario con verificado = 0 (no verificado) y acepta_tyc = 1 (aceptado en registro)
-    $sql = "INSERT INTO usuarios (nombre_completo, email, password_hash, matricula, semestre, telefono, rol, codigo_qr, codigo_verificacion, fecha_codigo, verificado, acepta_tyc, fecha_aceptacion)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 1, SYSTIMESTAMP)";
-=======
     // ===========================================
     // VERIFICACIÓN DE DUPLICADOS (antes de insertar)
     // ===========================================
@@ -118,10 +113,9 @@ try {
         exit;
     }
     
-    // Insertar usuario con verificado = 0 (no verificado)
-    $sql = "INSERT INTO usuarios (nombre_completo, email, password_hash, matricula, semestre, telefono, rol, codigo_qr, codigo_verificacion, fecha_codigo, verificado)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)";
->>>>>>> f10c3843e59709ae56c4277bf09b57f2ed709aec
+    // Insertar usuario con verificado = 0 (no verificado) y acepta_tyc = 1 (aceptado en registro)
+    $sql = "INSERT INTO usuarios (nombre_completo, email, password_hash, matricula, semestre, telefono, rol, codigo_qr, codigo_verificacion, fecha_codigo, verificado, acepta_tyc, fecha_aceptacion)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 1, SYSTIMESTAMP)";
 
     $stmt = $pdo->prepare($sql);
 

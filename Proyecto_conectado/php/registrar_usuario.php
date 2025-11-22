@@ -92,7 +92,7 @@ $codigo_qr = guidv4();
 
 try {
     // Insertar usuario con verificado = 0 (no verificado)
-    $sql = "INSERT INTO usuarios (nombre_completo, email, password_hash, matricula, semestre, telefono, rol, codigo_qr, codigo_verificacion, fecha_codigo, verificado)
+    $sql = "INSERT INTO usuarios (nombre_completo, email, password_hash, matricula, semestre, telefono, rol, qr_code_data, codigo_verificacion, fecha_codigo, verificado)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)";
 
     $stmt = $pdo->prepare($sql);

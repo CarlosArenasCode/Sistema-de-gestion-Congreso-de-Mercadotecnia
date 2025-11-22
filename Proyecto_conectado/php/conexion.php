@@ -28,8 +28,8 @@ header('Content-Type: text/html; charset=UTF-8');
 $oracle_host = getenv('ORACLE_HOST') ?: 'oracle_db';
 $oracle_port = getenv('ORACLE_PORT') ?: '1521';
 $oracle_service = getenv('ORACLE_SERVICE') ?: 'FREEPDB1';
-$oracle_user = getenv('ORACLE_USER') ?: 'congreso_user';
-$oracle_pass = getenv('ORACLE_PASSWORD') ?: 'congreso_pass';
+$oracle_user = 'system';           // Forzamos el usuario administrador
+$oracle_pass = 'OraclePass123!';   // Tu contraseña de Docker
 $charset = 'AL32UTF8';
 
 // Construir DSN para Oracle

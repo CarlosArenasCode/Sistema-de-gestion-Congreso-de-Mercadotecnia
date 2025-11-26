@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Panel - Congreso Universitario</title>
     <link rel="stylesheet" href="../CSS/style.css">
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Importar librería de WebSocket -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <!-- Script para conectar WebSocket -->
+    <script src="../js/websocket-client.js"></script>
+    <!-- Script para manejar la personalización de colores (tema dinámico) -->
+    <script src="../js/personalizacion-loader.js"></script>
 </head>
 <body>
     <header>
@@ -19,23 +28,22 @@
                         <img src="../Logos/logo-ccea.png" alt="Logo CCEA">
                         <img src="../Logos/MKT_LOGO.png" alt="Logo MKT">
                         <img src="https://www.uaa.mx/portal/wp-content/uploads/2025/07/redes-LQSTJ_pweb-scaled.jpg" alt="Imagen 1">
-      <img src="https://www.uaa.mx/portal/wp-content/uploads/2024/07/Banner_MKT-04.jpg" alt="Imagen 2">
-      <img src="https://www.uaa.mx/portal/wp-content/uploads/2024/07/Encuentro-MKT-30-Aniv-IMG_8696-1024x729.jpg" alt="Imagen 3">
-      <img src="https://www.uaa.mx/portal/wp-content/uploads/2024/07/Encuentro-MKT-30-Aniv-IMG_8465-300x200.jpg" alt="Imagen 4">
-      <img src="https://www.uaa.mx/portal/wp-content/uploads/2024/07/Expo-MKT-Credito-Facebook-Mercadotecnia-UAA_2-300x169.jpg" alt="Imagen 5">
-      <img src="https://www.uaa.mx/portal/wp-content/uploads/2025/03/GracielaSalazar.jpg" alt="Imagen 6">
-
+                        <img src="https://www.uaa.mx/portal/wp-content/uploads/2024/07/Banner_MKT-04.jpg" alt="Imagen 2">
+                        <img src="https://www.uaa.mx/portal/wp-content/uploads/2024/07/Encuentro-MKT-30-Aniv-IMG_8696-1024x729.jpg" alt="Imagen 3">
+                        <img src="https://www.uaa.mx/portal/wp-content/uploads/2024/07/Encuentro-MKT-30-Aniv-IMG_8465-300x200.jpg" alt="Imagen 4">
+                        <img src="https://www.uaa.mx/portal/wp-content/uploads/2024/07/Expo-MKT-Credito-Facebook-Mercadotecnia-UAA_2-300x169.jpg" alt="Imagen 5">
+                        <img src="https://www.uaa.mx/portal/wp-content/uploads/2025/03/GracielaSalazar.jpg" alt="Imagen 6">
 
                         <!-- Repite para efecto de bucle continuo -->
                         <img src="../Logos/UAA_LOGO.png" alt="Logo Universidad Autónoma de Aguascalientes">
                         <img src="../Logos/logo-ccea.png" alt="Logo CCEA">
                         <img src="../Logos/MKT_LOGO.png" alt="Logo MKT">
                         <img src="https://scontent.fagu3-1.fna.fbcdn.net/v/t39.30808-6/496124750_1624827681802324_432711593218564825_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeG9-YyhIX57zNBvdb4iefCKfffwI6vNTUp99_Ajq81NSo7Tq3WSZU2BS85PnxNrmQftoTV-DPEVv3YpHFDYmjnw&_nc_ohc=Opi1VrKsl6gQ7kNvwFHsqtM&_nc_oc=Adk_mAt-pxYriFRvWqOOMbMB1fnZX6Zs4xJU8ppZgJZOHjbIrVPwRgWOKwNNZNB9BkT8vHo2ilYPAAwzuDKD5K1a&_nc_zt=23&_nc_ht=scontent.fagu3-1.fna&_nc_gid=Wq2Ypy6tG0OREYzXw5oW4A&oh=00_AfJtbvaLs9NNpKvYlhHChU3WcXL0Pke-tT_SnCkqX2-gsQ&oe=683D7684" alt="Imagen 1">
-      <img src="https://scontent.fagu3-1.fna.fbcdn.net/v/t39.30808-6/495132454_1634466614171764_1293003428437717762_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeH-o75T5syIGJizfQYW9a6RWyH4w5VmpK9bIfjDlWakr6EL_uNjyKJLqiEl9TxVXd3aBAXNRvuIA0jH63JKXINC&_nc_ohc=EngoXFSl6CUQ7kNvwFBFlWh&_nc_oc=AdkBBWJmrPs5kDV_EluLcZy9eLJyDf5acyooItKpzwiQ_3O344eCE8uyXUPzubiLDzBaomuRHkkHFRSDp6xa6tK0&_nc_zt=23&_nc_ht=scontent.fagu3-1.fna&_nc_gid=6y9XAlPF56TTy0r8tve1dw&oh=00_AfLhEB0_v5oHC7ctsXmWAAVRkWI9PKENJ9l0-ZNvbKyoGA&oe=683DA397" alt="Imagen 2">
-      <img src="https://scontent.fagu3-1.fna.fbcdn.net/v/t51.75761-15/488828600_18060033980021194_3929132243346701087_n.webp?stp=dst-jpg_tt6&_nc_cat=107&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeF4oxCN_tLDigJyx85jKLOyAdD4jdkN7lsB0PiN2Q3uW7UkjPc2VBRC0ge-lqdOcZL-i0zitrUu8Xnt2Uhnw6Ub&_nc_ohc=bi5IYNZQA6IQ7kNvwH9IBSi&_nc_oc=Adk-uzpuNUyk9gt64dLlYnv94CbYXCJbylPccUsJczLO8oQjaNpIRc1YDjHE4mGQKzbZExB4IRQYERBQVsd4EY2N&_nc_zt=23&_nc_ht=scontent.fagu3-1.fna&_nc_gid=PWr_QYcgJlk3OnuzP396Pw&oh=00_AfKtvxBc0HqITF5vIv3H5vP4WgiiBQ5UxIxn1zKPN641rA&oe=683D848C" alt="Imagen 3">
-      <img src="https://scontent.fagu3-1.fna.fbcdn.net/v/t39.30808-6/435059735_1338683227083439_6094712791011040479_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeHJxU01_Uj00TcODGRkQBnzwpnX9nPVV2DCmdf2c9VXYKqDhY76jfP9dd9bf6QzurtXmKHCcbxKUeYN7CHwRCij&_nc_ohc=IjyrHn8OPKcQ7kNvwHffZ0q&_nc_oc=AdkGvNMk85Vy7Wl4s0yLleDFINQ7iWW8_9x9pXUFn3JdU8LsG7ysU_0guBguNPyEh2KFM2e7ma7BhMMrr6yqTmcS&_nc_zt=23&_nc_ht=scontent.fagu3-1.fna&_nc_gid=BjmST0Njy1ByVweRgJY0eA&oh=00_AfIKzrZo_9DtlCx5orCbSZUUxQMFwCEu14ZHnTSBeAnsHw&oe=683D7BDE" alt="Imagen 4">
-      <img src="https://scontent.fagu3-1.fna.fbcdn.net/v/t39.30808-6/420553824_1338682980416797_6621610067755935219_n.png?stp=dst-jpg_tt6&_nc_cat=102&ccb=1-7&_nc_sid=86c6b0&_nc_eui2=AeGqUMDJuQvtsBvYJvzSyNiPfnrC_Eo2619-esL8SjbrXx3P_UeeV5ZUboEN4LEWnddnhdlMauIzeTNdR9RWryax&_nc_ohc=l7HGxLBIcZwQ7kNvwE03NCd&_nc_oc=Adn6wcfTTl7DKhe1SHNN7DFnOsbYawwDXShU-pw31QHcGFKY28rtYLcOKBUISdHscTf1PVgHVnscou5l84zVvnwD&_nc_zt=23&_nc_ht=scontent.fagu3-1.fna&_nc_gid=tnc_xASK4M8omzBs1frRaQ&oh=00_AfIOAa-6ipn5MLklTFRJADwgMX44cvnCCkuBhPz5KQO0NA&oe=683D892A" alt="Imagen 5">
-      <img src="https://scontent.fagu3-1.fna.fbcdn.net/v/t39.30808-6/275063224_5305844672780981_2750705258877780749_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeH7deYFpK11ucM8eipmTLrPH4X_lV0Lv7Ifhf-VXQu_sgpDyEVGMc6SoGLRH7RCnqg0uno9M6_Bzk2XNXU7bPKt&_nc_ohc=ybcXEnVBZzIQ7kNvwHUy3Lc&_nc_oc=AdniUgxC5ik0MoqGLDD0oYybaeOSoay_UVyjGNysbA3klw6GUZvdzlZ0LoLwzbRztUyLgbSGjqUvE1LQnS-vg9DE&_nc_zt=23&_nc_ht=scontent.fagu3-1.fna&_nc_gid=qKaqhg-eyvwGoo1XUOv8ZA&oh=00_AfLTDF8QVYqI52lJtwbCI0KI20X3AS3gX-dz1D1r-ggIkw&oe=683DA03F" alt="Imagen 6">
+                        <img src="https://scontent.fagu3-1.fna.fbcdn.net/v/t39.30808-6/495132454_1634466614171764_1293003428437717762_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeH-o75T5syIGJizfQYW9a6RWyH4w5VmpK9bIfjDlWakr6EL_uNjyKJLqiEl9TxVXd3aBAXNRvuIA0jH63JKXINC&_nc_ohc=EngoXFSl6CUQ7kNvwFBFlWh&_nc_oc=AdkBBWJmrPs5kDV_EluLcZy9eLJyDf5acyooItKpzwiQ_3O344eCE8uyXUPzubiLDzBaomuRHkkHFRSDp6xa6tK0&_nc_zt=23&_nc_ht=scontent.fagu3-1.fna&_nc_gid=6y9XAlPF56TTy0r8tve1dw&oh=00_AfLhEB0_v5oHC7ctsXmWAAVRkWI9PKENJ9l0-ZNvbKyoGA&oe=683DA397" alt="Imagen 2">
+                        <img src="https://scontent.fagu3-1.fna.fbcdn.net/v/t51.75761-15/488828600_18060033980021194_3929132243346701087_n.webp?stp=dst-jpg_tt6&_nc_cat=107&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeF4oxCN_tLDigJyx85jKLOyAdD4jdkN7lsB0PiN2Q3uW7UkjPc2VBRC0ge-lqdOcZL-i0zitrUu8Xnt2Uhnw6Ub&_nc_ohc=bi5IYNZQA6IQ7kNvwH9IBSi&_nc_oc=Adk-uzpuNUyk9gt64dLlYnv94CbYXCJbylPccUsJczLO8oQjaNpIRc1YDjHE4mGQKzbZExB4IRQYERBQVsd4EY2N&_nc_zt=23&_nc_ht=scontent.fagu3-1.fna&_nc_gid=PWr_QYcgJlk3OnuzP396Pw&oh=00_AfKtvxBc0HqITF5vIv3H5vP4WgiiBQ5UxIxn1zKPN641rA&oe=683D848C" alt="Imagen 3">
+                        <img src="https://scontent.fagu3-1.fna.fbcdn.net/v/t39.30808-6/435059735_1338683227083439_6094712791011040479_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeHJxU01_Uj00TcODGRkQBnzwpnX9nPVV2DCmdf2c9VXYKqDhY76jfP9dd9bf6QzurtXmKHCcbxKUeYN7CHwRCij&_nc_ohc=IjyrHn8OPKcQ7kNvwHffZ0q&_nc_oc=AdkGvNMk85Vy7Wl4s0yLleDFINQ7iWW8_9x9pXUFn3JdU8LsG7ysU_0guBguNPyEh2KFM2e7ma7BhMMrr6yqTmcS&_nc_zt=23&_nc_ht=scontent.fagu3-1.fna&_nc_gid=BjmST0Njy1ByVweRgJY0eA&oh=00_AfIKzrZo_9DtlCx5orCbSZUUxQMFwCEu14ZHnTSBeAnsHw&oe=683D7BDE" alt="Imagen 4">
+                        <img src="https://scontent.fagu3-1.fna.fbcdn.net/v/t39.30808-6/420553824_1338682980416797_6621610067755935219_n.png?stp=dst-jpg_tt6&_nc_cat=102&ccb=1-7&_nc_sid=86c6b0&_nc_eui2=AeGqUMDJuQvtsBvYJvzSyNiPfnrC_Eo2619-esL8SjbrXx3P_UeeV5ZUboEN4LEWnddnhdlMauIzeTNdR9RWryax&_nc_ohc=l7HGxLBIcZwQ7kNvwE03NCd&_nc_oc=Adn6wcfTTl7DKhe1SHNN7DFnOsbYawwDXShU-pw31QHcGFKY28rtYLcOKBUISdHscTf1PVgHVnscou5l84zVvnwD&_nc_zt=23&_nc_ht=scontent.fagu3-1.fna&_nc_gid=tnc_xASK4M8omzBs1frRaQ&oh=00_AfIOAa-6ipn5MLklTFRJADwgMX44cvnCCkuBhPz5KQO0NA&oe=683D892A" alt="Imagen 5">
+                        <img src="https://scontent.fagu3-1.fna.fbcdn.net/v/t39.30808-6/275063224_5305844672780981_2750705258877780749_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeH7deYFpK11ucM8eipmTLrPH4X_lV0Lv7Ifhf-VXQu_sgpDyEVGMc6SoGLRH7RCnqg0uno9M6_Bzk2XNXU7bPKt&_nc_ohc=ybcXEnVBZzIQ7kNvwHUy3Lc&_nc_oc=AdniUgxC5ik0MoqGLDD0oYybaeOSoay_UVyjGNysbA3klw6GUZvdzlZ0LoLwzbRztUyLgbSGjqUvE1LQnS-vg9DE&_nc_zt=23&_nc_ht=scontent.fagu3-1.fna&_nc_gid=qKaqhg-eyvwGoo1XUOv8ZA&oh=00_AfLTDF8QVYqI52lJtwbCI0KI20X3AS3gX-dz1D1r-ggIkw&oe=683DA03F" alt="Imagen 6">
                     </div>
                 </div>
             </section>
@@ -86,16 +94,72 @@
         <a href="#">Facebook</a> | <a href="#">Twitter</a> | <a href="#">Instagram</a>
     </footer>
 
-    <!-- Script de protección de sesión (DEBE IR PRIMERO) -->
-    <!-- Session guard DESHABILITADO - usando solo sesión PHP -->
+    <!-- Script de protección de sesión -->
+    <!-- Descomentamos esto si decides usarlo en el futuro, por ahora usamos la sesión de PHP -->
     <!-- <script src="../js/session-guard.js"></script> -->
-    
-    <!-- Cargar personalización dinámica -->
-    <!-- <script src="../js/personalizacion-loader.js"></script> -->
     
     <!-- Scripts de funcionalidad -->
     <script src="../js/dashboard.js"></script>
     <script src="../js/mis_eventos.js"></script>
+    
+    <!-- Footer con Términos y Condiciones -->
+    <footer style="text-align: center; padding: 20px; margin-top: 40px; border-top: 1px solid #eee; color: #777; font-size: 14px;">
+        <p>&copy; 2025 Congreso de Mercadotecnia. Todos los derechos reservados.</p>
+        <p>
+            <a href="terminos_legales.html" target="_blank" style="color: #E4007C; text-decoration: none;">Términos y Condiciones</a> | 
+            <a href="#" style="color: #E4007C; text-decoration: none;">Aviso de Privacidad</a>
+        </p>
+    </footer>
+
+    <!-- SCRIPT FUNDAMENTAL PARA EL MODAL DE T&C -->
+    <script src="../js/terminos_modal.js"></script>
+
+    <!-- Socket.IO Client CDN -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    
+    <!-- WebSocket Client -->
+    <script src="../js/websocket-client.js"></script>
+    
+    <!-- WebSocket Integration for Students -->
+    <script>
+        // Obtener ID de usuario de sessionStorage
+        const userData = JSON.parse(sessionStorage.getItem('userData') || '{}');
+        const userId = userData.id;
+        
+        if (userId) {
+            // Inicializar WebSocket
+            const ws = new AttendanceWebSocket({
+                serverUrl: 'http://localhost:3001',
+                debug: false // Menos verbose para alumnos
+            });
+            
+            ws.connect();
+            
+            // Unirse a sala de usuario cuando se conecte
+            ws.on('connected', () => {
+                ws.joinUser(userId);
+                console.log(`✅ Conectado a notificaciones en tiempo real (Usuario: ${userId})`);
+            });
+            
+            // Recibir confirmación de asistencia
+            ws.on('attendance:confirmed', (data) => {
+                console.log('✅ Tu asistencia fue registrada:', data);
+                
+                // Mostrar alerta visual
+                alert(`✅ Asistencia Confirmada\n\n${data.message}\n\nFecha: ${new Date(data.timestamp).toLocaleString('es-MX')}`);
+                
+                // Solicitar permiso para notificaciones nativas (solo la primera vez)
+                if ('Notification' in window && Notification.permission === 'default') {
+                    Notification.requestPermission();
+                }
+            });
+            
+            // Escuchar todas las asistencias (para estadísticas si queremos)
+            ws.on('attendance:registered', (data) => {
+                console.log('📊 Nueva asistencia en el sistema:', data.nombre_evento);
+            });
+        }
+    </script>
     
     <!-- Script para cerrar sesión -->
     <script>
@@ -104,6 +168,11 @@
             e.preventDefault();
             
             if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
+                // Desconectar WebSocket antes de salir
+                if (typeof ws !== 'undefined') {
+                    ws.disconnect();
+                }
+                
                 // Usar la función de logout del session-guard
                 if (window.sessionGuard && window.sessionGuard.logout) {
                     window.sessionGuard.logout();
@@ -111,7 +180,7 @@
                     // Fallback si session-guard no está disponible
                     sessionStorage.clear();
                     localStorage.clear();
-                    window.location.href = 'login.html';
+                    window.location.href = '../php/login.php?logout=1'; // Importante: ruta al PHP de logout
                 }
             }
         });

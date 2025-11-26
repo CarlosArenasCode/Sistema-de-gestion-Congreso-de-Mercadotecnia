@@ -108,6 +108,19 @@ try {
     $stmt_update = $pdo->prepare($sql_update);
     $stmt_update->execute([':id_inscripcion' => $inscripcion['id_inscripcion']]);
     
+    // ============================================
+    // NOTIFICAR VÍA WEBSOCKET
+    // ============================================
+    notifyWebSocket([
+        'id_usuario' => $id_usuario,
+        'id_evento' => $id_evento,
+        'nombre_completo' => $inscripcion['nombre_completo'],
+        'matricula' => $inscripcion['matricula'],
+        'nombre_evento' => $inscripcion['nombre_evento'],
+        'tipo_registro' => 'entrada',
+        'timestamp' => date('Y-m-d H:i:s')
+    ]);
+    
     echo json_encode([
         'success' => true,
         'message' => 'Asistencia registrada exitosamente.',
@@ -123,5 +136,39 @@ try {
         'success' => false,
         'message' => 'Error al registrar asistencia: ' . $e->getMessage()
     ]);
+}
+
+/**
+ * Función para notificar al servidor WebSocket
+ */
+function notifyWebSocket($data) {
+    try {
+        $websocket_url = 'http://whatsapp:3001/notify-attendance';
+        
+        // Si no estamos en Docker, usar localhost
+        if (!gethostbyname('whatsapp')) {
+            $websocket_url = 'http://localhost:3001/notify-attendance';
+        }
+        
+        $ch = curl_init($websocket_url);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 2); // Timeout corto para no bloquear
+        
+        $response = curl_exec($ch);
+        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        
+        if ($http_code === 200) {
+            error_log("✅ WebSocket notificado: {$data['nombre_completo']}");
+        } else {
+            error_log("⚠️ WebSocket no disponible (código {$http_code})");
+        }
+    } catch (Exception $e) {
+        error_log("⚠️ Error al notificar WebSocket: " . $e->getMessage());
+        // No lanzar error, el registro de asistencia ya se hizo
+    }
 }
 ?>

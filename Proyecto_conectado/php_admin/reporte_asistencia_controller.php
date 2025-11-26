@@ -33,11 +33,11 @@ function getAsistencias($pdo, $return_data = false) {
                 a.id_usuario, 
                 u.nombre_completo AS nombre_usuario, 
                 e.nombre_evento,
-                TO_CHAR(a.fecha, 'DD/MM/YYYY') AS fecha,
+                TO_CHAR(a.fecha_asistencia, 'DD/MM/YYYY') AS fecha,
                 TO_CHAR(a.hora_entrada, 'HH24:MI') AS hora_entrada,
                 TO_CHAR(a.hora_salida, 'HH24:MI') AS hora_salida,
                 a.duracion
-            FROM asistencia a
+            FROM asistencias a
             LEFT JOIN usuarios u ON a.id_usuario = u.id_usuario
             LEFT JOIN eventos e ON a.id_evento = e.id_evento
             WHERE 1=1";

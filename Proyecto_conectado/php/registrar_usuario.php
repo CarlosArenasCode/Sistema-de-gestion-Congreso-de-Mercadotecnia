@@ -88,12 +88,34 @@ function guidv4($data = null) {
     $data[8] = chr(ord($data[8]) & 0x3f | 0x80);
     return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
 }
-$qr_code_data = guidv4();
+$codigo_qr = guidv4();
 
 try {
-    // Insertar usuario con verificado = 0 (no verificado)
-    $sql = "INSERT INTO usuarios (nombre_completo, email, password_hash, matricula, semestre, telefono, rol, qr_code_data, codigo_verificacion, fecha_codigo, verificado)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)";
+    // ===========================================
+    // VERIFICACIÓN DE DUPLICADOS (antes de insertar)
+    // ===========================================
+    
+    // Verificar si el email ya existe
+    $checkEmail = $pdo->prepare("SELECT COUNT(*) FROM usuarios WHERE LOWER(email) = LOWER(?)");
+    $checkEmail->execute([$email]);
+    if ($checkEmail->fetchColumn() > 0) {
+        ob_end_clean();
+        echo "Error: Ya existe una cuenta con el email '{$email}'. Por favor usa otro email o <a href='../Front-end/login.html'>inicia sesión</a>.";
+        exit;
+    }
+    
+    // Verificar si la matrícula ya existe
+    $checkMatricula = $pdo->prepare("SELECT COUNT(*) FROM usuarios WHERE matricula = ?");
+    $checkMatricula->execute([$matricula]);
+    if ($checkMatricula->fetchColumn() > 0) {
+        ob_end_clean();
+        echo "Error: La matrícula '{$matricula}' ya está registrada. Por favor verifica tu matrícula o <a href='../Front-end/login.html'>inicia sesión</a>.";
+        exit;
+    }
+    
+    // Insertar usuario con verificado = 0 (no verificado) y acepta_tyc = 1 (aceptado en registro)
+    $sql = "INSERT INTO usuarios (nombre_completo, email, password_hash, matricula, semestre, telefono, rol, codigo_qr, codigo_verificacion, fecha_codigo, verificado, acepta_tyc, fecha_aceptacion)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 1, SYSTIMESTAMP)";
 
     $stmt = $pdo->prepare($sql);
 
@@ -105,7 +127,7 @@ try {
         ($rol === 'alumno' ? $semestre : null),
         $telefono,
         $rol,
-        $qr_code_data,
+        $codigo_qr,
         $codigo_verificacion,
         $fecha_codigo
     ]);
@@ -138,6 +160,7 @@ try {
                 <p>Gracias por registrarte. Para activar tu cuenta, utiliza el siguiente código de verificación:</p>
                 <div class='code'>{$codigo_verificacion}</div>
                 <p><strong>Este código expira en 15 minutos.</strong></p>
+                <p>También recibirás este código por WhatsApp en el número: {$telefono}</p>
                 <p>Por seguridad, no compartas este código con nadie.</p>
                 <p>Si no solicitaste este registro, puedes ignorar este correo.</p>
             </div>
@@ -149,28 +172,67 @@ try {
     </html>
     ";
 
-    // Intentar enviar código por EMAIL
+    // ===========================================
+    // ENVÍO DE CÓDIGO POR EMAIL
+    // ===========================================
     $emailEnviado = false;
     try {
-        $emailEnviado = send_email($email, $asunto, $mensaje_email);
-        if (!$emailEnviado) {
-            error_log("Advertencia: No se pudo enviar código por email a {$email}");
+        error_log("[REGISTRO] Intentando enviar código por email a: {$email}");
+        $emailEnviado = send_email($email, $asunto, $mensaje_email, 'Congreso de Mercadotecnia UAA');
+        
+        if ($emailEnviado) {
+            error_log("[REGISTRO] ✅ Código enviado exitosamente por email a: {$email}");
+        } else {
+            error_log("[REGISTRO] ⚠️ No se pudo enviar código por email a: {$email}");
         }
     } catch (Exception $e) {
-        error_log("Error al enviar email: " . $e->getMessage());
+        error_log("[REGISTRO] ❌ Error al enviar email a {$email}: " . $e->getMessage());
     }
 
-    // Enviar código por WhatsApp usando el servicio Docker
-    // FROM: +52 449 210 6893 (configurado en el servicio WhatsApp)
-    // TO: $telefono (número del usuario)
-    $whatsappClient = new WhatsAppClient('http://whatsapp:3001');
-    $resultWhatsApp = $whatsappClient->sendVerificationCode($telefono, $codigo_verificacion, $nombre_completo);
+    // ===========================================
+    // ENVÍO DE CÓDIGO POR WHATSAPP
+    // ===========================================
+    $whatsappEnviado = false;
+    try {
+        error_log("[REGISTRO] Intentando enviar código por WhatsApp a: {$telefono}");
+        
+        // Crear cliente WhatsApp (servicio en Docker)
+        $whatsappClient = new WhatsAppClient('http://whatsapp:3001');
+        
+        // Verificar que el servicio esté disponible
+        $healthCheck = $whatsappClient->checkHealth();
+        
+        if (isset($healthCheck['status']) && ($healthCheck['status'] === 'ready' || $healthCheck['status'] === 'authenticated')) {
+            // Servicio disponible, enviar código
+            $resultWhatsApp = $whatsappClient->sendVerificationCode($telefono, $codigo_verificacion, $nombre_completo);
+            
+            if (isset($resultWhatsApp['success']) && $resultWhatsApp['success']) {
+                $whatsappEnviado = true;
+                error_log("[REGISTRO] ✅ Código enviado exitosamente por WhatsApp a: {$telefono}");
+            } else {
+                $errorMsg = $resultWhatsApp['error'] ?? $resultWhatsApp['message'] ?? 'Error desconocido';
+                error_log("[REGISTRO] ⚠️ No se pudo enviar código por WhatsApp a {$telefono}: {$errorMsg}");
+            }
+        } else {
+            $serviceStatus = $healthCheck['status'] ?? 'unknown';
+            error_log("[REGISTRO] ⚠️ Servicio WhatsApp no disponible. Estado: {$serviceStatus}");
+        }
+        
+    } catch (Exception $e) {
+        error_log("[REGISTRO] ❌ Error al enviar WhatsApp a {$telefono}: " . $e->getMessage());
+    }
+
+    // ===========================================
+    // RESUMEN DEL ENVÍO
+    // ===========================================
+    $metodos_exitosos = [];
+    if ($emailEnviado) $metodos_exitosos[] = "Email";
+    if ($whatsappEnviado) $metodos_exitosos[] = "WhatsApp";
     
-    // Log del resultado (opcional)
-    if (!isset($resultWhatsApp['success']) || !$resultWhatsApp['success']) {
-        error_log("Advertencia: No se pudo enviar código por WhatsApp a {$telefono}: " . 
-                 ($resultWhatsApp['error'] ?? 'Error desconocido'));
-        // Nota: No detenemos el registro, el usuario puede verificar por email
+    if (count($metodos_exitosos) > 0) {
+        error_log("[REGISTRO] 📧 Código {$codigo_verificacion} enviado a {$nombre_completo} por: " . implode(" y ", $metodos_exitosos));
+    } else {
+        error_log("[REGISTRO] ⚠️ Código {$codigo_verificacion} generado para {$nombre_completo}, pero no se pudo enviar por ningún medio");
     }
 
     // Limpiar el buffer y redirigir a página de verificación
@@ -180,10 +242,25 @@ try {
 
 } catch (PDOException $e) {
     ob_end_clean(); // Limpiar buffer antes de mostrar error
-    if ($e->getCode() == '23000') {
-         echo "Error: El email o la matrícula ya están registrados.";
+    
+    // Log del error para debugging
+    error_log("[REGISTRO] ❌ Error PDO: " . $e->getMessage());
+    
+    // Detectar tipo de violación de constraint
+    $errorMsg = $e->getMessage();
+    
+    if ($e->getCode() == '23000' || strpos($errorMsg, 'ORA-00001') !== false) {
+        // Constraint de unicidad violado
+        if (strpos($errorMsg, 'UK_USUARIOS_EMAIL') !== false || strpos($errorMsg, 'EMAIL') !== false) {
+            echo "Error: Ya existe una cuenta con el email '{$email}'. Por favor usa otro email o inicia sesión.";
+        } elseif (strpos($errorMsg, 'UK_USUARIOS_MATRICULA') !== false || strpos($errorMsg, 'MATRICULA') !== false) {
+            echo "Error: La matrícula '{$matricula}' ya está registrada. Por favor verifica tu matrícula o inicia sesión.";
+        } else {
+            echo "Error: El email o la matrícula ya están registrados. Por favor verifica tus datos.";
+        }
     } else {
-         echo "Error al registrar el usuario: " . $e->getMessage();
+        // Otro tipo de error
+        echo "Error al registrar el usuario. Por favor intenta nuevamente o contacta al administrador.";
     }
 }
 ?>

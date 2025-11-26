@@ -19,7 +19,11 @@ try {
     // Oracle: Usar CASE en lugar de IF, y convertir booleano a número
     $sql = "SELECT
                 e.*,
-                CASE WHEN i.id_usuario IS NOT NULL AND i.estado = 'Inscrito' THEN 1 ELSE 0 END AS is_inscrito
+                CASE 
+                    WHEN i.id_inscripcion IS NOT NULL AND i.estado = 'Inscrito' THEN 1 
+                    ELSE 0 
+                END AS is_inscrito,
+                i.estado as estado_inscripcion
             FROM
                 eventos e
             LEFT JOIN
@@ -32,11 +36,16 @@ try {
     $stmt->execute();
     $eventos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Oracle: Convertir CLOBs a strings antes de json_encode
+    // Oracle: Convertir CLOBs a strings y asegurar tipos correctos
     foreach ($eventos as &$evento) {
         if (isset($evento['descripcion']) && is_resource($evento['descripcion'])) {
             $evento['descripcion'] = stream_get_contents($evento['descripcion']);
         }
+        // Convertir is_inscrito a entero explícitamente
+        $evento['is_inscrito'] = (int) $evento['is_inscrito'];
+        // Convertir números que vienen como strings
+        $evento['cupo_actual'] = (int) $evento['cupo_actual'];
+        $evento['cupo_maximo'] = (int) $evento['cupo_maximo'];
     }
     unset($evento); // Romper referencia
 

@@ -84,7 +84,7 @@ function validarQr() {
             exit;
         }
 
-        $stmtUsuario = $pdo->prepare("SELECT id_usuario, nombre_completo FROM usuarios WHERE codigo_qr = :qr_data");
+        $stmtUsuario = $pdo->prepare("SELECT id_usuario, nombre_completo FROM usuarios WHERE qr_code_data = :qr_data");
         $stmtUsuario->bindParam(':qr_data', $qr_data, PDO::PARAM_STR);
         $stmtUsuario->execute();
         $usuario = $stmtUsuario->fetch(PDO::FETCH_ASSOC);

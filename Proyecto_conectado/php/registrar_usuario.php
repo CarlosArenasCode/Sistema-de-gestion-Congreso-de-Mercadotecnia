@@ -88,7 +88,7 @@ function guidv4($data = null) {
     $data[8] = chr(ord($data[8]) & 0x3f | 0x80);
     return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
 }
-$codigo_qr = guidv4();
+$qr_code_data = guidv4();
 
 try {
     // ===========================================
@@ -113,8 +113,8 @@ try {
         exit;
     }
     
-    // Insertar usuario con verificado = 0 (no verificado) y acepta_tyc = 1 (aceptado en registro)
-    $sql = "INSERT INTO usuarios (nombre_completo, email, password_hash, matricula, semestre, telefono, rol, codigo_qr, codigo_verificacion, fecha_codigo, verificado, acepta_tyc, fecha_aceptacion)
+        // Insertar usuario con verificado = 0 (no verificado) y acepta_tyc = 1 (aceptado en registro)
+        $sql = "INSERT INTO usuarios (nombre_completo, email, password_hash, matricula, semestre, telefono, rol, qr_code_data, codigo_verificacion, fecha_codigo, verificado, acepta_tyc, fecha_aceptacion)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 1, SYSTIMESTAMP)";
 
     $stmt = $pdo->prepare($sql);
@@ -127,7 +127,7 @@ try {
         ($rol === 'alumno' ? $semestre : null),
         $telefono,
         $rol,
-        $codigo_qr,
+        $qr_code_data,
         $codigo_verificacion,
         $fecha_codigo
     ]);

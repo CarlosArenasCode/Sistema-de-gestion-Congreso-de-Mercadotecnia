@@ -1,4 +1,7 @@
 <?php
+// Configurar headers para JSON PRIMERO
+header('Content-Type: application/json');
+
 // Configurar sesión antes de iniciarla
 ini_set('session.cookie_samesite', 'Lax');
 ini_set('session.cookie_httponly', '1');
@@ -7,10 +10,17 @@ ini_set('session.cookie_lifetime', '0'); // Expira al cerrar navegador
 ini_set('session.gc_maxlifetime', '3600'); // 1 hora
 
 session_start();
-require 'conexion.php';
 
-// Configurar headers para JSON
-header('Content-Type: application/json');
+// Intentar conectar y manejar errores
+try {
+    require 'conexion.php';
+} catch (Exception $e) {
+    echo json_encode([
+        'success' => false,
+        'message' => 'Error de conexión a la base de datos. Intenta nuevamente.'
+    ]);
+    exit;
+}
 
 $matricula = $_POST['university_id'] ?? '';
 $password = $_POST['password'] ?? '';

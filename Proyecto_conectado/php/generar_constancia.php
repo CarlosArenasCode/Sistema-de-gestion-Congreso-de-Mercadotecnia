@@ -1,5 +1,9 @@
 <?php
 // php/generar_constancia.php - Versión Oracle
+
+// Desactivar warnings de deprecación
+error_reporting(E_ERROR | E_PARSE);
+
 require_once 'conexion.php';
 require_once 'oracle_helpers.php';
 require_once 'fpdf/fpdf.php';
@@ -42,6 +46,17 @@ function generarConstancia($id_usuario, $id_evento) {
         if (isset($datos[$field]) && is_resource($datos[$field])) {
             $datos[$field] = stream_get_contents($datos[$field]);
         }
+    }
+    
+    // Generar código QR si no existe
+    if (empty($datos['codigo_qr'])) {
+        $datos['codigo_qr'] = 'QR-' . $datos['matricula'] . '-' . date('YmdHis') . rand(1000, 9999);
+        // Actualizar en la base de datos
+        $updateQR = $pdo->prepare("UPDATE usuarios SET codigo_qr = :codigo_qr WHERE id_usuario = :id_usuario");
+        $updateQR->execute([
+            ':codigo_qr' => $datos['codigo_qr'],
+            ':id_usuario' => $id_usuario
+        ]);
     }
 
     // 2. Generar datos para el QR Code

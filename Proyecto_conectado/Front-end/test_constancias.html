@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Constancias</title>
+</head>
+<body>
+    <h1>Prueba de Carga de Eventos</h1>
+    <div id="resultado"></div>
+    
+    <h2>Eventos disponibles:</h2>
+    <select id="eventos">
+        <option value="">Cargando...</option>
+    </select>
+
+    <script>
+        const resultadoDiv = document.getElementById('resultado');
+        const selectEventos = document.getElementById('eventos');
+
+        async function probarEndpoint() {
+            try {
+                resultadoDiv.innerHTML = '<p>Cargando eventos...</p>';
+                
+                const response = await fetch('/php_admin/constancias_controller.php?action=get_eventos_filtro');
+                resultadoDiv.innerHTML += `<p>Status: ${response.status}</p>`;
+                
+                const text = await response.text();
+                resultadoDiv.innerHTML += `<p>Respuesta cruda: <pre>${text}</pre></p>`;
+                
+                const data = JSON.parse(text);
+                resultadoDiv.innerHTML += `<p>JSON parseado: <pre>${JSON.stringify(data, null, 2)}</pre></p>`;
+                
+                if (data.success && data.eventos) {
+                    selectEventos.innerHTML = '<option value="">-- Seleccione un evento --</option>';
+                    data.eventos.forEach(evento => {
+                        const option = document.createElement('option');
+                        option.value = evento.id_evento;
+                        option.textContent = `${evento.nombre_evento} (${evento.tipo_evento})`;
+                        selectEventos.appendChild(option);
+                    });
+                    resultadoDiv.innerHTML += `<p style="color:green;">✓ Eventos cargados correctamente: ${data.eventos.length}</p>`;
+                } else {
+                    resultadoDiv.innerHTML += `<p style="color:red;">✗ No hay eventos o error en la respuesta</p>`;
+                }
+            } catch (error) {
+                resultadoDiv.innerHTML += `<p style="color:red;">Error: ${error.message}</p>`;
+                console.error('Error completo:', error);
+            }
+        }
+
+        // Ejecutar al cargar la página
+        probarEndpoint();
+    </script>
+</body>
+</html>

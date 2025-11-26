@@ -1,6 +1,2 @@
-LD_LIBRARY_PATH=/opt/oracle/instantclient
-ORACLE_HOME=/opt/oracle/instantclient
-
 # Ejecutar script cada 5 minutos (y guardar log en carpeta visible)
-*/5 * * * * /usr/local/bin/php /var/www/html/php/cron_backup.php >> /var/www/html/php/logs/cron_activity.log 2>&1
-
+*/5 * * * * root LD_LIBRARY_PATH=/opt/oracle/instantclient ORACLE_HOME=/opt/oracle/instantclient /usr/local/bin/php /var/www/html/php/cron_backup.php >> /var/www/html/php/logs/cron_activity.log 2>&1

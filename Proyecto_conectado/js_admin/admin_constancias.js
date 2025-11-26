@@ -12,18 +12,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function cargarFiltroEventos() {
         try {
+            console.log('Cargando eventos para constancias...');
             const response = await fetch('../php_admin/constancias_controller.php?action=get_eventos_filtro');
-            const data = await response.json();
+            console.log('Response status:', response.status);
+            
+            const text = await response.text();
+            console.log('Response text:', text);
+            
+            const data = JSON.parse(text);
+            console.log('Datos parseados:', data);
+            
             if (data.success && data.eventos) {
+                console.log('Eventos encontrados:', data.eventos.length);
                 data.eventos.forEach(evento => {
                     const option = document.createElement('option');
                     option.value = evento.id_evento;
                     option.textContent = evento.nombre_evento;
                     filtroEventoSelect.appendChild(option);
+                    console.log('Evento agregado:', evento.nombre_evento);
                 });
+            } else {
+                console.warn('No hay eventos o la respuesta no fue exitosa:', data);
             }
         } catch (error) {
             console.error('Error cargando eventos:', error);
+            showAlert('Error cargando eventos: ' + error.message, 'error');
         }
     }
 

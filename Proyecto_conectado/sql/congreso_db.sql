@@ -52,7 +52,7 @@ CREATE TABLE `usuarios` (
   `semestre` int(2) DEFAULT NULL,
   `telefono` varchar(20) DEFAULT NULL,
   `rol` enum('alumno','profesor') NOT NULL DEFAULT 'alumno',
-  `codigo_qr` varchar(255) DEFAULT NULL,
+  `qr_code_data` varchar(255) DEFAULT NULL,
   `codigo_verificacion` varchar(6) DEFAULT NULL,
   `fecha_codigo` datetime DEFAULT NULL,
   `verificado` tinyint(1) NOT NULL DEFAULT 0,
@@ -142,7 +142,7 @@ CREATE TABLE `inscripciones` (
 --
 ALTER TABLE `administradores` ADD PRIMARY KEY (`id_admin`), ADD UNIQUE KEY `email` (`email`);
 ALTER TABLE `eventos` ADD PRIMARY KEY (`id_evento`);
-ALTER TABLE `usuarios` ADD PRIMARY KEY (`id_usuario`), ADD UNIQUE KEY `email` (`email`), ADD UNIQUE KEY `matricula` (`matricula`), ADD UNIQUE KEY `codigo_qr` (`codigo_qr`);
+ALTER TABLE `usuarios` ADD PRIMARY KEY (`id_usuario`), ADD UNIQUE KEY `email` (`email`), ADD UNIQUE KEY `matricula` (`matricula`), ADD UNIQUE KEY `qr_code_data` (`qr_code_data`);
 ALTER TABLE `asistencia` ADD PRIMARY KEY (`id_asistencia`), ADD KEY `id_usuario` (`id_usuario`), ADD KEY `id_evento` (`id_evento`);
 ALTER TABLE `constancias` ADD PRIMARY KEY (`id_constancia`), ADD UNIQUE KEY `numero_serie` (`numero_serie`), ADD KEY `fk_constancias_usuario` (`id_usuario`), ADD KEY `fk_constancias_evento` (`id_evento`);
 ALTER TABLE `justificaciones` ADD PRIMARY KEY (`id_justificacion`), ADD KEY `id_usuario` (`id_usuario`), ADD KEY `id_evento` (`id_evento`), ADD KEY `id_admin_revisor` (`id_admin_revisor`);

@@ -88,7 +88,7 @@ function guidv4($data = null) {
     $data[8] = chr(ord($data[8]) & 0x3f | 0x80);
     return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
 }
-$codigo_qr = guidv4();
+$qr_code_data = guidv4();
 
 try {
     // Insertar usuario con verificado = 0 (no verificado)
@@ -105,7 +105,7 @@ try {
         ($rol === 'alumno' ? $semestre : null),
         $telefono,
         $rol,
-        $codigo_qr,
+        $qr_code_data,
         $codigo_verificacion,
         $fecha_codigo
     ]);

@@ -40,7 +40,7 @@ CREATE TABLE usuarios (
     semestre NUMBER(2),
     telefono VARCHAR2(20),
     rol VARCHAR2(20) DEFAULT 'alumno' NOT NULL,
-    codigo_qr VARCHAR2(255),
+    qr_code_data VARCHAR2(255),
     codigo_verificacion VARCHAR2(6),
     fecha_codigo TIMESTAMP,
     verificado NUMBER(1) DEFAULT 0 NOT NULL,
@@ -53,7 +53,7 @@ CREATE TABLE usuarios (
 
     CONSTRAINT uk_usuarios_email UNIQUE (email),
     CONSTRAINT uk_usuarios_matricula UNIQUE (matricula),
-    CONSTRAINT uk_usuarios_qr UNIQUE (codigo_qr),
+    CONSTRAINT uk_usuarios_qr UNIQUE (qr_code_data),
     CONSTRAINT ck_usuarios_rol CHECK (rol IN ('alumno', 'profesor')),
     CONSTRAINT ck_usuarios_semestre CHECK (semestre BETWEEN 1 AND 12),
     CONSTRAINT ck_usuarios_verificado CHECK (verificado IN (0, 1)),
@@ -64,7 +64,7 @@ CREATE TABLE usuarios (
 
 COMMENT ON TABLE usuarios IS 'Tabla de usuarios del sistema (alumnos y profesores)';
 COMMENT ON COLUMN usuarios.id_usuario IS 'Identificador único del usuario';
-COMMENT ON COLUMN usuarios.codigo_qr IS 'Datos únicos para generar código QR del usuario';
+COMMENT ON COLUMN usuarios.qr_code_data IS 'Datos únicos para generar código QR del usuario';
 COMMENT ON COLUMN usuarios.telefono IS 'Número de teléfono en formato internacional (+52XXXXXXXXXX)';
 COMMENT ON COLUMN usuarios.codigo_verificacion IS 'Código de verificación de 6 dígitos';
 COMMENT ON COLUMN usuarios.verificado IS '0 = No verificado, 1 = Verificado';

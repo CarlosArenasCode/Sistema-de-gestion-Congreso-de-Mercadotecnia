@@ -2,26 +2,32 @@
 document.addEventListener('DOMContentLoaded', () => {
     const certificatesListDiv = document.getElementById('certificates-list');
 
-    function cargarConstancias() {
-        certificatesListDiv.innerHTML = '<p>Cargando tus constancias...</p>';
 
-        fetch('../php/constancias_usuario.php')
-            .then(response => {
+function cargarConstancias() {
+    certificatesListDiv.innerHTML = '<p>Cargando tus constancias...</p>';
+
+    fetch('../php/constancias_usuario.php')
+        .then(response => {
+            // Primero intentamos leer el JSON independientemente del status code
+            return response.json().then(data => {
                 if (!response.ok) {
-                    throw new Error('No se pudo obtener la información. Por favor, inicia sesión de nuevo.');
+                    // Si hay error (400, 500), lanzamos el mensaje del servidor
+                    throw new Error(data.error || 'Error del servidor: ' + response.status);
                 }
-                return response.json();
-            })
-            .then(data => {
-                if (data.error) {
-                    throw new Error(data.error);
-                }
-                renderConstancias(data);
-            })
-            .catch(error => {
-                certificatesListDiv.innerHTML = `<p class="error-message">${error.message}</p>`;
+                return data;
             });
-    }
+        })
+        .then(data => {
+            if (data.error) {
+                throw new Error(data.error);
+            }
+            renderConstancias(data);
+        })
+        .catch(error => {
+            console.error("Error en constancias:", error); // Para ver en consola
+            certificatesListDiv.innerHTML = `<p class="error-message">Error: ${error.message}</p>`;
+        });
+}
 
     function renderConstancias(constancias) {
         certificatesListDiv.innerHTML = '';

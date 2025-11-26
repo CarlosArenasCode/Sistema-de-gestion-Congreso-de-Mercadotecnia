@@ -1,7 +1,7 @@
 # Archivos de configuración y credenciales
 *.env
 .env.*
-php/conexion.php
+# php/conexion.php
 config/
 credentials/
 

@@ -1,5 +1,10 @@
 <?php
 // php_admin/constancias_controller.oracle.php
+
+// Desactivar warnings para evitar que rompan el JSON
+error_reporting(E_ERROR | E_PARSE);
+ini_set('display_errors', '0');
+
 require_once '../php/conexion.php';
 require_once '../php/oracle_helpers.php';
 require_once '../php/generar_constancia.php';

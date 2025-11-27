@@ -3,7 +3,7 @@
 
 ---
 
-**Institución:** Universidad Tecnológica de Aguascalientes  
+**Institución:** Universidad Autónoma de Aguascalientes  
 **Materia:** Base de Datos Avanzada  
 **Fecha de Entrega:** 26 de Noviembre de 2025  
 **Motor de BD:** Oracle Database 23ai Free  
@@ -26,27 +26,27 @@
 
 ### 🏢 INFORMACIÓN DE LA ORGANIZACIÓN
 
-**Razón Social:** Universidad Tecnológica de Aguascalientes  
+**Razón Social:** Universidad Autónoma de Aguascalientes  
 **Giro:** Educación Superior - Institución Pública  
 **Departamento Solicitante:** Coordinación Académica - División de Mercadotecnia  
 **Responsable del Proyecto:** Coordinador de Eventos Académicos  
 
 ### 📍 UBICACIÓN
 
-**Dirección:** Blvd. Juan Pablo II 1301, Fracc. Praderas de Jesús María  
-**Ciudad:** Jesús María, Aguascalientes  
-**C.P:** 20900  
-**Teléfono:** (449) 910-0100  
-**Sitio Web:** www.utags.edu.mx  
+**Dirección:** Av. Universidad No. 940, Ciudad Universitaria  
+**Ciudad:** Aguascalientes, Aguascalientes  
+**C.P:** 20131  
+**Teléfono:** (449) 910-7400  
+**Sitio Web:** www.uaa.mx  
 
 ### 👥 CONTACTOS CLAVE
 
 | Rol | Nombre | Cargo | Email |
 |-----|--------|-------|-------|
-| Solicitante Principal | Mtro. Carlos Arenas | Coordinador de Mercadotecnia | carlos.arenas@utags.edu.mx |
-| Usuario Final 1 | Personal Administrativo | Staff de Eventos | eventos@utags.edu.mx |
-| Usuario Final 2 | Alumnos | Participantes | alumnos@utags.edu.mx |
-| Usuario Final 3 | Profesores | Ponentes y Asistentes | profesores@utags.edu.mx |
+| Solicitante Principal | Mtro. Carlos Arenas | Coordinador de Mercadotecnia | carlos.arenas@edu.uaa.mx |
+| Usuario Final 1 | Personal Administrativo | Staff de Eventos | eventos@edu.uaa.mx |
+| Usuario Final 2 | Alumnos | Participantes | alumnos@edu.uaa.mx |
+| Usuario Final 3 | Profesores | Ponentes y Asistentes | profesores@edu.uaa.mx |
 
 ### 📊 DATOS ESTADÍSTICOS
 
@@ -62,7 +62,7 @@
 
 ### 🎯 PROBLEMÁTICA ACTUAL
 
-La Universidad Tecnológica de Aguascalientes organiza múltiples eventos académicos (congresos, talleres, conferencias) anualmente. El proceso actual de gestión presenta las siguientes **deficiencias críticas**:
+La Universidad Autónoma de Aguascalientes organiza múltiples eventos académicos (congresos, talleres, conferencias) anualmente. El proceso actual de gestión presenta las siguientes **deficiencias críticas**:
 
 #### **Problemas Identificados:**
 

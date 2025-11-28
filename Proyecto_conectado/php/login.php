@@ -34,9 +34,9 @@ if (empty($matricula) || empty($password)) {
 }
 
 try {
-    // Primero intentar login como usuario (matrícula)
-    $consulta = $pdo->prepare("SELECT * FROM usuarios WHERE matricula = :matricula");
-    $consulta->execute([':matricula' => $matricula]);
+    // Intentar login como usuario (matrícula O email)
+    $consulta = $pdo->prepare("SELECT * FROM USUARIOS WHERE MATRICULA = :identifier OR EMAIL = :identifier");
+    $consulta->execute([':identifier' => $matricula]);
     $usuario = $consulta->fetch(PDO::FETCH_ASSOC);
 
     if ($usuario && password_verify($password, $usuario['password_hash'])) {
@@ -121,7 +121,7 @@ try {
     // Si no se encontró en ninguna tabla
     echo json_encode([
         'success' => false,
-        'message' => 'Matrícula o contraseña incorrectos.'
+        'message' => 'Email/Matrícula o contraseña incorrectos.'
     ]);
 
 

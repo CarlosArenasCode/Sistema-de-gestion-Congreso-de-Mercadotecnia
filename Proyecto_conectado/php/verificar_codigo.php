@@ -20,11 +20,21 @@ try {
         $codigo .= $_POST['digit' . $i] ?? '';
     }
 
+    // Log para debugging
+    error_log("Verificación - Email recibido: " . ($email ?: 'VACÍO'));
+    error_log("Verificación - Código recibido: " . ($codigo ?: 'VACÍO'));
+    error_log("Verificación - POST data: " . json_encode($_POST));
+
     // Validaciones básicas
     if (empty($email) || empty($codigo)) {
         echo json_encode([
             'success' => false,
-            'message' => 'Email y código son requeridos'
+            'message' => 'Email y código son requeridos',
+            'debug' => [
+                'email_received' => !empty($email),
+                'codigo_received' => !empty($codigo),
+                'codigo_length' => strlen($codigo)
+            ]
         ]);
         exit;
     }

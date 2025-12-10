@@ -79,7 +79,8 @@ $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
 // Generar código de verificación de 6 dígitos
 $codigo_verificacion = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
-$fecha_codigo = date('Y-m-d H:i:s');
+// Oracle: no necesitamos fecha_codigo, usaremos SYSTIMESTAMP directamente
+// $fecha_codigo = date('Y-m-d H:i:s');
 
 function guidv4($data = null) {
     $data = $data ?? random_bytes(16);
@@ -115,7 +116,7 @@ try {
     
         // Insertar usuario con verificado = 0 (no verificado) y acepta_tyc = 1 (aceptado en registro)
         $sql = "INSERT INTO usuarios (nombre_completo, email, password_hash, matricula, semestre, telefono, rol, qr_code_data, codigo_verificacion, fecha_codigo, verificado, acepta_tyc, fecha_aceptacion)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 1, SYSTIMESTAMP)";
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, SYSTIMESTAMP, 0, 1, SYSTIMESTAMP)";
 
     $stmt = $pdo->prepare($sql);
 
@@ -128,8 +129,7 @@ try {
         $telefono,
         $rol,
         $qr_code_data,
-        $codigo_verificacion,
-        $fecha_codigo
+        $codigo_verificacion
     ]);
 
     // Oracle: Obtener el último ID insertado usando helper

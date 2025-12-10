@@ -1,8 +1,13 @@
 <?php
 // php/generar_constancia.php - Versión Oracle
+
+// Desactivar warnings de deprecación
+error_reporting(E_ERROR | E_PARSE);
+
 require_once 'conexion.php';
 require_once 'oracle_helpers.php';
 require_once 'fpdf/fpdf.php';
+require_once 'phpqrcode/qrlib.php';
 
 // if (!isset($_SESSION['id_admin'])) {
 //     http_response_code(403);
@@ -16,7 +21,12 @@ function generarConstancia($id_usuario, $id_evento) {
     // Oracle: TO_CHAR para convertir DATE a string
     $stmt = $pdo->prepare("
         SELECT 
-            u.nombre_completo, 
+            u.id_usuario,
+            u.matricula,
+            u.nombre_completo,
+            u.email,
+            u.codigo_qr,
+            e.id_evento,
             e.nombre_evento, 
             e.ponente, 
             TO_CHAR(e.fecha_inicio, 'YYYY-MM-DD') as fecha_inicio 
@@ -31,7 +41,51 @@ function generarConstancia($id_usuario, $id_evento) {
         throw new Exception("No se encontraron datos para generar la constancia.");
     }
 
-    // 2. Crear el PDF
+    // Convertir CLOBs a strings si es necesario
+    foreach (['nombre_completo', 'matricula', 'email', 'nombre_evento', 'ponente', 'codigo_qr'] as $field) {
+        if (isset($datos[$field]) && is_resource($datos[$field])) {
+            $datos[$field] = stream_get_contents($datos[$field]);
+        }
+    }
+    
+    // Generar código QR si no existe
+    if (empty($datos['codigo_qr'])) {
+        $datos['codigo_qr'] = 'QR-' . $datos['matricula'] . '-' . date('YmdHis') . rand(1000, 9999);
+        // Actualizar en la base de datos
+        $updateQR = $pdo->prepare("UPDATE usuarios SET codigo_qr = :codigo_qr WHERE id_usuario = :id_usuario");
+        $updateQR->execute([
+            ':codigo_qr' => $datos['codigo_qr'],
+            ':id_usuario' => $id_usuario
+        ]);
+    }
+
+    // 2. Generar datos para el QR Code
+    $qr_data = json_encode([
+        'tipo' => 'CONSTANCIA',
+        'id_usuario' => $datos['id_usuario'],
+        'matricula' => $datos['matricula'],
+        'nombre' => $datos['nombre_completo'],
+        'email' => $datos['email'],
+        'evento_id' => $datos['id_evento'],
+        'evento' => $datos['nombre_evento'],
+        'fecha_evento' => $datos['fecha_inicio'],
+        'codigo_qr_usuario' => $datos['codigo_qr'],
+        'fecha_emision' => date('Y-m-d H:i:s'),
+        'verificacion' => hash('sha256', $datos['id_usuario'] . $datos['id_evento'] . date('Ymd'))
+    ], JSON_UNESCAPED_UNICODE);
+
+    // Generar imagen QR temporal
+    $temp_qr_dir = __DIR__ . '/../temp_qr/';
+    if (!is_dir($temp_qr_dir)) {
+        mkdir($temp_qr_dir, 0777, true);
+    }
+    $qr_filename = 'qr_constancia_' . $id_usuario . '_' . $id_evento . '_' . time() . '.png';
+    $qr_filepath = $temp_qr_dir . $qr_filename;
+    
+    // Generar QR usando phpqrcode
+    QRcode::png($qr_data, $qr_filepath, QR_ECLEVEL_L, 5, 2);
+
+    // 3. Crear el PDF
     $pdf = new FPDF('L', 'mm', 'A4'); // L = Landscape (Horizontal)
     $pdf->AddPage();
     $pdf->SetFont('Arial', 'B', 16);
@@ -46,6 +100,11 @@ function generarConstancia($id_usuario, $id_evento) {
 
     $pdf->SetFont('Arial', 'B', 20);
     $pdf->Cell(0, 15, utf8_decode($datos['nombre_completo']), 0, 1, 'C');
+    $pdf->Ln(5);
+    
+    // Matrícula
+    $pdf->SetFont('Arial', '', 10);
+    $pdf->Cell(0, 5, utf8_decode("Matrícula: " . $datos['matricula']), 0, 1, 'C');
     $pdf->Ln(10);
 
     $pdf->SetFont('Arial', '', 12);
@@ -55,8 +114,35 @@ function generarConstancia($id_usuario, $id_evento) {
     setlocale(LC_TIME, 'es_ES.UTF-8', 'Spanish_Spain', 'Spanish');
     $fecha_formateada = strftime("%d de %B de %Y", strtotime($datos['fecha_inicio']));
     $pdf->Cell(0, 10, utf8_decode("Realizado el " . $fecha_formateada . "."), 0, 1, 'C');
-    $pdf->Ln(20);
+    $pdf->Ln(10);
     
+    // Agregar código QR
+    if (file_exists($qr_filepath)) {
+        // Posicionar QR en la esquina inferior derecha
+        $pdf->Image($qr_filepath, 230, 165, 50, 50, 'PNG');
+        
+        // Texto explicativo del QR
+        $pdf->SetXY(225, 217);
+        $pdf->SetFont('Arial', 'B', 8);
+        $pdf->MultiCell(60, 3, utf8_decode("Código QR de Verificación"), 0, 'C');
+        
+        // Mostrar código QR del usuario como texto
+        $pdf->SetXY(225, 222);
+        $pdf->SetFont('Arial', '', 6);
+        $codigo_corto = substr($datos['codigo_qr'], 0, 30) . '...';
+        $pdf->MultiCell(60, 3, utf8_decode($codigo_corto), 0, 'C');
+    }
+    
+    // Agregar nombre completo en la parte inferior izquierda
+    $pdf->SetXY(10, 217);
+    $pdf->SetFont('Arial', '', 8);
+    $pdf->Cell(100, 4, utf8_decode("Otorgado a: " . $datos['nombre_completo']), 0, 0, 'L');
+    $pdf->SetXY(10, 222);
+    $pdf->Cell(100, 4, utf8_decode("Matrícula: " . $datos['matricula']), 0, 0, 'L');
+    
+    // Firma
+    $pdf->SetY(180);
+    $pdf->SetFont('Arial', '', 12);
     $pdf->Cell(0, 10, '_________________________', 0, 1, 'C');
     $pdf->Cell(0, 5, 'Rector de la Universidad', 0, 1, 'C');
     
@@ -70,6 +156,11 @@ function generarConstancia($id_usuario, $id_evento) {
     $ruta_completa = $directorio . $nombre_archivo;
     
     $pdf->Output('F', $ruta_completa);
+    
+    // Limpiar archivo QR temporal
+    if (file_exists($qr_filepath)) {
+        unlink($qr_filepath);
+    }
 
     // 4. Guardar en la base de datos
     $stmt_check = $pdo->prepare("SELECT id_constancia FROM constancias WHERE id_usuario = :id_usuario AND id_evento = :id_evento");

@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎓 Prueba - Validación de Alumnos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 800px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2rem;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .quick-tests {
+            margin-bottom: 25px;
+        }
+
+        .quick-tests h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+
+        .test-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .test-btn {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+            text-align: left;
+        }
+
+        .test-btn:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .test-btn.success {
+            border-color: #4caf50;
+        }
+
+        .test-btn.warning {
+            border-color: #ff9800;
+        }
+
+        .test-btn.error {
+            border-color: #f44336;
+        }
+
+        .test-btn strong {
+            display: block;
+            margin-bottom: 4px;
+            color: #333;
+        }
+
+        .test-btn small {
+            color: #666;
+            font-size: 0.8rem;
+        }
+
+        #result {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        #result.success {
+            background: #e8f5e9;
+            border: 2px solid #4caf50;
+            display: block;
+        }
+
+        #result.error {
+            background: #ffebee;
+            border: 2px solid #f44336;
+            display: block;
+        }
+
+        #result.warning {
+            background: #fff3e0;
+            border: 2px solid #ff9800;
+            display: block;
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .result-icon {
+            font-size: 2rem;
+        }
+
+        .result-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .result-message {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .result-data {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .result-data table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .result-data td {
+            padding: 8px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .result-data td:first-child {
+            font-weight: 600;
+            color: #666;
+            width: 180px;
+        }
+
+        .result-data tr:last-child td {
+            border-bottom: none;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #667eea;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        pre {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 0.85rem;
+            margin-top: 10px;
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            font-size: 0.9rem;
+        }
+
+        .info-box strong {
+            display: block;
+            margin-bottom: 8px;
+            color: #1976d2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎓 Prueba de Validación de Alumnos</h1>
+        <p class="subtitle">Sistema de validación contra base de datos universitaria</p>
+
+        <div class="info-box">
+            <strong>💡 Acerca de este sistema:</strong>
+            Este endpoint valida que la matrícula del alumno existe en la base de datos del sistema y que su cuenta está verificada antes de permitir inscripciones a eventos.
+        </div>
+
+        <div class="quick-tests">
+            <h3>🧪 Pruebas Rápidas:</h3>
+            <div class="test-buttons">
+                <button class="test-btn success" onclick="testMatricula('AL1234567')">
+                    <strong>✓ Usuario Actual</strong>
+                    <small>AL1234567 (VERIFICADO)</small>
+                </button>
+                <button class="test-btn success" onclick="testMatricula('2024001')">
+                    <strong>✓ María López</strong>
+                    <small>2024001 (VERIFICADO)</small>
+                </button>
+                <button class="test-btn warning" onclick="testMatricula('2024002')">
+                    <strong>⚠ Carlos Ramírez</strong>
+                    <small>2024002 (NO VERIFICADO)</small>
+                </button>
+                <button class="test-btn success" onclick="testMatricula('2024003')">
+                    <strong>✓ Ana Martínez</strong>
+                    <small>2024003 (VERIFICADO)</small>
+                </button>
+                <button class="test-btn success" onclick="testMatricula('PROF001')">
+                    <strong>✓ Dr. González</strong>
+                    <small>PROF001 (PROFESOR)</small>
+                </button>
+                <button class="test-btn error" onclick="testMatricula('9999999')">
+                    <strong>✗ No Existe</strong>
+                    <small>9999999 (Inválida)</small>
+                </button>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="matricula">🔍 O ingresa una matrícula manualmente:</label>
+            <input type="text" id="matricula" placeholder="Ej: AL1234567 o 2024001" maxlength="50">
+        </div>
+
+        <div class="btn-group">
+            <button class="btn-primary" onclick="validarAlumno()">
+                🚀 Validar Matrícula
+            </button>
+            <button class="btn-secondary" onclick="limpiar()">
+                🔄 Limpiar
+            </button>
+        </div>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const resultDiv = document.getElementById('result');
+        const matriculaInput = document.getElementById('matricula');
+
+        // Permitir Enter para validar
+        matriculaInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                validarAlumno();
+            }
+        });
+
+        function testMatricula(matricula) {
+            matriculaInput.value = matricula;
+            validarAlumno();
+        }
+
+        async function validarAlumno() {
+            const matricula = matriculaInput.value.trim();
+
+            // Mostrar loading
+            resultDiv.className = '';
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p style="margin-top: 15px;">Validando matrícula...</p>
+                </div>
+            `;
+
+            try {
+                const response = await fetch(`../php/validar_alumno_universidad.php?matricula=${encodeURIComponent(matricula)}`);
+                const data = await response.json();
+
+                mostrarResultado(data, response.status);
+            } catch (error) {
+                resultDiv.className = 'error';
+                resultDiv.innerHTML = `
+                    <div class="result-header">
+                        <span class="result-icon">❌</span>
+                        <span class="result-title">Error de Conexión</span>
+                    </div>
+                    <div class="result-message">
+                        No se pudo conectar con el servidor. Verifica que el servicio esté corriendo.
+                    </div>
+                    <pre>${error.message}</pre>
+                `;
+            }
+        }
+
+        function mostrarResultado(data, statusCode) {
+            let resultClass = '';
+            let icon = '';
+
+            if (data.success && data.valid) {
+                resultClass = 'success';
+                icon = '✅';
+            } else if (data.error_code === 'ALUMNO_NO_ACTIVO') {
+                resultClass = 'warning';
+                icon = '⚠️';
+            } else {
+                resultClass = 'error';
+                icon = '❌';
+            }
+
+            resultDiv.className = resultClass;
+
+            let html = `
+                <div class="result-header">
+                    <span class="result-icon">${icon}</span>
+                    <span class="result-title">${data.message}</span>
+                </div>
+                <div class="result-message">
+                    <strong>Status HTTP:</strong> ${statusCode}<br>
+                    <strong>Código de Error:</strong> ${data.error_code || 'N/A'}
+                </div>
+            `;
+
+            if (data.data) {
+                html += `
+                    <div class="result-data">
+                        <strong>📋 Datos del Alumno:</strong>
+                        <table>
+                            <tr>
+                                <td>Matrícula:</td>
+                                <td>${data.data.matricula || '-'}</td>
+                            </tr>
+                            <tr>
+                                <td>Nombre Completo:</td>
+                                <td>${data.data.nombre_completo || '-'}</td>
+                            </tr>
+                            <tr>
+                                <td>Email:</td>
+                                <td>${data.data.email || '-'}</td>
+                            </tr>
+                            <tr>
+                                <td>Rol:</td>
+                                <td>${data.data.rol || '-'}</td>
+                            </tr>
+                            <tr>
+                                <td>Semestre:</td>
+                                <td>${data.data.semestre || '-'}</td>
+                            </tr>
+                            <tr>
+                                <td>Verificado:</td>
+                                <td><strong>${data.data.verificado == 1 ? '✅ SÍ' : '❌ NO'}</strong></td>
+                            </tr>
+                            <tr>
+                                <td>Fecha de Registro:</td>
+                                <td>${data.data.fecha_registro || '-'}</td>
+                            </tr>
+                        </table>
+                    </div>
+                `;
+            }
+
+            html += `
+                <details style="margin-top: 15px;">
+                    <summary style="cursor: pointer; font-weight: 600; margin-bottom: 10px;">
+                        🔧 Ver respuesta JSON completa
+                    </summary>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                </details>
+            `;
+
+            resultDiv.innerHTML = html;
+        }
+
+        function limpiar() {
+            matriculaInput.value = '';
+            resultDiv.style.display = 'none';
+            resultDiv.className = '';
+            resultDiv.innerHTML = '';
+        }
+    </script>
+</body>
+</html>

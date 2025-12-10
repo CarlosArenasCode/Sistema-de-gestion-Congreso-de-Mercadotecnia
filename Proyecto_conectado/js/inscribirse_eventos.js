@@ -148,7 +148,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const result = await response.json();
 
             if (!response.ok) {
-                alert(`Error: ${result.error || 'Ocurrió un problema.'}`);
+                // Manejar caso especial: cupo lleno con eventos alternativos
+                if (response.status === 409 && result.error_code === 'CUPO_LLENO' && result.tiene_alternativas) {
+                    mostrarEventosAlternativos(result);
+                    return;
+                }
+                
+                alert(`Error: ${result.message || result.error || 'Ocurrió un problema.'}`);
                 if (response.status === 401) window.location.href = 'login.html';
                 return;
             }
@@ -163,6 +169,151 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error(`Error en ${actionType}:`, error);
             alert(`No se pudo ${actionType === 'inscribir' ? 'inscribir' : 'cancelar la inscripción'}. Intente más tarde.`);
         }
+    }
+
+    function mostrarEventosAlternativos(data) {
+        const eventos = data.eventos_alternativos || [];
+        
+        if (eventos.length === 0) {
+            alert('Lo sentimos, el evento está lleno y no hay eventos alternativos disponibles en este momento.');
+            return;
+        }
+
+        // Crear modal con eventos alternativos
+        let mensaje = `🚫 El evento está lleno.\n\n✨ Tenemos ${eventos.length} evento(s) alternativo(s) disponible(s):\n\n`;
+        
+        eventos.forEach((evento, index) => {
+            const cupos = evento.cupos_disponibles || (evento.cupo_maximo - evento.cupo_actual);
+            const fecha = new Date(evento.fecha_inicio + 'T00:00:00').toLocaleDateString('es-ES', { 
+                day: '2-digit', month: 'short', year: 'numeric' 
+            });
+            
+            mensaje += `${index + 1}. ${evento.nombre_evento}\n`;
+            mensaje += `   📅 ${fecha} a las ${evento.hora_inicio}\n`;
+            mensaje += `   📍 ${evento.lugar || 'Por definir'}\n`;
+            mensaje += `   👥 Cupos: ${cupos} disponibles\n`;
+            if (evento.ponente) {
+                mensaje += `   🎤 ${evento.ponente}\n`;
+            }
+            mensaje += `\n`;
+        });
+
+        // Mostrar modal HTML personalizado
+        mostrarModalAlternativas(data.message, eventos);
+    }
+
+    function mostrarModalAlternativas(mensaje, eventos) {
+        // Crear overlay
+        const overlay = document.createElement('div');
+        overlay.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        `;
+
+        // Crear modal
+        const modal = document.createElement('div');
+        modal.style.cssText = `
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        `;
+
+        let contenidoHTML = `
+            <h2 style="color: #d9534f; margin-bottom: 10px;">🚫 Evento Lleno</h2>
+            <p style="margin-bottom: 20px;">${mensaje}</p>
+            <h3 style="color: #333; margin-bottom: 15px;">✨ Eventos Alternativos Disponibles:</h3>
+        `;
+
+        eventos.forEach((evento, index) => {
+            const cupos = evento.cupos_disponibles || (evento.cupo_maximo - evento.cupo_actual);
+            const fecha = new Date(evento.fecha_inicio + 'T00:00:00').toLocaleDateString('es-ES', { 
+                weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' 
+            });
+            
+            contenidoHTML += `
+                <div style="
+                    border: 1px solid #ddd;
+                    padding: 15px;
+                    margin-bottom: 15px;
+                    border-radius: 8px;
+                    background: #f9f9f9;
+                ">
+                    <h4 style="margin: 0 0 10px 0; color: #0056b3;">${evento.nombre_evento}</h4>
+                    <p style="margin: 5px 0;"><strong>📅 Fecha:</strong> ${fecha}</p>
+                    <p style="margin: 5px 0;"><strong>🕐 Hora:</strong> ${evento.hora_inicio}</p>
+                    <p style="margin: 5px 0;"><strong>📍 Lugar:</strong> ${evento.lugar || 'Por definir'}</p>
+                    ${evento.ponente ? `<p style="margin: 5px 0;"><strong>🎤 Ponente:</strong> ${evento.ponente}</p>` : ''}
+                    <p style="margin: 5px 0;"><strong>👥 Cupos disponibles:</strong> ${cupos} de ${evento.cupo_maximo}</p>
+                    <button 
+                        onclick="inscribirseEvento(${evento.id_evento})"
+                        style="
+                            margin-top: 10px;
+                            padding: 10px 20px;
+                            background: #28a745;
+                            color: white;
+                            border: none;
+                            border-radius: 5px;
+                            cursor: pointer;
+                            font-weight: bold;
+                        "
+                        onmouseover="this.style.background='#218838'"
+                        onmouseout="this.style.background='#28a745'"
+                    >
+                        ✅ Inscribirse a este evento
+                    </button>
+                </div>
+            `;
+        });
+
+        contenidoHTML += `
+            <button 
+                onclick="cerrarModal()"
+                style="
+                    margin-top: 20px;
+                    padding: 10px 30px;
+                    background: #6c757d;
+                    color: white;
+                    border: none;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    width: 100%;
+                "
+                onmouseover="this.style.background='#5a6268'"
+                onmouseout="this.style.background='#6c757d'"
+            >
+                Cerrar
+            </button>
+        `;
+
+        modal.innerHTML = contenidoHTML;
+        overlay.appendChild(modal);
+        document.body.appendChild(overlay);
+
+        // Funciones globales para los botones
+        window.cerrarModal = function() {
+            document.body.removeChild(overlay);
+            delete window.cerrarModal;
+            delete window.inscribirseEvento;
+        };
+
+        window.inscribirseEvento = function(eventoId) {
+            document.body.removeChild(overlay);
+            delete window.cerrarModal;
+            delete window.inscribirseEvento;
+            handleInscriptionAction(eventoId, 'inscribir');
+        };
     }
 
     loadEventsAndPopulateFilter();

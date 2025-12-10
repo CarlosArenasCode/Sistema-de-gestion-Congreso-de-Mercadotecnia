@@ -25,7 +25,7 @@ try {
     $datosJson = json_encode($usuarios, JSON_PRETTY_PRINT);     
     file_put_contents($archivoSalida, $datosJson);
 
-    // 3. Registrar en el LOG 
+    // 3. Registrar en el LOG   
     $count = count($usuarios);
     $mensaje = "[$fecha] BACKUP ÉXITO: Se guardaron $count usuarios en $archivoSalida\n";
     

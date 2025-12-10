@@ -35,6 +35,10 @@ oracle/migration/
 # Logs de PHP
 *.log
 
+# Backups automáticos de usuarios
+Proyecto_conectado/php/backups/*.json
+respaldo_usuarios_*.json
+
 # Archivos de sistema
 .DS_Store
 Thumbs.db

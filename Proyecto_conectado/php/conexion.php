@@ -24,8 +24,13 @@ header('Content-Type: text/html; charset=UTF-8');
 // CONFIGURACIÓN DE CONEXIÓN ORACLE
 // =====================================================
 
+// Detectar si estamos dentro de Docker o en XAMPP local
+// Si existe la variable DOCKER_CONTAINER, estamos en Docker
+$is_docker = getenv('DOCKER_CONTAINER') !== false;
+
 // Obtener configuración desde variables de entorno o usar valores por defecto
-$oracle_host = getenv('ORACLE_HOST') ?: 'oracle_db';
+// Si estamos en XAMPP (fuera de Docker), usar localhost para conectar a Oracle
+$oracle_host = getenv('ORACLE_HOST') ?: ($is_docker ? 'oracle_db' : 'localhost');
 $oracle_port = getenv('ORACLE_PORT') ?: '1521';
 $oracle_service = getenv('ORACLE_SERVICE') ?: 'FREEPDB1';
 $oracle_user = 'congreso_user';     

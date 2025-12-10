@@ -1,4 +1,7 @@
 <?php
+// Configurar headers para JSON PRIMERO
+header('Content-Type: application/json');
+
 // Configurar sesión antes de iniciarla
 ini_set('session.cookie_samesite', 'Lax');
 ini_set('session.cookie_httponly', '1');
@@ -7,10 +10,17 @@ ini_set('session.cookie_lifetime', '0'); // Expira al cerrar navegador
 ini_set('session.gc_maxlifetime', '3600'); // 1 hora
 
 session_start();
-require 'conexion.php';
 
-// Configurar headers para JSON
-header('Content-Type: application/json');
+// Intentar conectar y manejar errores
+try {
+    require 'conexion.php';
+} catch (Exception $e) {
+    echo json_encode([
+        'success' => false,
+        'message' => 'Error de conexión a la base de datos. Intenta nuevamente.'
+    ]);
+    exit;
+}
 
 $matricula = $_POST['university_id'] ?? '';
 $password = $_POST['password'] ?? '';
@@ -24,9 +34,9 @@ if (empty($matricula) || empty($password)) {
 }
 
 try {
-    // Primero intentar login como usuario (matrícula)
-    $consulta = $pdo->prepare("SELECT * FROM usuarios WHERE matricula = :matricula");
-    $consulta->execute([':matricula' => $matricula]);
+    // Intentar login como usuario (matrícula O email)
+    $consulta = $pdo->prepare("SELECT * FROM USUARIOS WHERE MATRICULA = :identifier OR EMAIL = :identifier");
+    $consulta->execute([':identifier' => $matricula]);
     $usuario = $consulta->fetch(PDO::FETCH_ASSOC);
 
     if ($usuario && password_verify($password, $usuario['password_hash'])) {
@@ -111,7 +121,7 @@ try {
     // Si no se encontró en ninguna tabla
     echo json_encode([
         'success' => false,
-        'message' => 'Matrícula o contraseña incorrectos.'
+        'message' => 'Email/Matrícula o contraseña incorrectos.'
     ]);
 
 

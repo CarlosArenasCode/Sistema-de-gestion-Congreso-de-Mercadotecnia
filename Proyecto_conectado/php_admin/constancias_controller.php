@@ -1,5 +1,10 @@
 <?php
 // php_admin/constancias_controller.oracle.php
+
+// Desactivar warnings para evitar que rompan el JSON
+error_reporting(E_ERROR | E_PARSE);
+ini_set('display_errors', '0');
+
 require_once '../php/conexion.php';
 require_once '../php/oracle_helpers.php';
 require_once '../php/generar_constancia.php';
@@ -31,8 +36,28 @@ switch ($action) {
 
 function getEventosFiltro() {
     global $pdo;
-    $stmt = $pdo->query("SELECT id_evento, nombre_evento FROM eventos ORDER BY nombre_evento");
-    echo json_encode(['success' => true, 'eventos' => $stmt->fetchAll(PDO::FETCH_ASSOC)]);
+    try {
+        // Solo mostrar eventos que generan constancias
+        $stmt = $pdo->query("SELECT id_evento, nombre_evento, tipo_evento, 
+                             TO_CHAR(fecha_inicio, 'YYYY-MM-DD') as fecha_inicio 
+                             FROM eventos 
+                             WHERE genera_constancia = 1 
+                             ORDER BY fecha_inicio DESC, nombre_evento");
+        $eventos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        // Convertir CLOBs si es necesario
+        foreach ($eventos as &$evento) {
+            if (isset($evento['nombre_evento']) && is_resource($evento['nombre_evento'])) {
+                $evento['nombre_evento'] = stream_get_contents($evento['nombre_evento']);
+            }
+        }
+        
+        echo json_encode(['success' => true, 'eventos' => $eventos]);
+    } catch (Exception $e) {
+        http_response_code(500);
+        error_log("Error en getEventosFiltro: " . $e->getMessage());
+        echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+    }
 }
 
 // --- FUNCIÓN getElegibles() MIGRADA A ORACLE ---
@@ -54,17 +79,11 @@ function getElegibles() {
             throw new Exception("Evento no encontrado.");
         }
 
-        if ($evento_info['tipo_evento'] == 'taller') {
-            $sql_users = "SELECT u.id_usuario, u.nombre_completo 
-                         FROM usuarios u 
-                         JOIN inscripciones i ON u.id_usuario = i.id_usuario 
-                         WHERE i.id_evento = ? AND i.estado = 'Inscrito'";
-        } else {
-            $sql_users = "SELECT DISTINCT u.id_usuario, u.nombre_completo 
-                         FROM usuarios u 
-                         JOIN asistencia a ON u.id_usuario = a.id_usuario 
-                         WHERE a.id_evento = ?";
-        }
+        // Siempre buscar desde inscripciones
+        $sql_users = "SELECT u.id_usuario, u.nombre_completo 
+                     FROM usuarios u 
+                     JOIN inscripciones i ON u.id_usuario = i.id_usuario 
+                     WHERE i.id_evento = ? AND i.estado = 'Inscrito'";
         $stmt_users = $pdo->prepare($sql_users);
         $stmt_users->execute([$id_evento_filtro]);
         $usuarios_base = $stmt_users->fetchAll(PDO::FETCH_ASSOC);
@@ -77,25 +96,16 @@ function getElegibles() {
         $user_ids = array_column($usuarios_base, 'id_usuario');
         $placeholders = implode(',', array_fill(0, count($user_ids), '?'));
         
-        // Oracle: Convertir INTERVAL a segundos usando EXTRACT
-        // INTERVAL DAY TO SECOND se convierte: días*86400 + horas*3600 + minutos*60 + segundos
+        // Nota: La tabla asistencias actual NO tiene hora_entrada/hora_salida/duracion
+        // Solo verificamos si existe registro de asistencia
         $sql_details = "
             SELECT
                 u.id_usuario,
-                COALESCE(SUM(CASE WHEN a.hora_salida IS NOT NULL THEN 1 ELSE 0 END), 0) as asistencia_completa_count,
-                COALESCE(
-                    SUM(
-                        EXTRACT(DAY FROM a.duracion) * 86400 +
-                        EXTRACT(HOUR FROM a.duracion) * 3600 +
-                        EXTRACT(MINUTE FROM a.duracion) * 60 +
-                        EXTRACT(SECOND FROM a.duracion)
-                    ), 
-                    0
-                ) as duracion_total_seg,
+                CASE WHEN MAX(a.id_asistencia) IS NOT NULL THEN 1 ELSE 0 END as asistencia_completa_count,
                 CASE WHEN MAX(c.id_constancia) IS NOT NULL THEN 1 ELSE 0 END as emitida,
                 MAX(c.ruta_archivo_pdf) as ruta_archivo_pdf
             FROM usuarios u
-            LEFT JOIN asistencia a ON u.id_usuario = a.id_usuario AND a.id_evento = ?
+            LEFT JOIN asistencias a ON u.id_usuario = a.id_usuario AND a.id_evento = ?
             LEFT JOIN constancias c ON u.id_usuario = c.id_usuario AND c.id_evento = ?
             WHERE u.id_usuario IN ($placeholders)
             GROUP BY u.id_usuario
@@ -113,17 +123,12 @@ function getElegibles() {
         foreach ($usuarios_base as $usuario) {
             $details = $details_map[$usuario['id_usuario']] ?? [
                 'asistencia_completa_count' => 0, 
-                'duracion_total_seg' => 0, 
                 'emitida' => 0, 
                 'ruta_archivo_pdf' => null
             ];
 
-            $usuario['elegible'] = false;
-            if ($evento_info['tipo_evento'] == 'conferencia' && $details['asistencia_completa_count'] > 0) {
-                $usuario['elegible'] = true;
-            } elseif ($evento_info['tipo_evento'] == 'taller' && $details['duracion_total_seg'] >= ($evento_info['horas_para_constancia'] * 3600)) {
-                $usuario['elegible'] = true;
-            }
+            // Con la estructura actual de asistencias, simplemente si asistió (tiene registro), es elegible
+            $usuario['elegible'] = ($details['asistencia_completa_count'] > 0);
 
             // Oracle devuelve 1/0 en lugar de booleano, convertir a bool
             $usuario['emitida'] = (bool)$details['emitida'];

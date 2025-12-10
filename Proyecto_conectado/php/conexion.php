@@ -17,8 +17,8 @@ ini_set('default_charset', 'UTF-8');
 mb_internal_encoding('UTF-8');
 mb_http_output('UTF-8');
 
-// Asegurar que todas las salidas usen UTF-8
-header('Content-Type: text/html; charset=UTF-8');
+// NO configurar header aquí - se configura en cada endpoint según sea necesario
+// header('Content-Type: text/html; charset=UTF-8');
 
 // =====================================================
 // CONFIGURACIÓN DE CONEXIÓN ORACLE
@@ -85,6 +85,26 @@ try {
 } catch (PDOException $e) {
     // En caso de error, registrar y mostrar mensaje apropiado
     error_log('Error de conexión a Oracle: ' . $e->getMessage());
+    
+    // Verificar si estamos en un contexto JSON
+    $isJsonRequest = false;
+    if (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false) {
+        $isJsonRequest = true;
+    }
+    if (isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false) {
+        $isJsonRequest = true;
+    }
+    
+    // Si es una petición AJAX o que espera JSON, devolver JSON
+    if ($isJsonRequest || (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest')) {
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => false,
+            'message' => 'Error de conexión a la base de datos',
+            'error' => getenv('APP_ENV') === 'production' ? null : $e->getMessage()
+        ]);
+        exit;
+    }
     
     // En producción, no mostrar detalles técnicos
     if (getenv('APP_ENV') === 'production') {

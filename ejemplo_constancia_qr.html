@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejemplo de Constancia con QR</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .constancia {
+            background: white;
+            padding: 60px;
+            border: 2px solid #333;
+            position: relative;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+        }
+        .content {
+            text-align: center;
+            margin: 40px 0;
+        }
+        .nombre {
+            font-size: 32px;
+            font-weight: bold;
+            margin: 30px 0;
+            color: #0066cc;
+        }
+        .matricula {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .evento {
+            margin: 30px 0;
+            line-height: 1.6;
+        }
+        .firma {
+            margin-top: 80px;
+            text-align: center;
+        }
+        .firma-linea {
+            width: 200px;
+            margin: 0 auto 10px;
+            border-top: 2px solid #000;
+        }
+        .qr-container {
+            position: absolute;
+            bottom: 60px;
+            right: 60px;
+            text-align: center;
+        }
+        .qr-box {
+            width: 120px;
+            height: 120px;
+            border: 2px solid #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            background: linear-gradient(45deg, #f0f0f0 25%, transparent 25%, transparent 75%, #f0f0f0 75%, #f0f0f0),
+                        linear-gradient(45deg, #f0f0f0 25%, transparent 25%, transparent 75%, #f0f0f0 75%, #f0f0f0);
+            background-size: 10px 10px;
+            background-position: 0 0, 5px 5px;
+            margin-bottom: 5px;
+        }
+        .qr-label {
+            font-size: 9px;
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+        .qr-code-text {
+            font-size: 7px;
+            color: #666;
+            font-family: 'Courier New', monospace;
+        }
+        .footer-info {
+            position: absolute;
+            bottom: 60px;
+            left: 60px;
+            font-size: 10px;
+            color: #333;
+        }
+        .footer-info p {
+            margin: 3px 0;
+        }
+        .info-box {
+            background: #e3f2fd;
+            padding: 20px;
+            margin-top: 30px;
+            border-left: 4px solid #1976d2;
+        }
+        .info-box h3 {
+            margin-top: 0;
+            color: #1976d2;
+        }
+        .json-data {
+            background: #263238;
+            color: #aed581;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            overflow-x: auto;
+            white-space: pre;
+        }
+    </style>
+</head>
+<body>
+    <div class="constancia">
+        <h1>Constancia de Asistencia</h1>
+        
+        <div class="content">
+            <p>La Universidad Autónoma de Aguascalientes otorga la presente constancia a:</p>
+            
+            <div class="nombre">JOSHUA RAFAEL RODRIGUEZ ACOSTA</div>
+            <div class="matricula">Matrícula: 529633</div>
+            
+            <div class="evento">
+                Por su valiosa participación en el evento 
+                <strong>"Workshop de Marketing Digital"</strong> 
+                impartido por <strong>Dr. Carlos Pérez</strong>.
+            </div>
+            
+            <p>Realizado el 26 de noviembre de 2025</p>
+            <p style="font-size: 12px; color: #666;">Duración: 2.0 horas</p>
+        </div>
+        
+        <div class="firma">
+            <div class="firma-linea"></div>
+            <p>Rector de la Universidad</p>
+        </div>
+        
+        <div class="qr-container">
+            <div class="qr-box">📱</div>
+            <div class="qr-label">Código QR de Verificación</div>
+            <div class="qr-code-text">id=123&nombre=Joshua...</div>
+        </div>
+        
+        <div class="footer-info">
+            <p><strong>Otorgado a:</strong> JOSHUA RAFAEL RODRIGUEZ ACOSTA</p>
+            <p><strong>Matrícula:</strong> 529633</p>
+        </div>
+    </div>
+
+    <div class="info-box">
+        <h3>📊 Información Contenida en el Código QR</h3>
+        <p>Al escanear el código QR con un celular, se obtiene:</p>
+        <div class="json-data">{
+  "tipo": "CONSTANCIA",
+  "id_usuario": 123,
+  "matricula": "529633",
+  "nombre": "Joshua Rafael Rodriguez Acosta",
+  "email": "anneke0092@gmail.com",
+  "evento_id": 5,
+  "evento": "Workshop de Marketing Digital",
+  "fecha_evento": "2025-11-26",
+  "codigo_qr_usuario": "id=123&nombre=Joshua+Rafael...",
+  "fecha_emision": "2025-11-26 14:30:45",
+  "verificacion": "e3b0c44298fc1c149afbf4c899..."
+}</div>
+        
+        <h3 style="margin-top: 20px;">✅ Datos Incluidos</h3>
+        <ul>
+            <li><strong>Nombre Completo:</strong> Aparece en el PDF y en el JSON del QR</li>
+            <li><strong>Matrícula:</strong> Visible en el PDF (2 veces) y en el QR</li>
+            <li><strong>Código QR Usuario:</strong> El código único de la base de datos</li>
+            <li><strong>Email:</strong> Del usuario registrado en el sistema</li>
+            <li><strong>Evento:</strong> Nombre y fecha del evento</li>
+            <li><strong>Hash Verificación:</strong> SHA256 anti-fraude</li>
+        </ul>
+        
+        <h3 style="margin-top: 20px;">🔐 Hash de Verificación</h3>
+        <p>El campo <code>verificacion</code> contiene un hash SHA256 generado con:</p>
+        <code>hash('sha256', id_usuario + id_evento + fecha_actual)</code>
+        
+        <h3 style="margin-top: 20px;">📱 Cómo Verificar</h3>
+        <ol>
+            <li>Escanear el QR con la cámara del celular</li>
+            <li>Se mostrará el JSON con toda la información</li>
+            <li>Verificar que los datos coincidan con la constancia impresa</li>
+            <li>Opcionalmente, validar el hash con el sistema</li>
+        </ol>
+    </div>
+
+    <div style="text-align: center; margin-top: 30px; color: #666; font-size: 14px;">
+        <p><strong>Implementado:</strong> 26 de noviembre de 2025</p>
+        <p>Sistema de Gestión de Congreso - Universidad Autónoma de Aguascalientes</p>
+    </div>
+</body>
+</html>

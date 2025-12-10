@@ -1,9 +1,33 @@
 <?php
 // php_admin/asistencia_controller.oracle.php
-require_once '../php/conexion.php';
-require_once '../php/oracle_helpers.php';
+
+// Intentar conexión con manejo de errores
+try {
+    require_once '../php/conexion.php';
+    require_once '../php/oracle_helpers.php';
+} catch (Exception $e) {
+    error_log("Error al cargar conexión en asistencia_controller: " . $e->getMessage());
+    header('Content-Type: application/json');
+    http_response_code(500);
+    echo json_encode([
+        'success' => false,
+        'error' => 'Error de conexión al servidor de base de datos'
+    ]);
+    exit;
+}
 
 header('Content-Type: application/json');
+
+// Verificar que $pdo está disponible
+if (!isset($pdo) || !($pdo instanceof PDO)) {
+    error_log("Variable \$pdo no disponible en asistencia_controller");
+    http_response_code(500);
+    echo json_encode([
+        'success' => false,
+        'error' => 'Error de configuración de base de datos'
+    ]);
+    exit;
+}
 
 // --- Verificación de Sesión de Administrador ---
 // session_start(); // Asegúrate de que la sesión esté iniciada si vas a usarla
@@ -110,7 +134,7 @@ function validarQr() {
 
             // Oracle: TO_CHAR para formatear TIMESTAMP a solo hora (HH24:MI:SS)
             $stmtAsistencia = $pdo->prepare(
-                "SELECT id_asistencia, fecha_asistencia, 
+                "SELECT id_asistencia, fecha, 
                         TO_CHAR(hora_entrada, 'HH24:MI:SS') as hora_entrada, 
                         TO_CHAR(hora_salida, 'HH24:MI:SS') as hora_salida 
                  FROM asistencias 
@@ -125,9 +149,9 @@ function validarQr() {
 
             if ($asistencia_reciente) {
                 // Oracle devuelve fecha como objeto DateTime, convertir a string
-                $response['fecha_ultima_accion'] = is_object($asistencia_reciente['fecha_asistencia']) 
-                    ? $asistencia_reciente['fecha_asistencia']->format('Y-m-d') 
-                    : $asistencia_reciente['fecha_asistencia'];
+                $response['fecha_ultima_accion'] = is_object($asistencia_reciente['fecha']) 
+                    ? $asistencia_reciente['fecha']->format('Y-m-d') 
+                    : $asistencia_reciente['fecha'];
                 
                 if ($asistencia_reciente['hora_entrada'] && !$asistencia_reciente['hora_salida']) {
                     $response['ultimo_estado_asistencia'] = 'entrada_registrada';
@@ -163,8 +187,15 @@ function validarQr() {
         }
 
     } catch (PDOException $e) {
-        error_log("Error en validarQr: " . $e->getMessage());
-        $response['error'] = 'Error de base de datos durante la validación.';
+        error_log("Error en validarQr (PDOException): " . $e->getMessage());
+        error_log("Stack trace: " . $e->getTraceAsString());
+        $response['error'] = 'Error de base de datos durante la validación: ' . $e->getMessage();
+        $response['success'] = false;
+        http_response_code(500);
+    } catch (Exception $e) {
+        error_log("Error en validarQr (Exception): " . $e->getMessage());
+        error_log("Stack trace: " . $e->getTraceAsString());
+        $response['error'] = 'Error general durante la validación: ' . $e->getMessage();
         $response['success'] = false;
         http_response_code(500);
     }
@@ -208,7 +239,7 @@ function registrarAsistencia() {
         if ($tipo_registro === 'entrada') {
             // Oracle: FETCH FIRST en lugar de LIMIT
             $stmtCheckOpenEntry = $pdo->prepare(
-                "SELECT id_asistencia, fecha_asistencia, TO_CHAR(hora_entrada, 'HH24:MI:SS') as hora_entrada 
+                "SELECT id_asistencia, fecha, TO_CHAR(hora_entrada, 'HH24:MI:SS') as hora_entrada 
                  FROM asistencias 
                  WHERE id_usuario = :id_usuario AND id_evento = :id_evento AND hora_salida IS NULL 
                  ORDER BY id_asistencia DESC 
@@ -220,9 +251,9 @@ function registrarAsistencia() {
             if ($open_entry) {
                 $pdo->rollBack();
                 // Convertir fecha de objeto DateTime a string si es necesario
-                $fecha_entrada_abierta = is_object($open_entry['fecha_asistencia']) 
-                    ? $open_entry['fecha_asistencia']->format('Y-m-d') 
-                    : $open_entry['fecha_asistencia'];
+                $fecha_entrada_abierta = is_object($open_entry['fecha']) 
+                    ? $open_entry['fecha']->format('Y-m-d') 
+                    : $open_entry['fecha'];
                 $hora_entrada_abierta = $open_entry['hora_entrada'];
                 $mensaje_error = "Ya existe un registro de ENTRADA ABIERTA del {$fecha_entrada_abierta} a las {$hora_entrada_abierta}. Debe registrar una SALIDA primero.";
                 echo json_encode(['success' => false, 'message' => $mensaje_error]);
@@ -230,7 +261,7 @@ function registrarAsistencia() {
             }
 
             // Oracle: TO_DATE para fecha, TO_TIMESTAMP para hora_entrada
-            $sql = "INSERT INTO asistencias (id_usuario, id_evento, fecha_asistencia, hora_entrada, metodo_registro, estado_asistencia)
+            $sql = "INSERT INTO asistencias (id_usuario, id_evento, fecha, hora_entrada, metodo_registro, estado_asistencia)
                     VALUES (:id_usuario, :id_evento, TO_DATE(:fecha, 'YYYY-MM-DD'), 
                             TO_TIMESTAMP(:hora_entrada, 'YYYY-MM-DD HH24:MI:SS'), 
                             :metodo_registro, 'Incompleta')";
@@ -246,7 +277,7 @@ function registrarAsistencia() {
 
         } elseif ($tipo_registro === 'salida') {
             // Oracle: Obtener entrada abierta con TO_CHAR para hora
-            $sql_find_entry = "SELECT id_asistencia, fecha_asistencia, 
+            $sql_find_entry = "SELECT id_asistencia, fecha, 
                                       TO_CHAR(hora_entrada, 'YYYY-MM-DD HH24:MI:SS') as hora_entrada_str,
                                       hora_entrada as hora_entrada_timestamp
                                FROM asistencias
@@ -260,9 +291,9 @@ function registrarAsistencia() {
 
             if ($entrada_abierta) {
                 // Convertir fecha de objeto DateTime a string
-                $fecha_entrada = is_object($entrada_abierta['fecha_asistencia']) 
-                    ? $entrada_abierta['fecha_asistencia']->format('Y-m-d') 
-                    : $entrada_abierta['fecha_asistencia'];
+                $fecha_entrada = is_object($entrada_abierta['fecha']) 
+                    ? $entrada_abierta['fecha']->format('Y-m-d') 
+                    : $entrada_abierta['fecha'];
                 
                 // Usar el string formateado de hora_entrada
                 $fecha_entrada_obj = new DateTime($entrada_abierta['hora_entrada_str']);
@@ -339,3 +370,4 @@ function registrarAsistencia() {
     }
 }
 ?>
+

@@ -48,7 +48,7 @@ try {
     // Verificar que existe asistencia registrada
     $sql = "SELECT 
                 a.id_asistencia,
-                a.fecha_asistencia,
+                a.fecha,
                 u.nombre_completo,
                 u.matricula,
                 u.semestre,
@@ -106,7 +106,7 @@ try {
     $contenido .= "Evento: " . $data['nombre_evento'] . "\n";
     $contenido .= "Fecha: " . $data['fecha_inicio'] . "\n";
     $contenido .= "Duración: " . $data['duracion'] . " horas\n\n";
-    $contenido .= "Fecha de asistencia: " . $data['fecha_asistencia'] . "\n\n";
+    $contenido .= "Fecha de asistencia: " . $data['fecha'] . "\n\n";
     $contenido .= "___________________________\n";
     $contenido .= "Firma del Coordinador\n";
     

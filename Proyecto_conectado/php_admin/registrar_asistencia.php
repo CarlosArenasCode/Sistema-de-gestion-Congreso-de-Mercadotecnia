@@ -91,7 +91,7 @@ try {
     }
     
     // Registrar asistencia
-    $sql_insert = "INSERT INTO asistencias (id_usuario, id_evento, fecha_asistencia) 
+    $sql_insert = "INSERT INTO asistencias (id_usuario, id_evento, fecha) 
                    VALUES (:id_usuario, :id_evento, SYSDATE)";
     
     $stmt_insert = $pdo->prepare($sql_insert);

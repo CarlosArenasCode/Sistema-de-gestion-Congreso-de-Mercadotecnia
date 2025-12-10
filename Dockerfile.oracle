@@ -27,6 +27,8 @@ RUN wget https://download.oracle.com/otn_software/linux/instantclient/2112000/in
 # 3. Variables de entorno
 ENV LD_LIBRARY_PATH=/opt/oracle/instantclient
 ENV ORACLE_HOME=/opt/oracle/instantclient
+ENV DOCKER_CONTAINER=true
+ENV ORACLE_HOST=oracle_db
 
 # 4. Extensiones de Oracle
 RUN echo 'instantclient,/opt/oracle/instantclient' | pecl install oci8 \

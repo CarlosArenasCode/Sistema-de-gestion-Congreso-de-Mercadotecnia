@@ -38,12 +38,16 @@ try {
             SELECT
                 id_evento,
                 SUM(CASE WHEN hora_salida IS NOT NULL THEN 1 ELSE 0 END) as asistencia_completa_count,
-                -- Convertir INTERVAL a segundos
+                -- Calcular duración en segundos desde hora_entrada y hora_salida
                 SUM(
-                    EXTRACT(DAY FROM duracion) * 86400 +
-                    EXTRACT(HOUR FROM duracion) * 3600 +
-                    EXTRACT(MINUTE FROM duracion) * 60 +
-                    EXTRACT(SECOND FROM duracion)
+                    CASE 
+                        WHEN hora_entrada IS NOT NULL AND hora_salida IS NOT NULL THEN
+                            (EXTRACT(DAY FROM (hora_salida - hora_entrada)) * 86400 +
+                             EXTRACT(HOUR FROM (hora_salida - hora_entrada)) * 3600 +
+                             EXTRACT(MINUTE FROM (hora_salida - hora_entrada)) * 60 +
+                             EXTRACT(SECOND FROM (hora_salida - hora_entrada)))
+                        ELSE 0
+                    END
                 ) as duracion_total_seg
             FROM asistencias
             WHERE id_usuario = :id_usuario3

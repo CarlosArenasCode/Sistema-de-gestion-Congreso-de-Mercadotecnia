@@ -25,8 +25,8 @@ mb_http_output('UTF-8');
 // =====================================================
 
 // Detectar si estamos dentro de Docker o en XAMPP local
-// Si existe la variable DOCKER_CONTAINER, estamos en Docker
-$is_docker = getenv('DOCKER_CONTAINER') !== false;
+// Si existe la variable DOCKER_CONTAINER con valor, estamos en Docker
+$is_docker = !empty(getenv('DOCKER_CONTAINER'));
 
 // Obtener configuración desde variables de entorno o usar valores por defecto
 // Si estamos en XAMPP (fuera de Docker), usar localhost para conectar a Oracle
